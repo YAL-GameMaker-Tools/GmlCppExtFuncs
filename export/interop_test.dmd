@@ -1,0 +1,7 @@
+```set template default.html```
+```set title interop_test cheat sheet```
+```set autoapi ext```
+```set intro
+This is a "cheat sheet" for "interop_test" extension by YellowAfterlife.
+The extension can be found on [itch.io](https://yellowafterlife.itch.io/gamemaker-interop_test).
+```
