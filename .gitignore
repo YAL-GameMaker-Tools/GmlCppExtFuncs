@@ -18,3 +18,4 @@ export/*.png
 export/*.zip
 *.sdf
 help.rtf
+/bin/GmlCppExtFuncs.n
