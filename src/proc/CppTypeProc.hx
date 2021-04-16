@@ -24,6 +24,9 @@ class CppTypeProc {
 	public function getSize():Int {
 		return 8;
 	}
+	public function getAlignment():Int {
+		return getSize();
+	}
 	public function getGmlDocType(type:CppType):String {
 		return null;
 	}

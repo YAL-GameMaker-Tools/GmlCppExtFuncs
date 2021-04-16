@@ -135,7 +135,7 @@ class CppFunc {
 		//
 		if (vecType != null) {
 			cpp.addFormat("%|%s = %b;", cppVecStore, cppCall);
-			cpp.addFormat("%|return 4 + %s.size() * /* sizeof(%s) */%d;", cppVecStore, cppVecType, vecType.proc.getSize());
+			cpp.addFormat("%|return 4 + %s.size() * sizeof(%s);", cppVecStore, cppVecType);
 			cpp.addFormat("%-}%|");
 			cpp.addFormat("%s double %s(void* _ptr) {%+", config.exportPrefix, cppVecPost);
 			cpp.addFormat("gml_buffer _buf(_ptr);");
