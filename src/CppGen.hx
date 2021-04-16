@@ -108,10 +108,12 @@ class CppGen {
 					Sys.println("Couldn't make a regex for " + rel);
 					continue;
 				}
-				var dir = Path.directory(full);
+				var dir = Path.normalize(Path.directory(full));
+				var normCpp = Path.normalize(outCppPath);
 				for (relx in FileSystem.readDirectory(dir)) {
 					if (rx.match(relx)) {
 						var fullx = dir + "/" + relx;
+						if (fullx == normCpp) continue;
 						procFile(fullx, File.getContent(fullx));
 					}
 				}
