@@ -44,7 +44,7 @@ class CppBuf extends StringBuf {
 		if (parts != null) return parts;
 		parts = [];
 		var start = 0;
-		var q = new CppReader(fmt);
+		var q = new CppReader(fmt, "");
 		inline function flush(till:Int) {
 			if (till > start) parts.push(FString(fmt.substring(start, till)));
 		}

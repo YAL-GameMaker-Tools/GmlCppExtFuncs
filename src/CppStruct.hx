@@ -11,6 +11,8 @@ class CppStruct {
 	public static var map:Map<String, CppStruct> = new Map();
 	public var name:String;
 	public var parent:String;
+	/** "file.cpp:line" */
+	public var origin:String;
 	public var fields:Array<CppStructField> = [];
 	public var proc:CppTypeProcStruct;
 	/** C++ implementation */
@@ -76,6 +78,7 @@ class CppStruct {
 		q.skipSpaces();
 		var structName = q.readIdent();
 		var struct = new CppStruct(structName);
+		struct.origin = q.name + ":" + q.getRow(structStart);
 		CppTypeHelper.map[structName] = struct.proc;
 		list.push(struct);
 		map[structName] = struct;
@@ -110,5 +113,6 @@ class CppStruct {
 			}
 		} // can continue
 		struct.impl = q.substring(structStart, q.pos);
+		//trace(q.name, structName, structStart, q.len, q.substring(0, structStart) + "<<" + struct.impl + ">>" + q.substring(q.pos, q.len));
 	}
 }

@@ -17,7 +17,7 @@ class CppGen {
 	
 	public static function procFile(path:String, cpp:String) {
 		var kwMacro = config.functionTag;
-		var q = new CppReader(cpp);
+		var q = new CppReader(cpp, Path.withoutDirectory(path));
 		while (q.loop) {
 			var c = q.read();
 			switch (c) {
@@ -55,6 +55,7 @@ class CppGen {
 					prefix = true;
 					cpp.addFormat("// Struct forward declarations:%|");
 				}
+				cpp.addFormat("// from %s:%|", struct.origin);
 				cpp.addFormat("%s;%|", struct.impl);
 			}
 		}

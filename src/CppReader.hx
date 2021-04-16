@@ -6,10 +6,12 @@ using StringTools;
  * @author YellowAfterlife
  */
 class CppReader {
+	public var name:String;
 	public var str:String;
 	public var pos:Int = 0;
 	public var len:Int;
-	public function new(s:String) {
+	public function new(s:String, name:String) {
+		this.name = name;
 		str = s;
 		len = s.length;
 	}
@@ -98,5 +100,14 @@ class CppReader {
 				pos++;
 			}
 		}
+	}
+	
+	public function getRow(pos:Int):Int {
+		var row = 0;
+		while (pos >= 0) {
+			row += 1;
+			pos = str.lastIndexOf("\n", pos - 1);
+		}
+		return row;
 	}
 }
