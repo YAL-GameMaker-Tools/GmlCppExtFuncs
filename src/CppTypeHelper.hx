@@ -23,16 +23,26 @@ class CppTypeHelper {
 		var f64 = simple("buffer_f64", "number", 8);
 		
 		return [
+			// 1-byte:
 			"bool" => (bool:CppTypeProc),
 			"char" => s8, "unsigned char" => u8,
-			"int8_t" => s8, "uint8_t" => u8,
+			"int8" => s8, "int8_t" => s8,
+			"uint8" => u8, "uint8_t" => u8,
+			// 2-byte:
 			"short" => s16, "unsigned short" => u16,
-			"int16_t" => s16, "uint16_t" => u16,
+			"int16" => s16, "int16_t" => s16,
+			"uint16" => u16, "uint16_t" => u16,
+			// 4-byte:
 			"int" => s32, "unsigned int" => u32,
-			"int32_t" => s32, "uint32_t" => u32,
-			"long long" => s64, "int64" => s64,
-			"int64_t" => s64, "uint64_t" => u64,
+			"int32" => s32, "int32_t" => s32,
+			"uint32" => u32, "uint32_t" => u32,
+			// 8-byte:
+			"long long" => s64,
+			"int64" => s64, "int64_t" => s64,
+			"uint64" => u64, "uint64_t" => u64,
+			// floating-point:
 			"float" => f32, "double" => f64,
+			// special cases:
 			"vector" => new CppTypeProcVector(),
 			"gml_vector" => new CppTypeProcGmlVector(),
 			"tuple" => new CppTypeProcTuple(),
