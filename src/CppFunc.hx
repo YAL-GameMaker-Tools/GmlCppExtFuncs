@@ -12,8 +12,41 @@ class CppFunc {
 	public var name:String;
 	public var args:Array<CppFuncArg> = [];
 	public var retType:CppType;
+	public var metaComment:String = null;
+	
 	public function new(name:String) {
 		this.name = name;
+	}
+	
+	function printGmlDoc(gml:CppBuf, hasReturn:Bool, retTypeProc:CppTypeProc) {
+		if (metaComment != null && metaComment.startsWith("(")) {
+			gml.addFormat("%|/// %s%s%|", name, metaComment);
+			return;
+		}
+		gml.addFormat("%|/// %s(", name);
+		for (i => arg in args) {
+			if (i > 0) gml.add(", ");
+			gml.addFormat("%s", arg.name);
+			if (arg.type != null) {
+				var docType = arg.type.proc.getGmlDocType(arg.type);
+				if (docType != null) gml.addFormat(":%s", docType);
+			}
+			if (arg.value != null) {
+				gml.addFormat(" = %s", arg.value);
+			}
+		}
+		gml.add(")");
+		if (metaComment != null && metaComment.startsWith("->")) {
+			gml.addFormat("%s%|", metaComment);
+			return;
+		}
+		if (hasReturn && retTypeProc != null) {
+			gml.add("->");
+			var docType = retTypeProc.getGmlDocType(retType);
+			if (docType != null) gml.addString(docType);
+		}
+		if (metaComment != null) gml.addFormat(" %s", metaComment);
+		gml.addLine();
 	}
 	
 	public function print(gml:CppBuf, cpp:CppBuf) {
@@ -33,25 +66,7 @@ class CppFunc {
 		var retTypeProc = hasReturn ? retType.proc : null;
 		
 		// documentation line:
-		gml.addFormat("%|/// %s(", name);
-		for (i => arg in args) {
-			if (i > 0) gml.add(", ");
-			gml.addFormat("%s", arg.name);
-			if (arg.type != null) {
-				var docType = arg.type.proc.getGmlDocType(arg.type);
-				if (docType != null) gml.addFormat(":%s", docType);
-			}
-			if (arg.value != null) {
-				gml.addFormat(" = %s", arg.value);
-			}
-		}
-		gml.add(")");
-		if (hasReturn && retTypeProc != null) {
-			gml.add("->");
-			var docType = retTypeProc.getGmlDocType(retType);
-			if (docType != null) gml.addString(docType);
-		}
-		gml.addLine();
+		printGmlDoc(gml, hasReturn, retTypeProc);
 		
 		// extern
 		cpp.addFormat("extern %s %s(", retCppType, name);
@@ -178,6 +193,8 @@ class CppFunc {
 	}
 	
 	public static function read(q:CppReader) {
+		var fnStart = q.pos;
+		//
 		var retType = CppType.read(q);
 		var fnName = q.readSpIdent();
 		q.skipSpaces();
@@ -218,10 +235,21 @@ class CppFunc {
 									case ",".code: if (depth <= 1) break;
 								}
 							}
-							arg.value = q.substring(valStart, q.pos - 1).trim();
+							arg.value = q.substring(valStart, q.pos - 1).ltrim();
 							if (depth <= 0) break;
 						}
 					}
+			}
+		}
+		//
+		var lineStart = q.str.lastIndexOf("\n", fnStart);	
+		if (lineStart >= 0) {
+			var prevLineStart = q.str.lastIndexOf("\n", lineStart - 1);
+			if (prevLineStart < 0) prevLineStart = 0;
+			var prevLine = q.str.substring(prevLineStart, lineStart);
+			var prevLineCmtStart = prevLine.lastIndexOf("///");
+			if (prevLineCmtStart >= 0) {
+				fn.metaComment = prevLine.substring(prevLineCmtStart + 3).trim();
 			}
 		}
 	}

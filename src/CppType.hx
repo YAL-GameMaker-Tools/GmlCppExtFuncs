@@ -106,7 +106,7 @@ class CppType {
 			s.add("<");
 			var sep = false;
 			for (param in params) {
-				if (sep) s.add(", "); else sep = true;
+				if (sep) s.add(","); else sep = true;
 				s.add(param.toCppType());
 			}
 			s.add(">");
