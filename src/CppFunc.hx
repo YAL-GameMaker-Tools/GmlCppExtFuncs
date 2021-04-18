@@ -49,6 +49,29 @@ class CppFunc {
 		gml.addLine();
 	}
 	
+	function gcTypeUsesBuffer(argGcType) {
+		return argGcType == null || argGcType == "double";
+	}
+	
+	function printGmlArgsWrite(gml:CppBuf, argGcTypes, hasOptArgs) {
+		for (i => arg in args) {
+			var argGcType = argGcTypes[i];
+			var argGmlRef = hasOptArgs ? 'argument[$i]' : 'argument$i';
+			if (gcTypeUsesBuffer(argGcType)) {
+				if (arg.value != null) {
+					gml.addFormat("%|if (argument_count >= %d) {%+", i);
+					gml.addFormat("buffer_write(_buf, buffer_bool, true);");
+				}
+				
+				arg.type.proc.gmlWrite(gml, arg.type, 0, argGmlRef);
+				
+				if (arg.value != null) {
+					gml.addFormat("%-} else buffer_write(_buf, buffer_bool, false);");
+				}
+			}
+		}
+	}
+	
 	public function print(gml:CppBuf, cpp:CppBuf) {
 		gml.addFormat("#define %s", name);
 		
@@ -111,33 +134,69 @@ class CppFunc {
 		for (i => arg in args) {
 			var argGcType = argGcTypes[i];
 			var argGmlRef = hasOptArgs ? 'argument[$i]' : 'argument$i';
-			switch (argGcType) {
-				case null, "double":
-					hasBufArgs = true;
-					var td = CppTypeHelper.find(arg.type);
-					cppArgs.addFormat("%|%s _arg_%s;%|", arg.type.toCppType(), arg.name);
-					
-					if (arg.value != null) {
-						gml.addFormat("%|if (argument_count >= %d) {%+", i);
-						gml.addFormat("buffer_write(_buf, buffer_bool, true);");
-						cppArgs.addFormat("if (_buf.read<bool>()) {%+");
-					}
-					
-					td.gmlWrite(gml, arg.type, 0, argGmlRef);
-					cppArgs.addFormat('_arg_%s = %s;', arg.name, td.cppRead(cppArgs, arg.type));
-					
-					if (arg.value != null) {
-						gml.addFormat("%-} else buffer_write(_buf, buffer_bool, false);");
-						cppArgs.addFormat("%-} else _arg_%s = %s;", arg.name, arg.value);
-					}
-				default:
-					cpp.addFormat(", %s %s", argGcType, arg.name);
-					gmlCall.addFormat(", %s", argGmlRef);
+			if (gcTypeUsesBuffer(argGcType)) {
+				hasBufArgs = true;
+				var td = CppTypeHelper.find(arg.type);
+				cppArgs.addFormat("%|%s _arg_%s;%|", arg.type.toCppType(), arg.name);
+				
+				if (arg.value != null) cppArgs.addFormat("if (_buf.read<bool>()) {%+");
+				
+				cppArgs.addFormat('_arg_%s = %s;', arg.name, td.cppRead(cppArgs, arg.type));
+				
+				if (arg.value != null) cppArgs.addFormat("%-} else _arg_%s = %s;", arg.name, arg.value);
+			} else {
+				cpp.addFormat(", %s %s", argGcType, arg.name);
+				gmlCall.addFormat(", %s", argGmlRef);
 			}
 		}
 		gmlCall.addFormat(")");
 		cpp.addFormat(") {%+");
 		cpp.addBuffer(cppArgs);
+		//
+		var structMode = CppGen.config.structMode;
+		var structModeVal = CppGen.config.structModeVal;
+		var structModeCond = structMode != "auto";
+		inline function structModeProc(_proc:Void->Void, useStructs:Void->Bool) {
+			inline function proc(z:Bool) {
+				CppGen.config.useStructs = z;
+				_proc();
+			}
+			if (structModeVal != null) {
+				proc(structModeVal);
+			} else {
+				if (useStructs()) {
+					gml.addFormat("%|// GMS >= 2.3:");
+					if (structModeCond) gml.addFormat("%|if (%s) {%+", structMode);
+					proc(true);
+					if (structModeCond) {
+						gml.addFormat("%-} else");
+						gml.addFormat("%|//*/");
+						gml.addFormat("%|{%+");
+					} else {
+						gml.addFormat("%|/*/");
+					}
+					proc(false);
+					if (structModeCond) {
+						gml.addFormat("%-}");
+					} else {
+						gml.addFormat("%|//*/");
+					}
+				} else proc(false);
+			}
+		}
+		//
+		structModeProc(function() {
+			printGmlArgsWrite(gml, argGcTypes, hasOptArgs);
+		}, function() {
+			var argsUseStructs = false;
+			for (arg in args) {
+				if (arg.type.proc.usesStructs(arg.type)) {
+					argsUseStructs = true;
+					break;
+				}
+			}
+			return argsUseStructs;
+		});
 		//
 		var cppCall = new CppBuf();
 		cppCall.addFormat("%s(", name);
@@ -168,6 +227,14 @@ class CppFunc {
 			cpp.addFormat("%|return 1;");
 		}
 		//
+		inline function printReturn(pre:Bool):Void {
+			structModeProc(function() {
+				if (pre) gml.addLine();
+				gml.addFormat("return %s;", retTypeProc.gmlRead(gml, retType, 0));
+			}, function() {
+				return retTypeProc.usesStructs(retType);
+			});
+		}
 		if (vecType != null) {
 			gml.addFormat("%|var __size__ = %b;", gmlCall);
 			gml.addFormat("%|if (__size__ == 0) return undefined;");
@@ -175,8 +242,7 @@ class CppFunc {
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
 			gml.addFormat("%|%s(buffer_get_address(_buf));", cppVecPost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
-			gml.addFormat("%|");
-			gml.addFormat("return %s;", retTypeProc.gmlRead(gml, retType, 0));
+			printReturn(true);
 		} else if (!hasReturn) {
 			gml.addFormat("%|%b;", gmlCall);
 		} else if (retGcType != null) {
@@ -184,7 +250,7 @@ class CppFunc {
 		} else {
 			gml.addFormat("%|if (%b) {%+", gmlCall);
 			if (hasBufArgs) gml.addFormat("buffer_seek(_buf, buffer_seek_start, 0);%|");
-			gml.addFormat("return %s;", retTypeProc.gmlRead(gml, retType, 0));
+			printReturn(false);
 			gml.addFormat("%-} else return undefined;");
 		}
 		//

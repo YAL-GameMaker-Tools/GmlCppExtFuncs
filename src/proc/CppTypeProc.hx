@@ -30,4 +30,7 @@ class CppTypeProc {
 	public function getGmlDocType(type:CppType):String {
 		return null;
 	}
+	public function usesStructs(type:CppType):Bool {
+		return false;
+	}
 }

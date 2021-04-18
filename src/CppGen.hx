@@ -2,8 +2,8 @@ package ;
 import haxe.io.Path;
 #if sys
 import sys.io.File;
-#end
 import sys.FileSystem;
+#end
 
 /**
  * ...
@@ -60,7 +60,9 @@ class CppGen {
 			}
 		}
 		for (fn in CppFunc.list) {
+			#if !sys
 			trace(fn);
+			#end
 			fn.print(gml, cpp);
 		}
 		for (line in config.append) cpp.addFormat("%|%s", line);
@@ -89,6 +91,7 @@ class CppGen {
 				case "--prepend": config.prepend.push(args[i + 1]); 2;
 				case "--append": config.append.push(args[i + 1]); 2;
 				case "--include": config.includes.push(args[i + 1]); 2;
+				case "--struct": config.structMode = args[i + 1]; 2;
 				case "--gml": outGmlPath = args[i + 1]; 2;
 				case "--cpp": outCppPath = args[i + 1]; 2;
 				default: 0;

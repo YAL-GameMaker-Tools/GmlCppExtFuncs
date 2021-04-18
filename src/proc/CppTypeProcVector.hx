@@ -23,7 +23,7 @@ class CppTypeProcVector extends CppTypeProc {
 		var _ind = '_ind_$z';
 		var _len = '_len_$z';
 		gml.addFormat("%|var %s = %s;", _arr, val);
-		gml.addFormat("%|var %s = array_length(%s);", _len, _arr);
+		gml.addFormat("%|var %s = array_length_1d(%s);", _len, _arr);
 		gml.addFormat("%|buffer_write(_buf, buffer_u32, %s);", _len);
 		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) %{", _ind, _ind, _len, _ind);
 		var vect = type.params[0];
@@ -42,5 +42,9 @@ class CppTypeProcVector extends CppTypeProc {
 		var inner = type.params[0].proc.getGmlDocType(type);
 		if (inner == null) inner = "any";
 		return "array<" + inner + ">";
+	}
+	override public function usesStructs(type:CppType):Bool {
+		var t = type.params[0];
+		return t.proc.usesStructs(t);
 	}
 }

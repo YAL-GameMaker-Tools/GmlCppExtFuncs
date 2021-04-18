@@ -40,4 +40,8 @@ class CppTypeProcTuple extends CppTypeProc {
 		}
 		cpp.addFormat(">(%s);", val);
 	}
+	override public function usesStructs(type:CppType):Bool {
+		for (t in type.params) if (t.proc.usesStructs(t)) return true;
+		return false;
+	}
 }

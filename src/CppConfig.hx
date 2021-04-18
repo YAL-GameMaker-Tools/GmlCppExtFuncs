@@ -14,6 +14,16 @@ class CppConfig {
 	public var cppVector = "$_raw_vec";
 	public var exportPrefix = "dllx";
 	public var functionTag = "dllg";
+	public var useStructs = true;
+	public var structMode = "0";
+	public var structModeVal(get, never):Bool;
+	private function get_structModeVal():Bool {
+		return switch (structMode) {
+			case "1", "true": true;
+			case "0", "false": false;
+			default: null;
+		}
+	}
 	
 	public function new() {
 		
