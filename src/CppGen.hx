@@ -4,6 +4,7 @@ import haxe.io.Path;
 import sys.io.File;
 import sys.FileSystem;
 #end
+using StringTools;
 
 /**
  * ...
@@ -20,6 +21,7 @@ class CppGen {
 		var kwMacroLen = kwMacro.length;
 		cpp = StringTools.replace(cpp, "\r", "");
 		var q = new CppReader(cpp, Path.withoutDirectory(path));
+		var fnCond = "";
 		while (q.loop) {
 			var c = q.read();
 			switch (c) {
@@ -42,6 +44,9 @@ class CppGen {
 										q.skipLineSpaces();
 										var docName = q.readLineNonSpace();
 										CppType.docNames[cppName] = docName;
+									case "cond":
+										q.skipLineSpaces();
+										fnCond = q.readLine().trim();
 								}
 							} else q.skipUntil("\n".code);
 						case "*".code: q.skipUntilStr("*/");
@@ -74,7 +79,8 @@ class CppGen {
 					} else if (indexStructs && w == "struct") {
 						CppStruct.read(q);
 					} else if (w == kwMacro) {
-						CppFunc.read(q);
+						var fn = CppFunc.read(q);
+						if (fn != null) fn.condition = fnCond;
 					}
 				}
 			}
@@ -100,12 +106,22 @@ class CppGen {
 				cpp.addFormat("%s;%|", struct.impl);
 			}
 		}
+		
+		var fnCond = "";
 		for (fn in CppFunc.list) {
 			#if !sys
 			trace(fn);
 			#end
+			trace(fn.name, fn.condition);
+			if (fnCond != fn.condition) {
+				if (fnCond != "") cpp.addFormat("#endif // %s%|%|", fnCond);
+				fnCond = fn.condition;
+				if (fnCond != "") cpp.addFormat("#if %s%|%|", fnCond);
+			}
 			fn.print(gml, cpp);
 		}
+		if (fnCond != "") cpp.addFormat("#endif // %s%|", fnCond);
+		
 		for (line in config.append) cpp.addFormat("%|%s", line);
 		#if sys
 		File.saveContent(outGmlPath, gml.toString());

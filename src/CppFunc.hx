@@ -13,6 +13,7 @@ class CppFunc {
 	public var args:Array<CppFuncArg> = [];
 	public var retType:CppType;
 	public var metaComment:String = null;
+	public var condition:String = "";
 	
 	public function new(name:String) {
 		this.name = name;
