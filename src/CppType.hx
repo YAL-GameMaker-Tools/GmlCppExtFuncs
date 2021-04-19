@@ -19,13 +19,6 @@ class CppType {
 	public var params:Array<CppType> = [];
 	public var docKey:String;
 	
-	public var proc(get, never):CppTypeProc;
-	function get_proc():CppTypeProc {
-		if (__proc == null) __proc = CppTypeHelper.find(this);
-		return __proc;
-	}
-	var __proc:CppTypeProc = null;
-	
 	public function new(name:String) {
 		this.name = name;
 		docKey = name;
@@ -40,15 +33,37 @@ class CppType {
 		return t;
 	}
 	
+	public var proc(get, never):CppTypeProc;
+	function get_proc():CppTypeProc {
+		if (__proc == null) __proc = CppTypeHelper.find(this);
+		return __proc;
+	}
+	var __proc:CppTypeProc = null;
+	
+	public function getSize():Int {
+		return proc.getSize(this);
+	}
+	public function getAlignment():Int {
+		return proc.getAlignment(this);
+	}
+	
+	//{ unpack
+	
 	/** If this is a vector<T>, returns T */
 	public function unpackVector():CppType {
-		return name == "vector" && params.length == 1 ? params[0] : null;
+		return name == "vector" ? params[0] : null;
+	}
+	
+	public function unpackOptional():CppType {
+		return name == "optional" ? params[0] : null;
 	}
 	
 	/** If this is a vector<T>, returns T */
 	public function unpackGmlVector():CppType {
 		return name == "gml_vector" && params.length == 1 ? params[0] : null;
 	}
+	
+	//}
 	
 	public static function read(q:CppReader, ?name:String):CppType {
 		var typePrefix = name;

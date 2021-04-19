@@ -76,7 +76,13 @@ class CppFunc {
 	public function print(gml:CppBuf, cpp:CppBuf) {
 		gml.addFormat("#define %s", name);
 		
-		//
+		var retType = this.retType;
+		var retGcType = retType.toGmlCppType();
+		var retCppType = retType.toCppType();
+		var hasReturn = retCppType != "void";
+		var retTypeProc = hasReturn ? retType.proc : null;
+		var retTypeOpt = retType.unpackOptional();
+		
 		var config = CppGen.config;
 		var argGcTypes = [];
 		var hasOptArgs = false;
@@ -84,31 +90,27 @@ class CppFunc {
 			if (arg.value != null) hasOptArgs = true;
 			argGcTypes.push(arg.type.toGmlCppType());
 		}
-		var retCppType = retType.toCppType();
-		var hasReturn = retCppType != "void";
-		var retGcType = retType.toGmlCppType();
-		var retTypeProc = hasReturn ? retType.proc : null;
 		
 		// documentation line:
 		printGmlDoc(gml, hasReturn, retTypeProc);
 		
-		// extern
+		// print extern function signature:
 		cpp.addFormat("extern %s %s(", retCppType, name);
 		var bufSize = 0;
 		for (i => arg in args) {
 			if (i > 0) cpp.addString(", ");
 			cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
-			bufSize += arg.type.proc.getSize();
+			bufSize += arg.type.getSize();
 		}
 		cpp.addFormat(");%|");
 		if (retGcType == null) {
-			var retSize = retType.proc.getSize();
+			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;
 		}
 		if (bufSize == 0) bufSize = 1;
 		
 		//
-		var vecType = retType.unpackVector();
+		var vecType = (retTypeOpt != null ? retTypeOpt : retType).unpackVector();
 		var cppVecType = "", cppVecStore = "", cppVecPost = "";
 		if (vecType != null) {
 			cppVecStore = config.cppVector.replace("$", name);
@@ -208,12 +210,22 @@ class CppFunc {
 		
 		//
 		if (vecType != null) {
-			cpp.addFormat("%|%s = %b;", cppVecStore, cppCall);
-			cpp.addFormat("%|return 4 + %s.size() * sizeof(%s);", cppVecStore, cppVecType);
+			if (retTypeOpt != null) {
+				cpp.addFormat("%|auto _ret = %b;", cppCall);
+				cpp.addFormat("%|if (!_ret.has_value()) return 0;");
+				cpp.addFormat("%|%s = _ret.value();", cppVecStore);
+			} else {
+				cpp.addFormat("%|%s = %b;", cppVecStore, cppCall);
+			}
+			cpp.addFormat("%|return (double)(4 + %s.size() * sizeof(%s));", cppVecStore, cppVecType);
 			cpp.addFormat("%-}%|");
 			cpp.addFormat("%s double %s(void* _ptr) {%+", config.exportPrefix, cppVecPost);
 			cpp.addFormat("gml_buffer _buf(_ptr);");
-			retTypeProc.cppWrite(cpp, retType, cppVecStore);
+			if (retTypeOpt != null) {
+				retTypeOpt.proc.cppWrite(cpp, retTypeOpt, cppVecStore);
+			} else {
+				retTypeProc.cppWrite(cpp, retType, cppVecStore);
+			}
 			cpp.addFormat("%|return 1;");
 		} else if (!hasReturn) {
 			cpp.addFormat("%|%b;", cppCall);
@@ -221,9 +233,9 @@ class CppFunc {
 		} else if (retGcType != null) {
 			cpp.addFormat("%|return %b;", cppCall);
 		} else {
-			cpp.addFormat("%|%s __ret__ = %b;", retCppType, cppCall);
+			cpp.addFormat("%|%s _ret = %b;", retCppType, cppCall);
 			if (hasBufArgs) cpp.addFormat("%|_buf.rewind();");
-			retTypeProc.cppWrite(cpp, retType, '__ret__');
+			retTypeProc.cppWrite(cpp, retType, '_ret');
 			cpp.addFormat("%|return 1;");
 		}
 		//
@@ -264,7 +276,7 @@ class CppFunc {
 		var retType = CppType.read(q);
 		var fnName = q.readSpIdent();
 		q.skipSpaces();
-		if (!q.skipIfEqu("(".code)) return;
+		if (!q.skipIfEqu("(".code)) return null;
 		//
 		var fn = new CppFunc(fnName);
 		fn.retType = retType;
@@ -318,5 +330,7 @@ class CppFunc {
 				fn.metaComment = prevLine.substring(prevLineCmtStart + 3).trim();
 			}
 		}
+		//
+		return fn;
 	}
 }

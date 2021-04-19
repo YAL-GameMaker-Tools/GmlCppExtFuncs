@@ -21,11 +21,11 @@ class CppTypeProc {
 	public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
 		cpp.addFormat('%|_buf.write<%s>(%s);', type.toCppType(), val);
 	}
-	public function getSize():Int {
+	public function getSize(type:CppType):Int {
 		return 8;
 	}
-	public function getAlignment():Int {
-		return getSize();
+	public function getAlignment(type:CppType):Int {
+		return getSize(type);
 	}
 	public function getGmlDocType(type:CppType):String {
 		return null;

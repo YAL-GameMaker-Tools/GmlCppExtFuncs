@@ -21,7 +21,7 @@ class CppTypeProcSimple extends CppTypeProc {
 	override public function gmlWrite(gml:CppBuf, type:CppType, depth:Int, val:String):Void {
 		gml.addFormat('%|buffer_write(_buf, %s, %s);', bufType, val);
 	}
-	override public function getSize():Int {
+	override public function getSize(type:CppType):Int {
 		return size;
 	}
 	override public function getGmlDocType(type:CppType):String {

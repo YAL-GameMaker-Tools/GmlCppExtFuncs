@@ -46,6 +46,7 @@ class CppTypeHelper {
 			"vector" => new CppTypeProcVector(),
 			"gml_vector" => new CppTypeProcGmlVector(),
 			"tuple" => new CppTypeProcTuple(),
+			"optional" => new CppTypeProcOptional(),
 		];
 	})();
 	

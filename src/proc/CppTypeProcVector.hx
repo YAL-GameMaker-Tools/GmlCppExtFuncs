@@ -39,7 +39,8 @@ class CppTypeProcVector extends CppTypeProc {
 		cpp.addFormat('%|_buf.write_vector<$ts>($val);');
 	}
 	override public function getGmlDocType(type:CppType):String {
-		var inner = type.params[0].proc.getGmlDocType(type);
+		var t = type.params[0];
+		var inner = t.proc.getGmlDocType(t);
 		if (inner == null) inner = "any";
 		return "array<" + inner + ">";
 	}

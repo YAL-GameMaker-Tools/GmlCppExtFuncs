@@ -80,6 +80,17 @@ class CppReader {
 		return inline this.readIdent();
 	}
 	
+	public function readLine():String {
+		var start = pos;
+		while (loop) {
+			var c = peek();
+			if (c == "\n".code) {
+				return substring(start, pos++);
+			} else skip();
+		}
+		return substring(start, pos);
+	}
+	
 	public function readLineNonSpace():String {
 		var start = pos;
 		while (loop) {

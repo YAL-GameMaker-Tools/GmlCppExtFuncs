@@ -47,7 +47,7 @@ class CppTypeProcStruct extends CppTypeProc {
 		for (i => fd in struct.fields) {
 			var tp = CppTypeHelper.find(fd.type);
 			
-			var align = tp.getAlignment();
+			var align = fd.type.getAlignment();
 			var pad = calcPadding(pos, align);
 			if (pad > 0) {
 				gml.addFormat("buffer_seek(_buf, buffer_seek_relative, %d); // align to %d (offset %d)%|", pad, align, pos+pad);
@@ -61,12 +61,12 @@ class CppTypeProcStruct extends CppTypeProc {
 				gml.addFormat("_struct_%d[%d] = %s; // %s%|", z, i, val, fd.name);
 			}
 			
-			var fdSize = tp.getSize();
+			var fdSize = fd.type.getSize();
 			for (dim in fd.size) fdSize *= dim;
 			pos += fdSize;
 		}
 		
-		var align = getAlignment();
+		var align = getAlignment(type);
 		var pad = calcPadding(pos, align);
 		if (pad > 0) {
 			gml.addFormat("buffer_seek(_buf, buffer_seek_relative, %d); // pad of %d to %d%|", pad, align, pos+pad);
@@ -98,42 +98,42 @@ class CppTypeProcStruct extends CppTypeProc {
 		gml.addFormat("%|var _struct_%d = %s; // %s", z, val, struct.name);
 		var pos = 0;
 		for (i => fd in struct.fields) {
-			var tp = CppTypeHelper.find(fd.type);
+			var tp = fd.type.proc;
 			
-			var pad = calcPadding(pos, tp.getAlignment());
+			var pad = calcPadding(pos, tp.getAlignment(fd.type));
 			if (pad > 0) gml.addFormat("%|buffer_seek(_buf, buffer_seek_relative, %d);", pad);
 			
 			var val = useStructs ? '_struct$z.' + fd.name : '_struct_$z[$i]';
 			proc(gml, fd.type, tp, z + 1, fd.size, 0, val);
 			if (!useStructs) gml.addFormat(" // %s", fd.name);
 			
-			var fdSize = tp.getSize();
+			var fdSize = tp.getSize(fd.type);
 			for (dim in fd.size) fdSize *= dim;
 			pos += fdSize;
 		}
 		
-		var pad = calcPadding(pos, getAlignment());
+		var pad = calcPadding(pos, getAlignment(type));
 		if (pad > 0) gml.addFormat("%|buffer_seek(_buf, buffer_seek_relative, %d);", pad);
 	}
-	override public function getAlignment():Int {
+	override public function getAlignment(type:CppType):Int {
 		var align = 1;
 		for (fd in struct.fields) {
-			var fdAlign = fd.type.proc.getAlignment();
+			var fdAlign = fd.type.getAlignment();
 			if (fdAlign > align) align = fdAlign;
 		}
 		return align;
 	}
-	override public function getSize():Int {
+	override public function getSize(type:CppType):Int {
 		var size = 0;
 		for (fd in struct.fields) {
 			var fdTP = fd.type.proc;
-			var fdSize = fdTP.getSize();
-			size += calcPadding(size, fdTP.getAlignment());
+			var fdSize = fdTP.getSize(fd.type);
+			size += calcPadding(size, fdTP.getAlignment(fd.type));
 			for (arrSize in fd.size) fdSize *= arrSize;
 			size += fdSize;
 		}
 		//
-		size += calcPadding(size, getAlignment());
+		size += calcPadding(size, getAlignment(type));
 		//
 		return size;
 	}
