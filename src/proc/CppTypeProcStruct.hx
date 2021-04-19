@@ -1,13 +1,15 @@
 package proc;
 import proc.CppTypeProc;
+import struct.CppStruct;
+import tools.CppBuf;
 
 /**
  * ...
  * @author YellowAfterlife
  */
 class CppTypeProcStruct extends CppTypeProc {
-	public var struct:CppStruct;
-	public function new(struct:CppStruct) {
+	public var struct:struct.CppStruct;
+	public function new(struct:struct.CppStruct) {
 		super();
 		this.struct = struct;
 	}

@@ -1,5 +1,6 @@
 package ;
 import proc.CppTypeProc;
+import tools.CppReader;
 using StringTools;
 
 /**
@@ -65,7 +66,7 @@ class CppType {
 	
 	//}
 	
-	public static function read(q:CppReader, ?name:String):CppType {
+	public static function read(q:tools.CppReader, ?name:String):CppType {
 		var typePrefix = name;
 		var typeStart = q.pos;
 		q.skipSpaces();

@@ -1,9 +1,13 @@
 package ;
+import func.CppFunc;
 import haxe.io.Path;
 #if sys
 import sys.io.File;
 import sys.FileSystem;
 #end
+import struct.CppStruct;
+import tools.CppReader;
+import tools.CppBuf;
 using StringTools;
 
 /**
@@ -77,9 +81,9 @@ class CppGen {
 							CppType.typedefs[name] = type;
 						}
 					} else if (indexStructs && w == "struct") {
-						CppStruct.read(q);
+						struct.CppStruct.read(q);
 					} else if (w == kwMacro) {
-						var fn = CppFunc.read(q);
+						var fn = func.CppFuncReader.read(q);
 						if (fn != null) fn.condition = fnCond;
 					}
 				}
@@ -94,9 +98,9 @@ class CppGen {
 		for (inc in config.includes) {
 			cpp.addFormat('#include "%s"%|', inc);
 		}
-		if (CppStruct.list.length > 0) {
+		if (struct.CppStruct.list.length > 0) {
 			var prefix = false;
-			for (struct in CppStruct.list) {
+			for (struct in struct.CppStruct.list) {
 				if (!CppType.useMap.exists(struct.name)) continue;
 				if (!prefix) {
 					prefix = true;
@@ -108,11 +112,10 @@ class CppGen {
 		}
 		
 		var fnCond = "";
-		for (fn in CppFunc.list) {
+		for (fn in func.CppFunc.list) {
 			#if !sys
 			trace(fn);
 			#end
-			trace(fn.name, fn.condition);
 			if (fnCond != fn.condition) {
 				if (fnCond != "") cpp.addFormat("#endif // %s%|%|", fnCond);
 				fnCond = fn.condition;

@@ -1,5 +1,6 @@
 package proc;
 import proc.CppTypeProc;
+import tools.CppBuf;
 
 /**
  * ...

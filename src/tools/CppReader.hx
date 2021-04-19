@@ -1,4 +1,5 @@
-package ;
+package tools ;
+import tools.CharCode;
 using StringTools;
 
 /**
@@ -21,14 +22,14 @@ class CppReader {
 		return pos < len;
 	}
 	
-	public function read():CharCode {
+	public function read():tools.CharCode {
 		return str.unsafeCodeAt(pos++);
 	}
 	
-	public inline function peek():CharCode {
+	public inline function peek():tools.CharCode {
 		return str.unsafeCodeAt(pos);
 	}
-	public inline function peekAt(ofs:Int):CharCode {
+	public inline function peekAt(ofs:Int):tools.CharCode {
 		return str.unsafeCodeAt(pos + ofs);
 	}
 	
@@ -54,7 +55,7 @@ class CppReader {
 		pos -= n;
 	}
 	
-	public function skipIfEqu(c:CharCode):Bool {
+	public function skipIfEqu(c:tools.CharCode):Bool {
 		if (peek() == c) {
 			skip(1);
 			return true;
@@ -101,7 +102,7 @@ class CppReader {
 		return substring(start, pos);
 	}
 	
-	public function skipUntil(c:CharCode) {
+	public function skipUntil(c:tools.CharCode) {
 		while (loop) {
 			if (read() == c) break;
 		}
@@ -131,7 +132,7 @@ class CppReader {
 		}
 	}
 	
-	public function skipCString(c1:CharCode) {
+	public function skipCString(c1:tools.CharCode) {
 		while (loop) {
 			var c = read();
 			if (c == c1) break;

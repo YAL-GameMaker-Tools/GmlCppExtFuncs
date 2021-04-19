@@ -1,5 +1,6 @@
-package ;
+package struct ;
 import proc.CppTypeProcStruct;
+import tools.CppReader;
 using StringTools;
 
 /**
@@ -13,7 +14,7 @@ class CppStruct {
 	public var parent:String;
 	/** "file.cpp:line" */
 	public var origin:String;
-	public var fields:Array<CppStructField> = [];
+	public var fields:Array<struct.CppStructField> = [];
 	public var proc:CppTypeProcStruct;
 	/** C++ implementation */
 	public var impl:String;
@@ -22,7 +23,7 @@ class CppStruct {
 		proc = new CppTypeProcStruct(this);
 	}
 	
-	public static function readStructField(q:CppReader, struct:CppStruct, firstIdent:String) {
+	public static function readStructField(q:tools.CppReader, struct:CppStruct, firstIdent:String) {
 		var fdType = CppType.read(q, firstIdent);
 		if (fdType == null) return;
 		while (q.loop) {
@@ -31,7 +32,7 @@ class CppStruct {
 			if (fdName == "") break;
 			q.skipSpaces();
 			if (q.peek() == "(".code) break; // retType funcName()
-			var fd = new CppStructField(fdType, fdName);
+			var fd = new struct.CppStructField(fdType, fdName);
 			while (q.skipIfEqu("[".code)) {
 				q.skipSpaces();
 				var n = Std.parseInt(q.readIdent());
@@ -73,7 +74,7 @@ class CppStruct {
 		}
 	}
 	
-	public static function read(q:CppReader) {
+	public static function read(q:tools.CppReader) {
 		var structStart = q.pos - "struct".length;
 		q.skipSpaces();
 		var structName = q.readIdent();
