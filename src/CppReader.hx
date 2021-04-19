@@ -25,12 +25,18 @@ class CppReader {
 		return str.unsafeCodeAt(pos++);
 	}
 	
-	public function peek():CharCode {
+	public inline function peek():CharCode {
 		return str.unsafeCodeAt(pos);
+	}
+	public inline function peekAt(ofs:Int):CharCode {
+		return str.unsafeCodeAt(pos + ofs);
 	}
 	
 	public function peekn(n:Int):String {
 		return str.substr(pos, n);
+	}
+	public function peeknAt(ofs:Int, n:Int):String {
+		return str.substr(pos + ofs, n);
 	}
 	
 	public function substr(pos:Int, len:Int):String {
@@ -69,6 +75,21 @@ class CppReader {
 		return inline this.readIdent();
 	}
 	
+	public function readLspIdent():String {
+		inline this.skipLineSpaces();
+		return inline this.readIdent();
+	}
+	
+	public function readLineNonSpace():String {
+		var start = pos;
+		while (loop) {
+			var c = peek();
+			if (c == "\n".code) break;
+			if (!c.isLineSpace()) skip(); else break;
+		}
+		return substring(start, pos);
+	}
+	
 	public function skipUntil(c:CharCode) {
 		while (loop) {
 			if (read() == c) break;
@@ -79,6 +100,13 @@ class CppReader {
 		while (loop) {
 			var c = peek();
 			if (c.isSpace()) skip(); else break;
+		}
+	}
+	
+	public function skipLineSpaces() {
+		while (loop) {
+			var c = peek();
+			if (c.isLineSpace()) skip(); else break;
 		}
 	}
 	

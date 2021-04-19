@@ -28,7 +28,7 @@ class CppFunc {
 			if (i > 0) gml.add(", ");
 			gml.addFormat("%s", arg.name);
 			if (arg.type != null) {
-				var docType = arg.type.proc.getGmlDocType(arg.type);
+				var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
 				if (docType != null) gml.addFormat(":%s", docType);
 			}
 			if (arg.value != null) {
@@ -42,7 +42,7 @@ class CppFunc {
 		}
 		if (hasReturn && retTypeProc != null) {
 			gml.add("->");
-			var docType = retTypeProc.getGmlDocType(retType);
+			var docType = retTypeProc.getGmlDocTypeEx(retType);
 			if (docType != null) gml.addString(docType);
 		}
 		if (metaComment != null) gml.addFormat(" %s", metaComment);
@@ -145,7 +145,7 @@ class CppFunc {
 				
 				if (arg.value != null) cppArgs.addFormat("%-} else _arg_%s = %s;", arg.name, arg.value);
 			} else {
-				cpp.addFormat(", %s %s", argGcType, arg.name);
+				cpp.addFormat(", %s _arg_%s", argGcType, arg.name);
 				gmlCall.addFormat(", %s", argGmlRef);
 			}
 		}
@@ -166,12 +166,11 @@ class CppFunc {
 			} else {
 				if (useStructs()) {
 					gml.addFormat("%|// GMS >= 2.3:");
-					if (structModeCond) gml.addFormat("%|if (%s) {%+", structMode);
+					if (structModeCond) gml.addFormat("%|if (%s) %{", structMode);
 					proc(true);
 					if (structModeCond) {
-						gml.addFormat("%-} else");
-						gml.addFormat("%|//*/");
-						gml.addFormat("%|{%+");
+						gml.addFormat("%-} else //*/");
+						gml.addFormat("%|%{");
 					} else {
 						gml.addFormat("%|/*/");
 					}

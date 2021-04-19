@@ -1,5 +1,6 @@
 package ;
 import proc.CppTypeProc;
+using StringTools;
 
 /**
  * ...
@@ -7,12 +8,16 @@ import proc.CppTypeProc;
  */
 class CppType {
 	public static var useMap:Map<String, Bool> = new Map();
+	public static var typedefs:Map<String, CppType> = new Map();
+	public static var docNames:Map<String, String> = new Map();
 	
 	public var name:String;
 	public var isConst:Bool = false;
-	public var isPointer:Bool = false;
+	/** 0 -> int, 1 -> int*, 2 -> int**, etc. */
+	public var ptrCount:Int = 0;
 	public var isRef:Bool = false;
 	public var params:Array<CppType> = [];
+	public var docKey:String;
 	
 	public var proc(get, never):CppTypeProc;
 	function get_proc():CppTypeProc {
@@ -23,7 +28,16 @@ class CppType {
 	
 	public function new(name:String) {
 		this.name = name;
+		docKey = name;
 		useMap[name] = true;
+	}
+	public function copy():CppType {
+		var t = new CppType(name);
+		t.isConst = isConst;
+		t.ptrCount = ptrCount;
+		t.isRef = isRef;
+		for (p in params) t.params.push(p.copy());
+		return t;
 	}
 	
 	/** If this is a vector<T>, returns T */
@@ -37,6 +51,8 @@ class CppType {
 	}
 	
 	public static function read(q:CppReader, ?name:String):CppType {
+		var typePrefix = name;
+		var typeStart = q.pos;
 		q.skipSpaces();
 		if (name == null) name = q.readIdent();
 		if (name == "") return null;
@@ -56,12 +72,26 @@ class CppType {
 			}
 		}
 		if (name == "") return null;
+		var cppType = typedefs[name];
+		var isTypedef = cppType != null;
+		var wantCopy = isTypedef;
+		var wantReset = isTypedef;
+		inline function prepare():CppType {
+			if (wantCopy) {
+				wantCopy = false;
+				cppType = cppType.copy();
+			}
+			return cppType;
+		}
 		//
-		var cppType = new CppType(name);
-		cppType.isConst = isConst;
+		if (cppType == null) {
+			cppType = new CppType(name);
+		} else cppType.docKey = name;
+		if (isConst) prepare().isConst = isConst;
 		//
 		q.skipSpaces();
 		if (q.peek() == "<".code) {
+			prepare();
 			q.skip();
 			while (q.loop) {
 				cppType.params.push(read(q));
@@ -75,14 +105,22 @@ class CppType {
 		}
 		//
 		q.skipSpaces();
-		cppType.isPointer = q.skipIfEqu("*".code);
-		cppType.isRef = q.skipIfEqu("&".code);
+		while (q.skipIfEqu("*".code)) {
+			prepare().ptrCount++;
+			q.skipSpaces();
+		}
+		if (q.skipIfEqu("&".code)) {
+			prepare().isRef = true;
+		}
 		//
+		var fullType = q.substring(typeStart, q.pos);
+		if (typePrefix != null) fullType = typePrefix + fullType;
+		cppType.__toCppType_cache = fullType.trim();
 		return cppType;
 	}
 	
 	public function toGmlCppType():String {
-		if (isPointer) switch (name) {
+		if (ptrCount > 0) switch (name) {
 			case "char", "byte", "uint8_t": return 'const $name*';
 		}
 		return switch (name) {
@@ -97,11 +135,16 @@ class CppType {
 	}
 	
 	private var __toCppType_cache:String;
+	private var __toCppType_name:String;
 	public function toCppType() {
 		if (__toCppType_cache != null) return __toCppType_cache;
 		var s = new StringBuf();
 		if (isConst) s.add("const ");
-		s.add(name);
+		
+		if (__toCppType_name != null) {
+			s.add(__toCppType_name);
+		} else s.add(name);
+		
 		if (params.length > 0) {
 			s.add("<");
 			var sep = false;
@@ -111,7 +154,7 @@ class CppType {
 			}
 			s.add(">");
 		}
-		if (isPointer) s.add("*");
+		for (_ in 0 ... ptrCount) s.add("*");
 		if (isRef) s.add("&");
 		__toCppType_cache = s.toString();
 		return __toCppType_cache;

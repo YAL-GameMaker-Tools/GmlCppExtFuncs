@@ -9,6 +9,10 @@ abstract CharCode(Int) from Int to Int {
 		var c = this;
 		return c == " ".code || c == "\t".code || c == "\r".code || c == "\n".code;
 	}
+	public function isLineSpace():Bool {
+		var c = this;
+		return c == " ".code || c == "\t".code;
+	}
 	public function isIdent0():Bool {
 		var c = this;
 		return (c == "_".code

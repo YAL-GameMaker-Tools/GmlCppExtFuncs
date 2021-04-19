@@ -103,7 +103,7 @@ class CppTypeProcStruct extends CppTypeProc {
 			var pad = calcPadding(pos, tp.getAlignment());
 			if (pad > 0) gml.addFormat("%|buffer_seek(_buf, buffer_seek_relative, %d);", pad);
 			
-			var val = useStructs ? '_struct$z.' + fd.name : 'struct_$z[$i]';
+			var val = useStructs ? '_struct$z.' + fd.name : '_struct_$z[$i]';
 			proc(gml, fd.type, tp, z + 1, fd.size, 0, val);
 			if (!useStructs) gml.addFormat(" // %s", fd.name);
 			

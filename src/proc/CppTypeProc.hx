@@ -30,6 +30,10 @@ class CppTypeProc {
 	public function getGmlDocType(type:CppType):String {
 		return null;
 	}
+	public function getGmlDocTypeEx(type:CppType):String {
+		var t = CppType.docNames[type.docKey];
+		return t != null ? t : getGmlDocType(type);
+	}
 	public function usesStructs(type:CppType):Bool {
 		return false;
 	}
