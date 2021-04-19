@@ -41,7 +41,7 @@ class CppTypeProcVector extends CppTypeProc {
 	}
 	override public function getGmlDocType(type:CppType):String {
 		var t = type.params[0];
-		var inner = t.proc.getGmlDocType(t);
+		var inner = t.proc.getGmlDocTypeEx(t);
 		if (inner == null) inner = "any";
 		return "array<" + inner + ">";
 	}
