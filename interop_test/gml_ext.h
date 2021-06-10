@@ -5,6 +5,7 @@
 #endif
 #include <stdint.h>
 #include <cstring>
+#include <tuple>
 using namespace std;
 
 #define dllg /* tag */
@@ -25,7 +26,7 @@ private:
 public:
 	gml_buffer() : _data(nullptr), _tell(0), _size(0) {}
 	gml_buffer(uint8_t* data, int32_t size, int32_t tell) : _data(data), _size(size), _tell(tell) {}
-	
+
 	inline uint8_t* data() { return _data; }
 	inline int32_t tell() { return _tell; }
 	inline int32_t size() { return _size; }
@@ -36,7 +37,7 @@ class gml_istream {
 	uint8_t* start;
 public:
 	gml_istream(void* origin) : pos((uint8_t*)origin), start((uint8_t*)origin) {}
-	
+
 	template<class T> T read() {
 		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be read");
 		T result{};
