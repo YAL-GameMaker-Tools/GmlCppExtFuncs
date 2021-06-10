@@ -33,8 +33,14 @@ class CppTypeProcOptional extends CppTypeProc {
 		return '_in.read_optional<$ts>()';
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
-		var ts = unpack(type).toCppType();
-		cpp.addFormat('%|_out.write_optional<%s>(%s);', ts, val);
+		cpp.addFormat('%|%{');
+		cpp.addFormat('%|auto& _opt = %s;', val);
+		cpp.addFormat('%|if (_opt.has_value()) %{');
+		cpp.addFormat('%|_out.write<bool>(true);');
+		var t = unpack(type);
+		t.proc.cppWrite(cpp, t, '_opt.value()');
+		cpp.addFormat('%|%-} else _out.write<bool>(false);');
+		cpp.addFormat('%|%-}');
 	}
 	override public function getGmlDocType(type:CppType):String {
 		var t = unpack(type);
