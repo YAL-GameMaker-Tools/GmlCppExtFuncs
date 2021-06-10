@@ -19,3 +19,5 @@ export/*.zip
 *.sdf
 help.rtf
 /bin/GmlCppExtFuncs.n
+/bin/GmlCppExtFuncs.exe
+/bin/GmlCppExtFuncs.zip

@@ -80,7 +80,7 @@ class CppStruct {
 		var structName = q.readIdent();
 		var struct = new CppStruct(structName);
 		struct.origin = q.name + ":" + q.getRow(structStart);
-		CppTypeHelper.map[structName] = struct.proc;
+		@:privateAccess CppTypeHelper.map[structName] = struct.proc;
 		list.push(struct);
 		map[structName] = struct;
 		q.skipSpaces();

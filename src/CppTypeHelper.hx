@@ -6,7 +6,7 @@ import proc.*;
  * @author YellowAfterlife
  */
 class CppTypeHelper {
-	public static var map:Map<String, CppTypeProc> = (function() {
+	static var map:Map<String, CppTypeProc> = (function() {
 		inline function simple(name:String, docName:String, size:Int) {
 			return new CppTypeProcSimple(name, docName, size);
 		}
@@ -44,14 +44,15 @@ class CppTypeHelper {
 			"float" => f32, "double" => f64,
 			// special cases:
 			"vector" => new CppTypeProcVector(),
-			"gml_vector" => new CppTypeProcGmlVector(),
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),
+			"gml_buffer" => new CppTypeProcGmlBuffer(),
 		];
 	})();
 	
 	public static function find(t:CppType):CppTypeProc {
 		var tp = map[t.name];
+		if (tp == null) Sys.println('Couldn\'t find type ${t.toString()}');
 		return tp;
 	}
 }

@@ -33,14 +33,15 @@ class CppTypeProcVector extends CppTypeProc {
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType):String {
 		var ts = type.unpackVector().toCppType();
-		return '_buf.read_vector<$ts>()';
+		return '_in.read_vector<$ts>()';
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
 		var ts = type.unpackVector().toCppType();
-		cpp.addFormat('%|_buf.write_vector<$ts>($val);');
+		cpp.addFormat('%|_out.write_vector<$ts>($val);');
 	}
 	override public function getGmlDocType(type:CppType):String {
 		var t = type.params[0];
+		if (t == null) return "array<any>";
 		var inner = t.proc.getGmlDocTypeEx(t);
 		if (inner == null) inner = "any";
 		return "array<" + inner + ">";

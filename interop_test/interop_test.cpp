@@ -50,10 +50,13 @@ dllg int64_t iq_get_int64_vec_sum(vector<int64_t> arr) {
 	}
 	return sum;
 }
-dllg int64_t iq_get_int64_arr_sum(gml_vector<int64_t> arr) {
-	int64_t sum = 0;
-	for each (auto val in arr) {
-		sum += val;
+
+dllg int iq_get_buffer_sum(gml_buffer buf) {
+	int sum = 0;
+	int till = buf.tell();
+	auto data = buf.data();
+	for (int i = 0; i < till; i++) {
+		sum += data[i];
 	}
 	return sum;
 }

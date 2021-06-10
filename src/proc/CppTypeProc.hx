@@ -17,10 +17,10 @@ class CppTypeProc {
 	}
 	public function cppRead(cpp:CppBuf, type:CppType):String {
 		var ts = type.toCppType();
-		return '_buf.read<$ts>()';
+		return '_in.read<$ts>()';
 	}
 	public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
-		cpp.addFormat('%|_buf.write<%s>(%s);', type.toCppType(), val);
+		cpp.addFormat('%|_out.write<%s>(%s);', type.toCppType(), val);
 	}
 	public function getSize(type:CppType):Int {
 		return 8;

@@ -167,8 +167,8 @@
           </args>
         </function>
         <function>
-          <name>iq_get_int64_arr_sum_raw</name>
-          <externalName>iq_get_int64_arr_sum_raw</externalName>
+          <name>iq_get_buffer_sum_raw</name>
+          <externalName>iq_get_buffer_sum_raw</externalName>
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
@@ -336,10 +336,10 @@
           </args>
         </function>
         <function>
-          <name>iq_get_int64_arr_sum</name>
-          <externalName>iq_get_int64_arr_sum</externalName>
+          <name>iq_get_buffer_sum</name>
+          <externalName>iq_get_buffer_sum</externalName>
           <kind>2</kind>
-          <help>iq_get_int64_arr_sum(arr:array&lt;int&gt;)-&gt;int</help>
+          <help>iq_get_buffer_sum(buf:buffer)-&gt;int</help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>

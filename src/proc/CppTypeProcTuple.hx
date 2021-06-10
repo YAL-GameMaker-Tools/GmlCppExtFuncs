@@ -25,7 +25,7 @@ class CppTypeProcTuple extends CppTypeProc {
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType):String {
 		var b = new CppBuf();
-		b.add("_buf.read_tuple<");
+		b.add("_in.read_tuple<");
 		for (i => t in type.params) {
 			if (i > 0) b.add(", ");
 			b.add(t.toCppType());
@@ -34,7 +34,7 @@ class CppTypeProcTuple extends CppTypeProc {
 		return b.toString();
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
-		cpp.addFormat("%|_buf.write_tuple<");
+		cpp.addFormat("%|_out.write_tuple<");
 		for (i => t in type.params) {
 			if (i > 0) cpp.add(", ");
 			cpp.add(t.toCppType());

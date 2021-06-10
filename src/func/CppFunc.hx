@@ -128,7 +128,7 @@ class CppFunc {
 		//
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
-		cppArgs.addFormat("gml_buffer _buf(_ptr);");
+		cppArgs.addFormat("gml_istream _in(_ptr);");
 		
 		var gmlCall = new CppBuf();
 		gmlCall.addFormat("%s(buffer_get_address(_buf)", cppName);
@@ -143,7 +143,7 @@ class CppFunc {
 				var td = CppTypeHelper.find(arg.type);
 				cppArgs.addFormat("%|%s _arg_%s;%|", arg.type.toCppType(), arg.name);
 				
-				if (arg.value != null) cppArgs.addFormat("if (_buf.read<bool>()) {%+");
+				if (arg.value != null) cppArgs.addFormat("if (_in.read<bool>()) {%+");
 				
 				cppArgs.addFormat('_arg_%s = %s;', arg.name, td.cppRead(cppArgs, arg.type));
 				
@@ -221,7 +221,7 @@ class CppFunc {
 			cpp.addFormat("%|return (double)(4 + %s.size() * sizeof(%s));", cppVecStore, cppVecType);
 			cpp.addFormat("%-}%|");
 			cpp.addFormat("%s double %s(void* _ptr) {%+", config.exportPrefix, cppVecPost);
-			cpp.addFormat("gml_buffer _buf(_ptr);");
+			cpp.addFormat("gml_ostream _out(_ptr);");
 			if (retTypeOpt != null) {
 				retTypeOpt.proc.cppWrite(cpp, retTypeOpt, cppVecStore);
 			} else {
@@ -235,7 +235,7 @@ class CppFunc {
 			cpp.addFormat("%|return %b;", cppCall);
 		} else {
 			cpp.addFormat("%|%s _ret = %b;", retCppType, cppCall);
-			if (hasBufArgs) cpp.addFormat("%|_buf.rewind();");
+			cpp.addFormat("%|gml_ostream _out(_ptr);");
 			retTypeProc.cppWrite(cpp, retType, '_ret');
 			cpp.addFormat("%|return 1;");
 		}

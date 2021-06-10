@@ -43,9 +43,9 @@ buffer_seek(_buf, buffer_seek_start, 0);
 var _len_0 = buffer_read(_buf, buffer_u32);
 var _arr_0 = array_create(_len_0);
 for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0++) {
-	var _struct_1 = /* _iq_get_struct_vec */array_create(2);
-	_struct_1[0/* ind */] = buffer_read(_buf, buffer_s32);
-	_struct_1[1/* name */] = itr_test_read_chars(_buf, 4);
+	var _struct_1 = array_create(2); // _iq_get_struct_vec
+	_struct_1[0] = buffer_read(_buf, buffer_s32); // ind
+	_struct_1[1] = itr_test_read_chars(_buf, 4); // name
 	_arr_0[_ind_0] = _struct_1;
 }
 return _arr_0;
@@ -85,7 +85,7 @@ if (iq_add_two_int64s_raw(buffer_get_address(_buf))) {
 /// iq_get_int64_vec_sum(arr:array<int>)->int
 var _buf = itr_test_prepare_buffer(8);
 var _arr_0 = argument0;
-var _len_0 = array_length(_arr_0);
+var _len_0 = array_length_1d(_arr_0);
 buffer_write(_buf, buffer_u32, _len_0);
 for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0++) {
 	buffer_write(_buf, buffer_u64, _arr_0[_ind_0]);
@@ -95,17 +95,18 @@ if (iq_get_int64_vec_sum_raw(buffer_get_address(_buf))) {
 	return buffer_read(_buf, buffer_u64);
 } else return undefined;
 
-#define iq_get_int64_arr_sum
-/// iq_get_int64_arr_sum(arr:array<int>)->int
+#define iq_get_buffer_sum
+/// iq_get_buffer_sum(buf:buffer)->int
 var _buf = itr_test_prepare_buffer(8);
-var _arr_0 = argument0;
-var _len_0 = array_length(_arr_0);
-buffer_write(_buf, buffer_u32, _len_0);
-for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0++) {
-	buffer_write(_buf, buffer_u64, _arr_0[_ind_0]);
+var _val_0 = argument0;
+if (buffer_exists(_val_0)) {
+	buffer_write(_buf, buffer_u64, int64(buffer_get_address(_val_0)));
+	buffer_write(_buf, buffer_s32, buffer_get_size(_val_0));
+	buffer_write(_buf, buffer_s32, buffer_tell(_val_0));
+} else {
+	buffer_write(_buf, buffer_u64, 0);
+	buffer_write(_buf, buffer_s32, 0);
+	buffer_write(_buf, buffer_s32, 0);
 }
-if (iq_get_int64_arr_sum_raw(buffer_get_address(_buf))) {
-	buffer_seek(_buf, buffer_seek_start, 0);
-	return buffer_read(_buf, buffer_u64);
-} else return undefined;
+return iq_get_buffer_sum_raw(buffer_get_address(_buf));
 

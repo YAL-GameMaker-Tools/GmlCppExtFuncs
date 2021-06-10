@@ -203,18 +203,18 @@
                     "returnType": 2
                 },
                 {
-                    "id": "b0633eef-b5d5-6fcb-d46f-61a07a943b5b",
+                    "id": "f0e0fdbb-1917-c2f2-f9d3-e95d6135885d",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
                     "argCount": 1,
                     "args": [
                         1
                     ],
-                    "externalName": "iq_get_int64_arr_sum_raw",
+                    "externalName": "iq_get_buffer_sum_raw",
                     "help": "",
                     "hidden": true,
                     "kind": 11,
-                    "name": "iq_get_int64_arr_sum_raw",
+                    "name": "iq_get_buffer_sum_raw",
                     "returnType": 2
                 }
             ],
@@ -448,18 +448,18 @@
                     "returnType": 2
                 },
                 {
-                    "id": "d13ca22e-4f58-eb6c-51d4-a53b8f1a02a3",
+                    "id": "88432024-3b56-612b-ef89-3ed266d182e0",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
                     "argCount": 1,
                     "args": [
                         2
                     ],
-                    "externalName": "iq_get_int64_arr_sum",
-                    "help": "iq_get_int64_arr_sum(arr:array<int>)->int",
+                    "externalName": "iq_get_buffer_sum",
+                    "help": "iq_get_buffer_sum(buf:buffer)->int",
                     "hidden": false,
                     "kind": 2,
-                    "name": "iq_get_int64_arr_sum",
+                    "name": "iq_get_buffer_sum",
                     "returnType": 2
                 }
             ],
