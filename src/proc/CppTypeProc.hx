@@ -38,4 +38,7 @@ class CppTypeProc {
 	public function usesStructs(type:CppType):Bool {
 		return false;
 	}
+	public function useGmlArgument():Bool {
+		return true;
+	}
 }

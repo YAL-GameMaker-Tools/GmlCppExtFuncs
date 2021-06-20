@@ -26,8 +26,10 @@ class CppFunc {
 			return;
 		}
 		gml.addFormat("%|/// %s(", name);
+		var sep = false;
 		for (i => arg in args) {
-			if (i > 0) gml.add(", ");
+			if (!arg.type.proc.useGmlArgument()) continue;
+			if (sep) gml.add(", "); else sep = true;
 			gml.addFormat("%s", arg.name);
 			if (arg.type != null) {
 				var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
@@ -56,12 +58,14 @@ class CppFunc {
 	}
 	
 	function printGmlArgsWrite(gml:CppBuf, argGcTypes, hasOptArgs) {
+		var argi = 0;
 		for (i => arg in args) {
 			var argGcType = argGcTypes[i];
-			var argGmlRef = hasOptArgs ? 'argument[$i]' : 'argument$i';
+			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
+			if (arg.type.proc.useGmlArgument()) argi += 1;
 			if (gcTypeUsesBuffer(argGcType)) {
 				if (arg.value != null) {
-					gml.addFormat("%|if (argument_count >= %d) {%+", i);
+					gml.addFormat("%|if (argument_count >= %d) {%+", argi);
 					gml.addFormat("buffer_write(_buf, buffer_bool, true);");
 				}
 				

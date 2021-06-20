@@ -18,6 +18,10 @@ using namespace std;
 #define dllx extern "C"
 #endif
 
+#ifdef _WINDEF_
+typedef HWND GAME_HWND;
+#endif
+
 struct gml_buffer {
 private:
 	uint8_t* _data;

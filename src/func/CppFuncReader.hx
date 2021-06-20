@@ -42,15 +42,21 @@ class CppFuncReader {
 						if (q.skipIfEqu("=".code)) {
 							q.skipSpaces();
 							var valStart = q.pos;
+							var comma = false;
 							while (q.loop) {
 								c = q.read();
 								switch (c) {
 									case "(".code: depth++;
 									case ")".code: if (--depth <= 1) break;
-									case ",".code: if (depth <= 1) break;
+									case ",".code:
+										if (depth <= 1) {
+											comma = true;
+											break;
+										}
 								}
 							}
 							arg.value = q.substring(valStart, q.pos - 1).ltrim();
+							if (comma) q.back();
 							if (depth <= 0) break;
 						}
 					}

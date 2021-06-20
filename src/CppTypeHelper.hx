@@ -47,6 +47,7 @@ class CppTypeHelper {
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),
 			"gml_buffer" => new CppTypeProcGmlBuffer(),
+			"GAME_HWND" => new CppTypeProcGameHwnd(),
 		];
 	})();
 	
