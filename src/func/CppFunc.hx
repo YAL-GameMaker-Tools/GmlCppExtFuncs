@@ -139,9 +139,11 @@ class CppFunc {
 		
 		gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		var hasBufArgs = false;
+		var argi = 0;
 		for (i => arg in args) {
 			var argGcType = argGcTypes[i];
-			var argGmlRef = hasOptArgs ? 'argument[$i]' : 'argument$i';
+			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
+			if (arg.type.proc.useGmlArgument()) argi += 1;
 			if (gcTypeUsesBuffer(argGcType)) {
 				hasBufArgs = true;
 				var td = CppTypeHelper.find(arg.type);
