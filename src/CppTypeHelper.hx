@@ -1,5 +1,6 @@
 package ;
 import proc.*;
+import proc.CppTypeProcSimple;
 
 /**
  * ...
@@ -11,7 +12,7 @@ class CppTypeHelper {
 			return new CppTypeProcSimple(name, docName, size);
 		}
 		var bool = simple("buffer_bool", "bool", 1);
-		var s8 = simple("buffer_s8", "int", 1);
+		var s8 = new CppTypeProcSimpleChar("buffer_s8", "int", 1);
 		var u8 = simple("buffer_u8", "int", 1);
 		var s16 = simple("buffer_s16", "int", 2);
 		var u16 = simple("buffer_u16", "int", 2);

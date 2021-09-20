@@ -29,3 +29,9 @@ class CppTypeProcSimple extends CppTypeProc {
 		return docType;
 	}
 }
+class CppTypeProcSimpleChar extends CppTypeProcSimple {
+	override public function getGmlDocType(type:CppType):String {
+		if (type.ptrCount == 1) return "string";
+		return super.getGmlDocType(type);
+	}
+}
