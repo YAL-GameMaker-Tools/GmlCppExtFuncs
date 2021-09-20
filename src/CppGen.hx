@@ -139,7 +139,7 @@ class CppGen {
 		var rel = Path.withoutDirectory(full);
 		if (rel.indexOf("*") >= 0) {
 			var rs = new EReg("([.*+?^${}()|[\\]\\/\\\\])", "g").replace(rel, "\\$1");
-			rs = StringTools.replace(rs, "\\*", ".+?");
+			rs = StringTools.replace(rs, "\\*", ".*?");
 			var rx = try {
 				new EReg("^" + rs + "$", "");
 			} catch (x:Dynamic) {
