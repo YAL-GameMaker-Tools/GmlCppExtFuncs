@@ -5,7 +5,7 @@ package ;
  * @author YellowAfterlife
  */
 class CppConfig {
-	public var helperPrefix:String = "ext_";
+	public var helperPrefix:String = "ext";
 	public var includes:Array<String> = ["gml_ext.h"];
 	public var prepend:Array<String> = [];
 	public var append:Array<String> = [];
@@ -16,8 +16,8 @@ class CppConfig {
 	public var functionTag = "dllg";
 	public var useStructs = true;
 	public var structMode = "0";
-	public var structModeVal(get, never):Bool;
-	private function get_structModeVal():Bool {
+	public var structModeVal(get, never):Null<Bool>;
+	private function get_structModeVal():Null<Bool> {
 		return switch (structMode) {
 			case "1", "true": true;
 			case "0", "false": false;

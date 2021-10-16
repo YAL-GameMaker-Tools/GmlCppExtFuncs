@@ -94,10 +94,13 @@ class CppGen {
 	public static function finish() {
 		var gml = new CppBuf();
 		var cpp = new CppBuf();
+		
 		for (line in config.prepend) cpp.addFormat("%s%|", line);
+		
 		for (inc in config.includes) {
 			cpp.addFormat('#include "%s"%|', inc);
 		}
+		
 		if (struct.CppStruct.list.length > 0) {
 			var prefix = false;
 			for (struct in struct.CppStruct.list) {
@@ -126,6 +129,7 @@ class CppGen {
 		if (fnCond != "") cpp.addFormat("#endif // %s%|", fnCond);
 		
 		for (line in config.append) cpp.addFormat("%|%s", line);
+		
 		#if sys
 		File.saveContent(outGmlPath, gml.toString());
 		File.saveContent(outCppPath, cpp.toString());
