@@ -135,6 +135,7 @@ class GmlExtMacro {
 				dllPath += ".dll";
 				
 				var projectDir = Sys.getCwd();
+				projectDir = StringTools.replace(projectDir, "/", "\\");
 				
 				var arch = "x86";
 				#if HXCPP_M64
