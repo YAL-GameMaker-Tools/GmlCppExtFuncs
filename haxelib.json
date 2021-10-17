@@ -1,0 +1,14 @@
+{
+   "name": "GmlCppExtFuncs",
+   "url": "https://github.com/YAL-GameMaker-Tools/GmlCppExtFuncs",
+   "license": "MIT",
+   "classPath": "src/",
+   "tags": [
+      "cpp", "gamemaker"
+   ],
+   "description": "",
+   "contributors": ["YellowAfterlife"],
+   "releasenote": "",
+   "version": "1.0.0",
+   "dependencies": { }
+}

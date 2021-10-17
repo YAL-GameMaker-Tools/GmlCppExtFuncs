@@ -11,6 +11,8 @@ class CppFunc {
 	public static var list:Array<CppFunc> = [];
 	
 	public var name:String;
+	public var cppFuncName:String;
+	public var generateFuncExtern:Bool = true;
 	public var args:Array<func.CppFuncArg> = [];
 	public var retType:CppType;
 	public var metaComment:String = null;
@@ -18,6 +20,7 @@ class CppFunc {
 	
 	public function new(name:String) {
 		this.name = name;
+		cppFuncName = name;
 	}
 	
 	function printGmlDoc(gml:CppBuf, hasReturn:Bool, retTypeProc:CppTypeProc) {
@@ -100,14 +103,16 @@ class CppFunc {
 		printGmlDoc(gml, hasReturn, retTypeProc);
 		
 		// print extern function signature:
-		cpp.addFormat("extern %s %s(", retCppType, name);
 		var bufSize = 0;
+		if (generateFuncExtern)cpp.addFormat("extern %s %s(", retCppType, name);
 		for (i => arg in args) {
-			if (i > 0) cpp.addString(", ");
-			cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
+			if (generateFuncExtern) {
+				if (i > 0) cpp.addString(", ");
+				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
+			}
 			bufSize += arg.type.getSize();
 		}
-		cpp.addFormat(");%|");
+		if (generateFuncExtern) cpp.addFormat(");%|");
 		if (retGcType == null) {
 			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;
@@ -208,7 +213,7 @@ class CppFunc {
 		});
 		//
 		var cppCall = new CppBuf();
-		cppCall.addFormat("%s(", name);
+		cppCall.addFormat("%s(", cppFuncName);
 		for (i => arg in args) {
 			if (i > 0) cppCall.addFormat(", ");
 			cppCall.addFormat("_arg_%s", arg.name);

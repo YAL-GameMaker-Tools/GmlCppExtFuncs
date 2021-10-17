@@ -10,6 +10,7 @@
 */Release/
 Debug/
 Release/
+bin/
 export/*.gmz
 export/*.gmez
 export/*.yymp
