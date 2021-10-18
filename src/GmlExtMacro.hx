@@ -6,6 +6,7 @@ import haxe.macro.ComplexTypeTools;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+import sys.FileSystem;
 import sys.io.File;
 import tools.CppBuf;
 
@@ -90,7 +91,8 @@ class GmlExtMacro {
 			].join("\n");
 		}
 		GmlExtMacro.cppAutogen.add(cppFileCodeStr);
-		cppFileCodeStr = "#include <gml_ext.h>\n" + cppFileCodeStr;
+		
+		cppFileCodeStr = '#include <gml_ext.h>\n' + cppFileCodeStr;
 		var cppFileCodeMeta = localClass.meta.extract(":cppFileCode")[0];
 		if (cppFileCodeMeta != null) {
 			if (cppFileCodeMeta.params != null) {
@@ -108,6 +110,17 @@ class GmlExtMacro {
 		return fields;
 	}
 	public static function macroMain() {
+		var outdir = Compiler.getOutput();
+		var incdir = outdir + "/include";
+		try {
+			if (!FileSystem.exists(outdir)) FileSystem.createDirectory(outdir);
+			if (!FileSystem.exists(incdir)) FileSystem.createDirectory(incdir);
+		} catch (x:Dynamic) {
+			trace("Error validating directories: ", x);
+		}
+		var gml_ext = Context.resolvePath("include/gml_ext.h");
+		if (gml_ext != null) File.copy(gml_ext, incdir + "/gml_ext.h");
+		
 		var name = Context.definedValue("HAXE_OUTPUT_FILE");
 		if (name == null) {
 			name = Context.definedValue("autogen_main");
@@ -127,6 +140,9 @@ class GmlExtMacro {
 		var gmlAutogenPath = Context.definedValue("autogen_gml");
 		var cppAutogenPath = Context.definedValue("autogen_cpp");
 		Context.onAfterGenerate(function() {
+			File.saveContent(gmlAutogenPath, gmlAutogen.toString());
+			File.saveContent(cppAutogenPath, cppAutogen.toString());
+			
 			if (Sys.systemName() == "Windows") {
 				var dllPath = Compiler.getOutput() + "\\" + name;
 				#if debug
@@ -156,8 +172,6 @@ class GmlExtMacro {
 					config,
 				]);
 			}
-			File.saveContent(gmlAutogenPath, gmlAutogen.toString());
-			File.saveContent(cppAutogenPath, cppAutogen.toString());
 		});
 		//trace("hi!", autogenPath);
 	}
