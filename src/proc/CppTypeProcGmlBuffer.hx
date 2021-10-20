@@ -10,7 +10,7 @@ class CppTypeProcGmlBuffer extends CppTypeProc {
 		return '_in.read_gml_buffer()';
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
-		cpp.addFormat('%|_out.write_gml_buffer($val);');
+		cpp.addFormat("%|#error You may not return GML buffers at this time");
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var v = '_val_$z';
@@ -24,6 +24,9 @@ class CppTypeProcGmlBuffer extends CppTypeProc {
 		gml.addFormat("%|buffer_write(_buf, buffer_s32, 0);");
 		gml.addFormat("%|buffer_write(_buf, buffer_s32, 0);");
 		gml.addFormat("%-}");
+	}
+	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
+		return 'show_error("Unsupported type gml_buffer", true)';
 	}
 	override public function getGmlDocType(type:CppType):String {
 		return "buffer";

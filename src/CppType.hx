@@ -176,6 +176,25 @@ class CppType {
 		return __toCppType_cache;
 	}
 	
+	private var __toKey_cache:String;
+	public function toKey():String {
+		if (__toKey_cache != null) return __toKey_cache;
+		var s = new StringBuf();
+		s.add(name);
+		if (params.length > 0) {
+			s.add("<");
+			var sep = false;
+			for (param in params) {
+				if (sep) s.add(","); else sep = true;
+				s.add(param.toKey());
+			}
+			s.add(">");
+		}
+		for (_ in 0 ... ptrCount) s.add("*");
+		__toKey_cache = s.toString();
+		return __toKey_cache;
+	}
+	
 	@:keep public function toString() {
 		return toCppType();
 	}

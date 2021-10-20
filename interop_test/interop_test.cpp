@@ -51,6 +51,14 @@ dllg int64_t iq_get_int64_vec_sum(vector<int64_t> arr) {
 	return sum;
 }
 
+dllg int iq_get_length_of_strings(vector<const char*> strings) {
+	int sum = 0;
+	for each (auto str in strings) {
+		sum += strlen(str);
+	}
+	return sum;
+}
+
 dllg int iq_get_buffer_sum(gml_buffer buf) {
 	int sum = 0;
 	int till = buf.tell();

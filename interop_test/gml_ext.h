@@ -65,6 +65,14 @@ public:
 		pos += sizeof(T) * n;
 		return vec;
 	}
+	std::vector<const char*> read_string_vector() {
+		auto n = read<uint32_t>();
+		std::vector<const char*> vec(n);
+		for (auto i = 0u; i < n; i++) {
+			vec[i] = read_string();
+		}
+		return vec;
+	}
 
 	gml_buffer read_gml_buffer() {
 		auto _data = (uint8_t*)read<int64_t>();
@@ -138,6 +146,14 @@ public:
 		write<uint32_t>(n);
 		memcpy(pos, vec.data(), n * sizeof(T));
 		pos += n * sizeof(T);
+	}
+
+	void write_string_vector(std::vector<const char*> vec) {
+		auto n = vec.size();
+		write<uint32_t>(n);
+		for (auto i = 0u; i < n; i++) {
+			write_string(vec[i]);
+		}
 	}
 
 	#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)

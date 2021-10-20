@@ -14,6 +14,7 @@ function scr_test() {
     buffer_fill(buf, 0, buffer_u8, 0xFF, 16);
     for (var i = 1; i <= 4; i++) buffer_write(buf, buffer_u8, i);
     assert(iq_get_buffer_sum(buf), 10);
+    assert(iq_get_length_of_strings(["A", "B", "CD"]), 4);
     
     trace("OK!");
 }

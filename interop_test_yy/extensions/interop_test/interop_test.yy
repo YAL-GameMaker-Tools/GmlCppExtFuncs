@@ -203,6 +203,21 @@
                     "returnType": 2
                 },
                 {
+                    "id": "d2c2df99-a2ac-79d0-cae0-43f7cb06aa7f",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        1
+                    ],
+                    "externalName": "iq_get_length_of_strings_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_get_length_of_strings_raw",
+                    "returnType": 2
+                },
+                {
                     "id": "f0e0fdbb-1917-c2f2-f9d3-e95d6135885d",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -350,7 +365,7 @@
                         
                     ],
                     "externalName": "iq_get_string",
-                    "help": "iq_get_string()->int",
+                    "help": "iq_get_string()->string",
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_get_string",
@@ -445,6 +460,21 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_get_int64_vec_sum",
+                    "returnType": 2
+                },
+                {
+                    "id": "31dab924-22cf-6123-67dc-721e31bf6cd3",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_get_length_of_strings",
+                    "help": "iq_get_length_of_strings(strings:array<string>)->int",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_get_length_of_strings",
                     "returnType": 2
                 },
                 {

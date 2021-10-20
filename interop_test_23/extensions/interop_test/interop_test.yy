@@ -50,6 +50,9 @@
         {"externalName":"iq_get_int64_vec_sum_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":1,"args":[
             1,
           ],"resourceVersion":"1.0","name":"iq_get_int64_vec_sum_raw","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_get_length_of_strings_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":1,"args":[
+            1,
+          ],"resourceVersion":"1.0","name":"iq_get_length_of_strings_raw","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_buffer_sum_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":1,"args":[
             1,
           ],"resourceVersion":"1.0","name":"iq_get_buffer_sum_raw","tags":[],"resourceType":"GMExtensionFunction",},
@@ -67,6 +70,7 @@
         {"name":"iq_add_int64_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_add_two_int64s_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int64_vec_sum_raw","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_get_length_of_strings_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_buffer_sum_raw","path":"extensions/interop_test/interop_test.yy",},
       ],"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMExtensionFile",},
     {"filename":"interop_test.gml","origname":"extensions\\gml.gml","init":"","final":"","kind":2,"uncompress":false,"functions":[
@@ -92,7 +96,7 @@
     {"filename":"autogen.gml","origname":"","init":"","final":"","kind":2,"uncompress":false,"functions":[
         {"externalName":"iq_get_int","kind":2,"help":"iq_get_int()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_int","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_int64","kind":2,"help":"iq_get_int64()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_int64","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"iq_get_string","kind":2,"help":"iq_get_string()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_string","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_get_string","kind":2,"help":"iq_get_string()->string","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_string","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_vec","kind":2,"help":"iq_get_vec()->array<int>","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_vec","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_struct_vec","kind":2,"help":"iq_get_struct_vec()->array<any>","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_struct_vec","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_two_int64s","kind":2,"help":"iq_get_two_int64s()->","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_two_int64s","tags":[],"resourceType":"GMExtensionFunction",},
@@ -106,6 +110,9 @@
         {"externalName":"iq_get_int64_vec_sum","kind":2,"help":"iq_get_int64_vec_sum(arr:array<int>)->int","hidden":false,"returnType":2,"argCount":1,"args":[
             2,
           ],"resourceVersion":"1.0","name":"iq_get_int64_vec_sum","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_get_length_of_strings","kind":2,"help":"iq_get_length_of_strings(strings:array<string>)->int","hidden":false,"returnType":2,"argCount":1,"args":[
+            2,
+          ],"resourceVersion":"1.0","name":"iq_get_length_of_strings","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_buffer_sum","kind":2,"help":"iq_get_buffer_sum(buf:buffer)->int","hidden":false,"returnType":2,"argCount":1,"args":[
             2,
           ],"resourceVersion":"1.0","name":"iq_get_buffer_sum","tags":[],"resourceType":"GMExtensionFunction",},
@@ -121,6 +128,7 @@
         {"name":"iq_add_int64","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_add_two_int64s","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int64_vec_sum","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_get_length_of_strings","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_buffer_sum","path":"extensions/interop_test/interop_test.yy",},
       ],"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMExtensionFile",},
   ],

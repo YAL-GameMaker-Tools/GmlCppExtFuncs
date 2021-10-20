@@ -186,6 +186,11 @@ class CppGen {
 				args.splice(i, remove);
 			} else i += 1;
 		}
+		if (args.length == 0 || outGmlPath == null || outCppPath == null) {
+			Sys.println("Check README for arguments!");
+			Sys.stdin().readLine();
+			return;
+		}
 		for (full in args) procArg(full, true);
 		finish();
 		#else

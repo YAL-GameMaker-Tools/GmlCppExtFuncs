@@ -49,12 +49,16 @@ class CppTypeHelper {
 			"optional" => new CppTypeProcOptional(),
 			"gml_buffer" => new CppTypeProcGmlBuffer(),
 			"GAME_HWND" => new CppTypeProcGameHwnd(),
+			"vector<char*>" => new CppTypeProcStringVector(),
 		];
 	})();
 	
 	public static function find(t:CppType):CppTypeProc {
-		var tp = map[t.name];
-		if (tp == null) Sys.println('Couldn\'t find type ${t.toString()}');
-		return tp;
+		var tp = map[t.toKey()];
+		if (tp != null) return tp;
+		tp = map[t.name];
+		if (tp != null) return tp;
+		Sys.println('Couldn\'t find type ${t.toString()}');
+		return new CppTypeProcError(t.toString());
 	}
 }

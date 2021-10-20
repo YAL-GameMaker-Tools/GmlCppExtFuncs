@@ -96,6 +96,14 @@ dllx double iq_get_int64_vec_sum_raw(void* _ptr) {
 	return 1;
 }
 
+extern int iq_get_length_of_strings(vector<const char*> strings);
+dllx double iq_get_length_of_strings_raw(void* _ptr) {
+	gml_istream _in(_ptr);
+	vector<const char*> _arg_strings;
+	_arg_strings = _in.read_string_vector();
+	return iq_get_length_of_strings(_arg_strings);
+}
+
 extern int iq_get_buffer_sum(gml_buffer buf);
 dllx double iq_get_buffer_sum_raw(void* _ptr) {
 	gml_istream _in(_ptr);

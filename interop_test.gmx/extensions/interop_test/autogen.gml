@@ -11,7 +11,7 @@ if (iq_get_int64_raw(buffer_get_address(_buf))) {
 } else return undefined;
 
 #define iq_get_string
-/// iq_get_string()->int
+/// iq_get_string()->string
 var _buf = itr_test_prepare_buffer(1);
 return iq_get_string_raw(buffer_get_address(_buf));
 
@@ -94,6 +94,17 @@ if (iq_get_int64_vec_sum_raw(buffer_get_address(_buf))) {
 	buffer_seek(_buf, buffer_seek_start, 0);
 	return buffer_read(_buf, buffer_u64);
 } else return undefined;
+
+#define iq_get_length_of_strings
+/// iq_get_length_of_strings(strings:array<string>)->int
+var _buf = itr_test_prepare_buffer(8);
+var _arr_0 = argument0;
+var _len_0 = array_length_1d(_arr_0);
+buffer_write(_buf, buffer_u32, _len_0);
+for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0++) {
+	buffer_write(_buf, buffer_string, _arr_0[_ind_0]);
+}
+return iq_get_length_of_strings_raw(buffer_get_address(_buf));
 
 #define iq_get_buffer_sum
 /// iq_get_buffer_sum(buf:buffer)->int
