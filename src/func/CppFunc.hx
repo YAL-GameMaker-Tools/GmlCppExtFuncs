@@ -34,14 +34,17 @@ class CppFunc {
 			if (!arg.type.proc.useGmlArgument()) continue;
 			CppFuncArg.current = arg;
 			if (sep) gml.add(", "); else sep = true;
+			var argValue = arg.value;
+			if (argValue == "{}") {
+				gml.addString("?");
+				argValue = null;
+			}
 			gml.addFormat("%s", arg.name);
 			if (arg.type != null) {
 				var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
 				if (docType != null) gml.addFormat(":%s", docType);
 			}
-			if (arg.value != null) {
-				gml.addFormat(" = %s", arg.value);
-			}
+			if (argValue != null) gml.addFormat(" = %s", argValue);
 		}
 		gml.add(")");
 		if (metaComment != null && metaComment.startsWith("->")) {
