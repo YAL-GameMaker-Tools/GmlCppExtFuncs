@@ -32,6 +32,7 @@ class CppFunc {
 		var sep = false;
 		for (i => arg in args) {
 			if (!arg.type.proc.useGmlArgument()) continue;
+			CppFuncArg.current = arg;
 			if (sep) gml.add(", "); else sep = true;
 			gml.addFormat("%s", arg.name);
 			if (arg.type != null) {
@@ -72,6 +73,7 @@ class CppFunc {
 					gml.addFormat("buffer_write(_buf, buffer_bool, true);");
 				}
 				
+				CppFuncArg.current = arg;
 				arg.type.proc.gmlWrite(gml, arg.type, 0, argGmlRef);
 				
 				if (arg.value != null) {
@@ -95,6 +97,7 @@ class CppFunc {
 		var argGcTypes = [];
 		var hasOptArgs = false;
 		for (arg in args) {
+			CppFuncArg.current = arg;
 			if (arg.value != null) hasOptArgs = true;
 			argGcTypes.push(arg.type.toGmlCppType());
 		}
@@ -108,6 +111,7 @@ class CppFunc {
 		for (i => arg in args) {
 			if (generateFuncExtern) {
 				if (i > 0) cpp.addString(", ");
+				CppFuncArg.current = arg;
 				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
 			}
 			bufSize += arg.type.getSize();
@@ -146,6 +150,7 @@ class CppFunc {
 		var hasBufArgs = false;
 		var argi = 0;
 		for (i => arg in args) {
+			CppFuncArg.current = arg;
 			var argGcType = argGcTypes[i];
 			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
 			if (arg.type.proc.useGmlArgument()) argi += 1;

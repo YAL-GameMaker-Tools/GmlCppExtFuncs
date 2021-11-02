@@ -49,6 +49,7 @@ class CppTypeHelper {
 			"optional" => new CppTypeProcOptional(),
 			"gml_buffer" => new CppTypeProcGmlBuffer(),
 			"GAME_HWND" => new CppTypeProcGameHwnd(),
+			"gml_asset_index_of" => new CppTypeProcAssetIndexOf(),
 			"vector<char*>" => new CppTypeProcStringVector(),
 		];
 	})();

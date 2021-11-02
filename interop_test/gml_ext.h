@@ -19,10 +19,14 @@ using namespace std;
 #endif
 
 #ifdef _WINDEF_
+/// auto-generates a window_handle() on GML side
 typedef HWND GAME_HWND;
 #endif
 
-struct gml_buffer {
+/// auto-generates an asset_get_index("argument_name") on GML side
+typedef int gml_asset_index_of;
+
+class gml_buffer {
 private:
 	uint8_t* _data;
 	int32_t _size;
