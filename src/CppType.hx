@@ -136,8 +136,8 @@ class CppType {
 	}
 	
 	public function toGmlCppType():String {
-		if (ptrCount > 0) switch (name) {
-			case "char", "byte", "uint8_t": return 'const $name*';
+		if (ptrCount == 1) switch (name) {
+			case "char", "byte", "uint8_t": return '$name*';
 		}
 		return switch (name) {
 			case "void", "bool",
