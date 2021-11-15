@@ -177,6 +177,7 @@ class CppGen {
 				case "--struct": config.structMode = args[i + 1]; 2;
 				case "--gml": outGmlPath = args[i + 1]; 2;
 				case "--cpp": outCppPath = args[i + 1]; 2;
+				case "--wasm": config.useWASM = true; 1;
 				#if sys
 				case "--index": procArg(args[i + 1], false); 2;
 				#end

@@ -17,6 +17,7 @@ class CppConfig {
 	public var useStructs = true;
 	public var structMode = "0";
 	public var structModeVal(get, never):Null<Bool>;
+	public var useWASM:Bool = false;
 	private function get_structModeVal():Null<Bool> {
 		return switch (structMode) {
 			case "1", "true": true;

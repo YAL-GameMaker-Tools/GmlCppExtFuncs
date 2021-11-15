@@ -64,7 +64,7 @@ class CppFunc {
 		return argGcType == null || argGcType == "double";
 	}
 	
-	function printGmlArgsWrite(gml:CppBuf, argGcTypes, hasOptArgs) {
+	function printGmlArgsWrite(gml:CppBuf, gmlCleanup:CppBuf, argGcTypes, hasOptArgs) {
 		var argi = 0;
 		for (i => arg in args) {
 			var argGcType = argGcTypes[i];
@@ -78,6 +78,7 @@ class CppFunc {
 				
 				CppFuncArg.current = arg;
 				arg.type.proc.gmlWrite(gml, arg.type, 0, argGmlRef);
+				arg.type.proc.gmlCleanup(gmlCleanup, arg.type, 0, argGmlRef);
 				
 				if (arg.value != null) {
 					gml.addFormat("%-} else buffer_write(_buf, buffer_bool, false);");
@@ -104,6 +105,7 @@ class CppFunc {
 			if (arg.value != null) hasOptArgs = true;
 			argGcTypes.push(arg.type.toGmlCppType());
 		}
+		var gmlCleanup = new CppBuf();
 		
 		// documentation line:
 		printGmlDoc(gml, hasReturn, retTypeProc);
@@ -117,6 +119,7 @@ class CppFunc {
 				CppFuncArg.current = arg;
 				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
 			}
+			if (arg.value != null) bufSize += 1;
 			bufSize += arg.type.getSize();
 		}
 		if (generateFuncExtern) cpp.addFormat(");%|");
@@ -137,17 +140,22 @@ class CppFunc {
 		}
 		
 		//
+		var argPtr = "_in_ptr";
+		if (vecType == null && hasReturn && retGcType == null) {
+			argPtr = "_inout_ptr";
+		}
+		//
 		var cppName = config.cppName.replace("$", name);
 		cpp.addFormat("%s ", config.exportPrefix);
 		cpp.addFormat("%s ", retGcType != null ? retGcType : "double");
-		cpp.addFormat("%s(void* _ptr", cppName);
+		cpp.addFormat("%s(void* %s, double %(s)_size", cppName, argPtr, argPtr);
 		//
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
-		cppArgs.addFormat("gml_istream _in(_ptr);");
+		cppArgs.addFormat("gml_istream _in(%s);", argPtr);
 		
 		var gmlCall = new CppBuf();
-		gmlCall.addFormat("%s(buffer_get_address(_buf)", cppName);
+		gmlCall.addFormat("%s(buffer_get_address(_buf), %d", cppName, bufSize);
 		
 		gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		var hasBufArgs = false;
@@ -208,7 +216,7 @@ class CppFunc {
 		}
 		//
 		structModeProc(function() {
-			printGmlArgsWrite(gml, argGcTypes, hasOptArgs);
+			printGmlArgsWrite(gml, gmlCleanup, argGcTypes, hasOptArgs);
 		}, function() {
 			var argsUseStructs = false;
 			for (arg in args) {
@@ -239,8 +247,8 @@ class CppFunc {
 			}
 			cpp.addFormat("%|return (double)(4 + %s.size() * sizeof(%s));", cppVecStore, cppVecType);
 			cpp.addFormat("%-}%|");
-			cpp.addFormat("%s double %s(void* _ptr) {%+", config.exportPrefix, cppVecPost);
-			cpp.addFormat("gml_ostream _out(_ptr);");
+			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, cppVecPost);
+			cpp.addFormat("gml_ostream _out(_out_ptr);");
 			if (retTypeOpt != null) {
 				retTypeOpt.proc.cppWrite(cpp, retTypeOpt, cppVecStore);
 			} else {
@@ -254,7 +262,7 @@ class CppFunc {
 			cpp.addFormat("%|return %b;", cppCall);
 		} else {
 			cpp.addFormat("%|%s _ret = %b;", retCppType, cppCall);
-			cpp.addFormat("%|gml_ostream _out(_ptr);");
+			cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
 			retTypeProc.cppWrite(cpp, retType, '_ret');
 			cpp.addFormat("%|return 1;");
 		}
@@ -262,7 +270,10 @@ class CppFunc {
 		inline function printReturn(pre:Bool):Void {
 			structModeProc(function() {
 				if (pre) gml.addLine();
-				gml.addFormat("return %s;", retTypeProc.gmlRead(gml, retType, 0));
+				var rx = retTypeProc.gmlRead(gml, retType, 0);
+				if (gmlCleanup.length > 0) {
+					gml.addFormat("var _result = %s;%b%|return _result;", rx, gmlCleanup);
+				} else gml.addFormat("return %s;", rx);
 			}, function() {
 				return retTypeProc.usesStructs(retType);
 			});
@@ -277,8 +288,11 @@ class CppFunc {
 			printReturn(true);
 		} else if (!hasReturn) {
 			gml.addFormat("%|%b;", gmlCall);
+			gml.addBuffer(gmlCleanup);
 		} else if (retGcType != null) {
-			gml.addFormat("%|return %b;", gmlCall);
+			if (gmlCleanup.length > 0) {
+				gml.addFormat("%|var _result = %b;%b%|return _result;", gmlCall, gmlCleanup);
+			} else gml.addFormat("%|return %b;", gmlCall);
 		} else {
 			gml.addFormat("%|if (%b) {%+", gmlCall);
 			if (hasBufArgs) gml.addFormat("buffer_seek(_buf, buffer_seek_start, 0);%|");

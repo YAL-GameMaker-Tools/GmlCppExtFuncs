@@ -36,7 +36,7 @@ class CppFuncReader {
 						var argType = CppType.read(q, w);
 						var argName = q.readSpIdent();
 						if (argName == "") continue;
-						var arg = new func.CppFuncArg(argType, argName);
+						var arg = new func.CppFuncArg(fn.args.length, argType, argName);
 						fn.args.push(arg);
 						q.skipSpaces();
 						if (q.skipIfEqu("=".code)) {

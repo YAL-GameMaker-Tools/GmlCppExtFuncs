@@ -15,6 +15,9 @@ class CppTypeProc {
 	public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		throw "todo";
 	}
+	public function gmlCleanup(gml:CppBuf, type:CppType, z:Int, val:String):Void {
+		
+	}
 	public function cppRead(cpp:CppBuf, type:CppType):String {
 		var ts = type.toCppType();
 		return '_in.read<$ts>()';
