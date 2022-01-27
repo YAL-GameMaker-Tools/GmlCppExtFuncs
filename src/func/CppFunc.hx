@@ -283,7 +283,7 @@ class CppFunc {
 			gml.addFormat("%|if (__size__ == 0) return undefined;");
 			gml.addFormat("%|if (__size__ <= 4) return [];");
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
-			gml.addFormat("%|%s(buffer_get_address(_buf));", cppVecPost);
+			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", cppVecPost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(true);
 		} else if (!hasReturn) {
