@@ -1,5 +1,4 @@
 #pragma once
-//#include "stdafx.h"
 #include <vector>
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
 #include <optional>
@@ -11,20 +10,27 @@ using namespace std;
 
 #define dllg /* tag */
 
-/*#if defined(_WINDOWS)
+#if defined(_WINDOWS)
 #define dllx extern "C" __declspec(dllexport)
 #elif defined(GNUC)
 #define dllx extern "C" __attribute__ ((visibility("default"))) 
 #else
 #define dllx extern "C"
-#endif*/
-#define dllx extern "C" __declspec(dllexport)
+#endif
 
 #ifdef _WINDEF_
+/// auto-generates a window_handle() on GML side
 typedef HWND GAME_HWND;
 #endif
 
-struct gml_buffer {
+/// auto-generates an asset_get_index("argument_name") on GML side
+typedef int gml_asset_index_of;
+/// Wraps a C++ pointer for GML.
+template <typename T> using gml_ptr = T*;
+/// Same as gml_ptr, but replaces the GML-side pointer by a nullptr after passing it to C++
+template <typename T> using gml_ptr_destroy = T*;
+
+class gml_buffer {
 private:
 	uint8_t* _data;
 	int32_t _size;
@@ -65,6 +71,14 @@ public:
 		std::vector<T> vec(n);
 		std::memcpy(vec.data(), pos, sizeof(T) * n);
 		pos += sizeof(T) * n;
+		return vec;
+	}
+	std::vector<const char*> read_string_vector() {
+		auto n = read<uint32_t>();
+		std::vector<const char*> vec(n);
+		for (auto i = 0u; i < n; i++) {
+			vec[i] = read_string();
+		}
 		return vec;
 	}
 
@@ -140,6 +154,14 @@ public:
 		write<uint32_t>(n);
 		memcpy(pos, vec.data(), n * sizeof(T));
 		pos += n * sizeof(T);
+	}
+
+	void write_string_vector(std::vector<const char*> vec) {
+		auto n = vec.size();
+		write<uint32_t>(n);
+		for (auto i = 0u; i < n; i++) {
+			write_string(vec[i]);
+		}
 	}
 
 	#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)

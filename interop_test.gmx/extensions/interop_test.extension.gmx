@@ -51,9 +51,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -62,9 +63,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -73,9 +75,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>1</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -84,9 +87,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -95,9 +99,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -106,9 +111,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -117,9 +123,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -128,9 +135,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -139,9 +147,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -150,9 +159,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -161,9 +171,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -172,9 +183,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -183,9 +195,58 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_create_raw</name>
+          <externalName>iq_thing_create_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_destroy_raw</name>
+          <externalName>iq_thing_destroy_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_get_count_raw</name>
+          <externalName>iq_thing_get_count_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_set_count_raw</name>
+          <externalName>iq_thing_set_count_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
       </functions>
@@ -205,6 +266,15 @@
       </ConfigOptions>
       <ProxyFiles/>
       <functions>
+        <function>
+          <name>itr_test_init</name>
+          <externalName>itr_test_init</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
         <function>
           <name>itr_test_prepare_buffer</name>
           <externalName>itr_test_prepare_buffer</externalName>
@@ -365,6 +435,51 @@
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_create</name>
+          <externalName>iq_thing_create</externalName>
+          <kind>2</kind>
+          <help>iq_thing_create(count:int)-&gt;</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_destroy</name>
+          <externalName>iq_thing_destroy</externalName>
+          <kind>2</kind>
+          <help>iq_thing_destroy(thing)</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_get_count</name>
+          <externalName>iq_thing_get_count</externalName>
+          <kind>2</kind>
+          <help>iq_thing_get_count(thing)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_set_count</name>
+          <externalName>iq_thing_set_count</externalName>
+          <kind>2</kind>
+          <help>iq_thing_set_count(thing, count:int)</help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>2</arg>
             <arg>2</arg>
           </args>
         </function>

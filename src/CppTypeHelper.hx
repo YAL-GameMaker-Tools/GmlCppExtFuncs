@@ -44,6 +44,8 @@ class CppTypeHelper {
 			// floating-point:
 			"float" => f32, "double" => f64,
 			// special cases:
+			"gml_ptr" => new CppTypeProcGmlPointer(),
+			"gml_ptr_destroy" => new CppTypeProcGmlPointer(),
 			"vector" => new CppTypeProcVector(),
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),

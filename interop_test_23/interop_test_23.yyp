@@ -9,6 +9,7 @@
     {"id":{"name":"assert","path":"scripts/assert/assert.yy",},"order":4,},
     {"id":{"name":"sfmt","path":"scripts/sfmt/sfmt.yy",},"order":1,},
     {"id":{"name":"is_equal","path":"scripts/is_equal/is_equal.yy",},"order":3,},
+    {"id":{"name":"interop_test_23","path":"scripts/interop_test_23/interop_test_23.yy",},"order":1,},
   ],
   "Options": [
     {"name":"iOS","path":"options/ios/options_ios.yy",},

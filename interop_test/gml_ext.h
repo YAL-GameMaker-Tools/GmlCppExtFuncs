@@ -25,6 +25,10 @@ typedef HWND GAME_HWND;
 
 /// auto-generates an asset_get_index("argument_name") on GML side
 typedef int gml_asset_index_of;
+/// Wraps a C++ pointer for GML.
+template <typename T> using gml_ptr = T*;
+/// Same as gml_ptr, but replaces the GML-side pointer by a nullptr after passing it to C++
+template <typename T> using gml_ptr_destroy = T*;
 
 class gml_buffer {
 private:

@@ -1,3 +1,7 @@
+#define itr_test_init
+global.__iq_use_structs = false;
+global.__ptrt_iq_thing = ["iq_thing"];
+
 #define itr_test_prepare_buffer
 /// (size:int)->buffer~
 var _size = argument0;
@@ -35,10 +39,11 @@ var _buf = argument0, _str = argument1, _len = argument2;
 var _tmp = global.__itr_test_string_buffer;
 if (_tmp == undefined) {
     _tmp = buffer_create(_len + 1, buffer_grow, 1);
+    global.__itr_test_string_buffer = _tmp;
 }
 buffer_seek(_tmp, buffer_seek_start, 0);
 buffer_write(_tmp, buffer_text, _str);
 var _pos = buffer_tell(_tmp);
 if (_pos < _len) buffer_fill(_tmp, _pos, buffer_u8, 0, _len - _pos);
 buffer_copy(_tmp, 0, _len, _buf, buffer_tell(_buf));
-buffer_seek(_buf, buffer_seek_start, _len);
+buffer_seek(_buf, buffer_seek_relative, _len);

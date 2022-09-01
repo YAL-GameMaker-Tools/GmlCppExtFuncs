@@ -8,7 +8,8 @@ using StringTools;
  * @author YellowAfterlife
  */
 class CppType {
-	public static var useMap:Map<String, Bool> = new Map();
+	/** 0: forward declare, 1: value declare */
+	public static var useMap:Map<String, Int> = new Map();
 	public static var typedefs:Map<String, CppType> = new Map();
 	public static var docNames:Map<String, String> = new Map();
 	
@@ -23,7 +24,17 @@ class CppType {
 	public function new(name:String) {
 		this.name = name;
 		docKey = name;
-		useMap[name] = true;
+	}
+	public function markUsed(level:Int) {
+		if (level > 0) {
+			useMap[name] = 1;
+			for (t in params) t.markUsed(level);
+		} else {
+			if (!useMap.exists(name)) useMap[name] = 0;
+			for (t in params) {
+				if (!useMap.exists(t.name)) useMap[t.name] = 0;
+			}
+		}
 	}
 	public function copy():CppType {
 		var t = new CppType(name);
@@ -66,7 +77,7 @@ class CppType {
 	
 	//}
 	
-	public static function read(q:tools.CppReader, ?name:String):CppType {
+	public static function read(q:tools.CppReader, ?name:String, markUsed:Bool = true):CppType {
 		var typePrefix = name;
 		var typeStart = q.pos;
 		q.skipSpaces();
@@ -110,7 +121,7 @@ class CppType {
 			prepare();
 			q.skip();
 			while (q.loop) {
-				cppType.params.push(read(q));
+				cppType.params.push(read(q, null, false));
 				q.skipSpaces();
 				switch (q.read()) {
 					case ",".code:
@@ -132,6 +143,18 @@ class CppType {
 		var fullType = q.substring(typeStart, q.pos);
 		if (typePrefix != null) fullType = typePrefix + fullType;
 		cppType.__toCppType_cache = fullType.trim();
+		//
+		if (markUsed) {
+			var useLevel = 1;
+			if (cppType.ptrCount > 0) {
+				useLevel = 0;
+			} else switch (cppType.name) {
+				case "gml_ptr", "gml_ptr_destroy": useLevel = 0;
+				default:
+			}
+			cppType.markUsed(useLevel);
+		}
+		//
 		return cppType;
 	}
 	

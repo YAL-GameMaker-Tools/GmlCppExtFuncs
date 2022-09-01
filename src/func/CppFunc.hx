@@ -272,8 +272,10 @@ class CppFunc {
 				if (pre) gml.addLine();
 				var rx = retTypeProc.gmlRead(gml, retType, 0);
 				if (gmlCleanup.length > 0) {
-					gml.addFormat("var _result = %s;%b%|return _result;", rx, gmlCleanup);
-				} else gml.addFormat("return %s;", rx);
+					gml.addFormat("%|var _result = %s;", rx);
+					gml.addBuffer(gmlCleanup);
+					gml.addFormat("%|return _result;");
+				} else gml.addFormat("%|return %s;", rx);
 			}, function() {
 				return retTypeProc.usesStructs(retType);
 			});
@@ -294,8 +296,8 @@ class CppFunc {
 				gml.addFormat("%|var _result = %b;%b%|return _result;", gmlCall, gmlCleanup);
 			} else gml.addFormat("%|return %b;", gmlCall);
 		} else {
-			gml.addFormat("%|if (%b) {%+", gmlCall);
-			if (hasBufArgs) gml.addFormat("buffer_seek(_buf, buffer_seek_start, 0);%|");
+			gml.addFormat("%|if (%b) %{", gmlCall);
+			if (hasBufArgs) gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(false);
 			gml.addFormat("%-} else return undefined;");
 		}

@@ -1,3 +1,7 @@
+#define itr_test_init
+global.__iq_use_structs = false;
+global.__ptrt_iq_thing = ["iq_thing"];
+
 #define itr_test_prepare_buffer
 /// (size:int)->buffer~
 var _size = argument0;

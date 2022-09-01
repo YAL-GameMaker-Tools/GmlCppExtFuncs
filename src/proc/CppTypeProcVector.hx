@@ -2,7 +2,7 @@ package proc;
 import tools.CppBuf;
 
 /**
- * ...
+ * Converts between a C++/GML dynamic-length arrays
  * @author YellowAfterlife
  */
 class CppTypeProcVector extends CppTypeProc {
@@ -12,11 +12,11 @@ class CppTypeProcVector extends CppTypeProc {
 		var _len = '_len_$z';
 		gml.addFormat("var %s = buffer_read(_buf, buffer_u32);", _len);
 		gml.addFormat("%|var %s = array_create(%s);", _arr, _len);
-		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) {%+", _ind, _ind, _len, _ind);
+		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) %{", _ind, _ind, _len, _ind);
 		var vect = type.params[0];
 		var val = vect.proc.gmlRead(gml, vect, z +1);
-		gml.addFormat("%s[%s] = %s;", _arr, _ind, val);
-		gml.addFormat("%-}%|");
+		gml.addFormat("%|%s[%s] = %s;", _arr, _ind, val);
+		gml.addFormat("%-}");
 		return _arr;
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {

@@ -11,12 +11,12 @@ class CppTypeProcOptional extends CppTypeProc {
 	}
 	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
 		var v = '_val_$z';
-		gml.addFormat("var %s;%|", v);
-		gml.addFormat("if (buffer_read(_buf, buffer_bool)) {%+");
+		gml.addFormat("%|var %s;", v);
+		gml.addFormat("%|if (buffer_read(_buf, buffer_bool)) {%+");
 		var t = unpack(type);
 		var val = t.proc.gmlRead(gml, t, z + 1);
 		gml.addFormat("%s = %s;", v, val);
-		gml.addFormat("%-} else %s = undefined;%|", v);
+		gml.addFormat("%-} else %s = undefined;", v);
 		return v;
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {

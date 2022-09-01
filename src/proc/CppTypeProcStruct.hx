@@ -32,18 +32,18 @@ class CppTypeProcStruct extends CppTypeProc {
 			var _arr = '_arr_$z';
 			var _ind = '_ind_$z';
 			var _len = size[size_ind];
-			gml.addFormat("var %s = array_create(%d);", _arr, _len);
+			gml.addFormat("%|var %s = array_create(%d);", _arr, _len);
 			gml.addFormat("%|for (var %s = 0; %s < %d; %s++) {%+", _ind, _ind, _len, _ind);
 			var val = proc(gml, type, tp, z + 1, size, size_ind + 1);
 			gml.addFormat("%s[%s] = %s;", _arr, _ind, val);
-			gml.addFormat("%-}%|");
+			gml.addFormat("%-}");
 			return _arr;
 		}
-		gml.addFormat("var _struct_%d = ", z);
+		gml.addFormat("%|var _struct_%d = ", z);
 		if (useStructs) {
-			gml.addFormat("{}; // %s%|", struct.name);
+			gml.addFormat("{}; // %s", struct.name);
 		} else {
-			gml.addFormat("array_create(%d); // %s%|", struct.fields.length, struct.name);
+			gml.addFormat("array_create(%d); // %s", struct.fields.length, struct.name);
 		}
 		var pos = 0;
 		for (i => fd in struct.fields) {
@@ -58,9 +58,9 @@ class CppTypeProcStruct extends CppTypeProc {
 			
 			var val = proc(gml, fd.type, tp, z + 1, fd.size, 0);
 			if (useStructs) {
-				gml.addFormat("_struct_%d.%s = %s;%|", z, fd.name, val);
+				gml.addFormat("%|_struct_%d.%s = %s;", z, fd.name, val);
 			} else {
-				gml.addFormat("_struct_%d[%d] = %s; // %s%|", z, i, val, fd.name);
+				gml.addFormat("%|_struct_%d[%d] = %s; // %s", z, i, val, fd.name);
 			}
 			
 			var fdSize = fd.type.getSize();
@@ -71,7 +71,7 @@ class CppTypeProcStruct extends CppTypeProc {
 		var align = getAlignment(type);
 		var pad = calcPadding(pos, align);
 		if (pad > 0) {
-			gml.addFormat("buffer_seek(_buf, buffer_seek_relative, %d); // pad of %d to %d%|", pad, align, pos+pad);
+			gml.addFormat("%|buffer_seek(_buf, buffer_seek_relative, %d); // pad of %d to %d", pad, align, pos+pad);
 			pos += pad;
 		}
 		

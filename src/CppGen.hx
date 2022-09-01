@@ -101,16 +101,19 @@ class CppGen {
 			cpp.addFormat('#include "%s"%|', inc);
 		}
 		
-		if (struct.CppStruct.list.length > 0) {
+		if (CppStruct.list.length > 0) {
 			var prefix = false;
-			for (struct in struct.CppStruct.list) {
-				if (!CppType.useMap.exists(struct.name)) continue;
+			for (struct in CppStruct.list) {
+				var byval = CppType.useMap[struct.name];
+				if (byval == null) continue;
 				if (!prefix) {
 					prefix = true;
 					cpp.addFormat("// Struct forward declarations:%|");
 				}
 				cpp.addFormat("// from %s:%|", struct.origin);
-				cpp.addFormat("%s;%|", struct.impl);
+				if (byval > 0) {
+					cpp.addFormat("%s;%|", struct.impl);
+				} else cpp.addFormat("struct %s;%|", struct.name);
 			}
 		}
 		
