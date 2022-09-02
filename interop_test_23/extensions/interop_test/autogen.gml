@@ -143,13 +143,21 @@ if (iq_thing_create_raw(buffer_get_address(_buf), 8)) {
 	buffer_seek(_buf, buffer_seek_start, 0);
 	// GMS >= 2.3:
 	if (iq_use_structs) {
-		var _box_0 = new iq_thing(ptr(buffer_read(_buf, buffer_u64)));
+		var _ptr_0 = buffer_read(_buf, buffer_u64);
+		var _box_0;
+		if (_ptr_0 != 0) {
+			_box_0 = new iq_thing(ptr(_ptr_0));
+		} else _box_0 = undefined;
 		return _box_0;
 	} else //*/
 	{
-		var _box_0 = array_create(2);
-		_box_0[0] = global.__ptrt_iq_thing;
-		_box_0[1] = ptr(buffer_read(_buf, buffer_u64));
+		var _ptr_0 = buffer_read(_buf, buffer_u64);
+		var _box_0;
+		if (_ptr_0 != 0) {
+			_box_0 = array_create(2);
+			_box_0[0] = global.__ptrt_iq_thing;
+			_box_0[1] = ptr(_ptr_0);
+		} else _box_0 = undefined;
 		return _box_0;
 	}
 } else return undefined;

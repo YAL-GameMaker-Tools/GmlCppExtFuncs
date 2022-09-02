@@ -46,16 +46,21 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		gml.addFormat("%|buffer_write(_buf, buffer_u64, int64(%s));", _ptr);
 	}
 	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
+		var _ptr = '_ptr_$z';
 		var _box = '_box_$z';
 		var _typename = type.params[0].name;
-		gml.addFormat("%|var %s = ", _box);
-		if (CppGen.config.useStructs) {
-			gml.addFormat("new %s(ptr(buffer_read(_buf, buffer_u64)));", _typename);
-		} else {
-			gml.addFormat("array_create(2);");
-			gml.addFormat("%|%s[0] = global.__ptrt_%s;", _box, _typename);
-			gml.addFormat("%|%s[1] = ptr(buffer_read(_buf, buffer_u64));", _box);
-		}
+		gml.addFormat("%|var %s = buffer_read(_buf, buffer_u64);", _ptr);
+		gml.addFormat("%|var %s;", _box);
+		gml.addFormat("%|if (%s != 0) %{", _ptr);
+			gml.addFormat("%|%s = ", _box);
+			if (CppGen.config.useStructs) {
+				gml.addFormat("new %s(ptr(%s));", _typename, _ptr);
+			} else {
+				gml.addFormat("array_create(2);");
+				gml.addFormat("%|%s[0] = global.__ptrt_%s;", _box, _typename);
+				gml.addFormat("%|%s[1] = ptr(%s);", _box, _ptr);
+			}
+		gml.addFormat("%-} else %s = undefined;", _box);
 		return _box;
 	}
 	override public function usesStructs(type:CppType):Bool {
