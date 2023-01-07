@@ -22,6 +22,7 @@ class CppGen {
 	
 	public static function procFile(path:String, cpp:String, indexStructs:Bool) {
 		var kwMacro = config.functionTag;
+		var kwMacroLQ = kwMacro.toLowerCase();
 		var kwMacroLen = kwMacro.length;
 		cpp = StringTools.replace(cpp, "\r", "");
 		var q = new CppReader(cpp, Path.withoutDirectory(path));
@@ -36,13 +37,13 @@ class CppGen {
 							q.skip(2);
 							q.skipLineSpaces();
 							if (q.peek() == "@".code
-								&& q.peeknAt(1, kwMacroLen) == kwMacro
+								&& q.peeknAt(1, kwMacroLen).toLowerCase() == kwMacroLQ
 								&& q.peekAt(kwMacroLen + 1) == ":".code
 							) {
 								q.skip(2 + kwMacroLen);
 								var meta = q.readIdent();
-								switch (meta) {
-									case "docName":
+								switch (meta.toLowerCase()) {
+									case "docname":
 										q.skipLineSpaces();
 										var cppName = q.readLineNonSpace();
 										q.skipLineSpaces();
@@ -51,6 +52,9 @@ class CppGen {
 									case "cond":
 										q.skipLineSpaces();
 										fnCond = q.readLine().trim();
+									default:
+										Sys.println("Unknown documentation tag "
+											+ q.peeknAt(1, kwMacroLen) + ":" + meta);
 								}
 							} else q.skipUntil("\n".code);
 						case "*".code: q.skipUntilStr("*/");
