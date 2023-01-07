@@ -1,11 +1,11 @@
 #include "gml_ext.h"
 // Struct forward declarations:
-// from interop_test.cpp:22:
+// from interop_test.cpp:28:
 struct _iq_get_struct_vec {
 	int ind;
 	char name[4];
 };
-// from interop_test.cpp:72:
+// from interop_test.cpp:78:
 struct iq_thing;
 extern int iq_get_int();
 dllx double iq_get_int_raw(void* _in_ptr, double _in_ptr_size) {
@@ -38,6 +38,29 @@ dllx double iq_get_vec_raw(void* _in_ptr, double _in_ptr_size) {
 dllx double iq_get_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
 	_out.write_vector<int64_t>(iq_get_vec_raw_vec);
+	return 1;
+}
+
+extern std::optional<vector<int64_t>> iq_get_opt_vec(bool ret);
+static std::optional<vector<int64_t>> iq_get_opt_vec_raw_vec;
+dllx double iq_get_opt_vec_raw(void* _in_ptr, double _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	bool _arg_ret;
+	_arg_ret = _in.read<bool>();
+	iq_get_opt_vec_raw_vec = iq_get_opt_vec(_arg_ret);
+	return (double)(iq_get_opt_vec_raw_vec.has_value() ? 1 + (4 + iq_get_opt_vec_raw_vec.value().size() * sizeof(int64_t)) : 1);
+}
+dllx double iq_get_opt_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
+	gml_ostream _out(_out_ptr);
+	{
+		auto& _opt = iq_get_opt_vec_raw_vec;
+		if (_opt.has_value()) {
+			_out.write<bool>(true);
+			_out.write_vector<int64_t>(_opt.value());
+			
+		} else _out.write<bool>(false);
+		
+	}
 	return 1;
 }
 
@@ -151,5 +174,33 @@ dllx double iq_thing_set_count_raw(void* _in_ptr, double _in_ptr_size) {
 	_arg_count = _in.read<int>();
 	iq_thing_set_count(_arg_thing, _arg_count);
 	return 1;
+}
+
+extern int iq_def_ret_int();
+dllx double iq_def_ret_int_raw(void* _inout_ptr, double _inout_ptr_size) {
+	gml_istream _in(_inout_ptr);
+	int _ret = iq_def_ret_int();
+	gml_ostream _out(_inout_ptr);
+	_out.write<int>(_ret);
+	return 1;
+}
+
+extern const char* iq_def_ret_string();
+static const char* iq_def_ret_string_raw_vec;
+dllx double iq_def_ret_string_raw(void* _in_ptr, double _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	iq_def_ret_string_raw_vec = iq_def_ret_string();
+	return (double)(1 + strlen(iq_def_ret_string_raw_vec));
+}
+dllx double iq_def_ret_string_raw_post(void* _out_ptr, double _out_ptr_size) {
+	gml_ostream _out(_out_ptr);
+	_out.write<const char*>(iq_def_ret_string_raw_vec);
+	return 1;
+}
+
+extern int iq_add_strlens(const char* a, const char* b, const char* c, const char* d);
+dllx double iq_add_strlens_raw(void* _in_ptr, double _in_ptr_size, const char* _arg_a, const char* _arg_b, const char* _arg_c, const char* _arg_d) {
+	gml_istream _in(_in_ptr);
+	return iq_add_strlens(_arg_a, _arg_b, _arg_c, _arg_d);
 }
 

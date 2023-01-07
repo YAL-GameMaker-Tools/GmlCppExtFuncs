@@ -19,6 +19,12 @@ dllg vector<int64_t> iq_get_vec() {
 	for (int i = 1; i <= 3; i++) vec.push_back(i);
 	return vec;
 }
+dllg std::optional<vector<int64_t>> iq_get_opt_vec(bool ret) {
+	vector<int64_t> vec;
+	for (int i = 1; i <= 3; i++) vec.push_back(i);
+	if (!ret) return {};
+	return vec;
+}
 struct _iq_get_struct_vec {
 	int ind;
 	char name[4];
@@ -86,3 +92,17 @@ dllg int iq_thing_get_count(gml_ptr<iq_thing> thing) {
 dllg void iq_thing_set_count(gml_ptr<iq_thing> thing, int count) {
 	thing->count = count;
 }
+
+// @dllg:defValue -3
+dllg int iq_def_ret_int() {
+	return 3;
+}
+
+// @dllg:defValue "DLL is not loaded"
+dllg const char* iq_def_ret_string() {
+	return "OK!";
+}
+
+/*dllg int iq_add_strlens(const char* a, const char* b, const char* c, const char* d) {
+	return strlen(a) + strlen(b) + strlen(c) + strlen(d);
+}*/
