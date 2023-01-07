@@ -151,14 +151,14 @@ public:
 	template<class T> void write_vector(std::vector<T>& vec) {
 		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be write");
 		auto n = vec.size();
-		write<uint32_t>(n);
+		write<uint32_t>((uint32_t)n);
 		memcpy(pos, vec.data(), n * sizeof(T));
 		pos += n * sizeof(T);
 	}
 
 	void write_string_vector(std::vector<const char*> vec) {
 		auto n = vec.size();
-		write<uint32_t>(n);
+		write<uint32_t>((uint32_t)n);
 		for (auto i = 0u; i < n; i++) {
 			write_string(vec[i]);
 		}
