@@ -44,7 +44,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_int_raw",
                     "help": "",
@@ -60,7 +60,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_int64_raw",
                     "help": "",
@@ -76,7 +76,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_string_raw",
                     "help": "",
@@ -92,7 +92,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_vec_raw",
                     "help": "",
@@ -124,7 +124,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_opt_vec_raw",
                     "help": "",
@@ -156,7 +156,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_struct_vec_raw",
                     "help": "",
@@ -188,7 +188,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_two_int64s_raw",
                     "help": "",
@@ -204,7 +204,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_add_int64_raw",
                     "help": "",
@@ -220,7 +220,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_add_two_int64s_raw",
                     "help": "",
@@ -236,7 +236,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_int64_vec_sum_raw",
                     "help": "",
@@ -252,7 +252,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_length_of_strings_raw",
                     "help": "",
@@ -268,7 +268,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_get_buffer_sum_raw",
                     "help": "",
@@ -284,7 +284,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_create_raw",
                     "help": "",
@@ -300,7 +300,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_destroy_raw",
                     "help": "",
@@ -316,7 +316,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_get_count_raw",
                     "help": "",
@@ -332,7 +332,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_set_count_raw",
                     "help": "",
@@ -348,7 +348,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_def_ret_int_raw",
                     "help": "",
@@ -364,7 +364,7 @@
                     "argCount": 2,
                     "args": [
                         1,
-                        2
+                        1
                     ],
                     "externalName": "iq_def_ret_string_raw",
                     "help": "",
@@ -396,7 +396,7 @@
                     "argCount": 6,
                     "args": [
                         1,
-                        2,
+                        1,
                         1,
                         1,
                         1,

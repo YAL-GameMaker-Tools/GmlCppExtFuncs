@@ -103,6 +103,6 @@ dllg const char* iq_def_ret_string() {
 	return "OK!";
 }
 
-/*dllg int iq_add_strlens(const char* a, const char* b, const char* c, const char* d) {
+dllg int iq_add_strlens(const char* a, const char* b, const char* c, const char* d) {
 	return strlen(a) + strlen(b) + strlen(c) + strlen(d);
-}*/
+}
