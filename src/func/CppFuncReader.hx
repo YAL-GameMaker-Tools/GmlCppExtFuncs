@@ -7,7 +7,7 @@ using StringTools;
  * @author YellowAfterlife
  */
 class CppFuncReader {
-	public static function read(q:tools.CppReader) {
+	public static function read(q:tools.CppReader):CppFunc {
 		var fnStart = q.pos;
 		//
 		var retType = CppType.read(q);

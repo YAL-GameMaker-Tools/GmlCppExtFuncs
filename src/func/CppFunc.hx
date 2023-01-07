@@ -118,7 +118,7 @@ class CppFunc {
 		
 		// print extern function signature:
 		var bufSize = 0;
-		if (generateFuncExtern)cpp.addFormat("extern %s %s(", retCppType, name);
+		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
 		for (i => arg in args) {
 			if (generateFuncExtern) {
 				if (i > 0) cpp.addString(", ");
@@ -136,18 +136,20 @@ class CppFunc {
 		if (bufSize == 0) bufSize = 1;
 		
 		//
-		var vecType = (retTypeOpt != null ? retTypeOpt : retType).unpackVector();
-		var cppVecType = "", cppVecStore = "", cppVecPost = "";
-		if (vecType != null) {
-			cppVecStore = config.cppVector.replace("$", name);
-			cppVecPost = config.cppPost.replace("$", name);
-			cppVecType = vecType.toCppType();
-			cpp.addFormat("static vector<%s> %s;%|", cppVecType, cppVecStore);
+		var dynSizeStore = config.cppVector.replace("$", name);
+		var dynSizeSnip:String = null;
+		var dynSizePost = "";
+		if (retTypeProc != null && retGcType == null) {
+			dynSizeSnip = retTypeProc.getDynSize(retType, dynSizeStore);
+			if (dynSizeSnip != null) {
+				dynSizePost = config.cppPost.replace("$", name);
+				cpp.addFormat("static %s %s;%|", retCppType, dynSizeStore);
+			}
 		}
 		
 		//
 		var argPtr = "_in_ptr";
-		if (vecType == null && hasReturn && retGcType == null) {
+		if (dynSizeSnip == null && hasReturn && retGcType == null) {
 			argPtr = "_inout_ptr";
 		}
 		//
@@ -243,23 +245,13 @@ class CppFunc {
 		cppCall.addFormat(")");
 		
 		//
-		if (vecType != null) {
-			if (retTypeOpt != null) {
-				cpp.addFormat("%|auto _ret = %b;", cppCall);
-				cpp.addFormat("%|if (!_ret.has_value()) return 0;");
-				cpp.addFormat("%|%s = _ret.value();", cppVecStore);
-			} else {
-				cpp.addFormat("%|%s = %b;", cppVecStore, cppCall);
-			}
-			cpp.addFormat("%|return (double)(4 + %s.size() * sizeof(%s));", cppVecStore, cppVecType);
+		if (dynSizeSnip != null) {
+			cpp.addFormat("%|%s = %b;", dynSizeStore, cppCall);
+			cpp.addFormat("%|return (double)(%s);", dynSizeSnip);
 			cpp.addFormat("%-}%|");
-			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, cppVecPost);
+			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, dynSizePost);
 			cpp.addFormat("gml_ostream _out(_out_ptr);");
-			if (retTypeOpt != null) {
-				retTypeOpt.proc.cppWrite(cpp, retTypeOpt, cppVecStore);
-			} else {
-				retTypeProc.cppWrite(cpp, retType, cppVecStore);
-			}
+			retTypeProc.cppWrite(cpp, retType, dynSizeStore);
 			cpp.addFormat("%|return 1;");
 		} else if (!hasReturn) {
 			cpp.addFormat("%|%b;", cppCall);
@@ -288,11 +280,11 @@ class CppFunc {
 		}
 		//
 		var _defValue = defValue != null ? defValue : "undefined";
+		if (dynSizeSnip != null) {
 			gml.addFormat("%|var __size__ = %b;", gmlCall);
 			gml.addFormat("%|if (__size__ == 0) return %s;", _defValue);
-			gml.addFormat("%|if (__size__ <= 4) return [];");
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
-			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", cppVecPost);
+			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", dynSizePost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(true);
 		} else if (!hasReturn) {

@@ -50,4 +50,8 @@ class CppTypeProcVector extends CppTypeProc {
 		var t = type.params[0];
 		return t.proc.usesStructs(t);
 	}
+	override public function getDynSize(type:CppType, val:String):String {
+		var param = type.unpackVector().toCppType();
+		return '4 + $val.size() * sizeof($param)';
+	}
 }
