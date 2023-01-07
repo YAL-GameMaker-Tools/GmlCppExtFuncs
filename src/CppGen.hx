@@ -27,6 +27,7 @@ class CppGen {
 		cpp = StringTools.replace(cpp, "\r", "");
 		var q = new CppReader(cpp, Path.withoutDirectory(path));
 		var fnCond = "";
+		var defValue = null;
 		while (q.loop) {
 			var c = q.read();
 			switch (c) {
@@ -52,6 +53,9 @@ class CppGen {
 									case "cond":
 										q.skipLineSpaces();
 										fnCond = q.readLine().trim();
+									case "defvalue":
+										q.skipLineSpaces();
+										defValue = q.readLine().trim();
 									default:
 										Sys.println("Unknown documentation tag "
 											+ q.peeknAt(1, kwMacroLen) + ":" + meta);
@@ -88,7 +92,13 @@ class CppGen {
 						struct.CppStruct.read(q);
 					} else if (w == kwMacro) {
 						var fn = func.CppFuncReader.read(q);
-						if (fn != null) fn.condition = fnCond;
+						if (fn != null) {
+							fn.condition = fnCond;
+							if (defValue != null) {
+								fn.defValue = defValue;
+								defValue = null;
+							}
+						}
 					}
 				}
 			}

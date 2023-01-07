@@ -13,8 +13,14 @@ class CppFunc {
 	public var name:String;
 	public var cppFuncName:String;
 	public var generateFuncExtern:Bool = true;
-	public var args:Array<func.CppFuncArg> = [];
+	public var args:Array<CppFuncArg> = [];
 	public var retType:CppType;
+	/**
+	 * GML code for default return value if the native extension failed to load.
+	 * This forces functions with GML-friendly return types to internally return OK/fail
+	 * since functions from unloaded binaries simply return 0 or "".
+	 */
+	public var defValue:String = null;
 	public var metaComment:String = null;
 	public var condition:String = "";
 	
@@ -91,7 +97,7 @@ class CppFunc {
 		gml.addFormat("#define %s", name);
 		
 		var retType = this.retType;
-		var retGcType = retType.toGmlCppType();
+		var retGcType = defValue != null ? null : retType.toGmlCppType();
 		var retCppType = retType.toCppType();
 		var hasReturn = retCppType != "void";
 		var retTypeProc = hasReturn ? retType.proc : null;
@@ -280,9 +286,10 @@ class CppFunc {
 				return retTypeProc.usesStructs(retType);
 			});
 		}
-		if (vecType != null) {
+		//
+		var _defValue = defValue != null ? defValue : "undefined";
 			gml.addFormat("%|var __size__ = %b;", gmlCall);
-			gml.addFormat("%|if (__size__ == 0) return undefined;");
+			gml.addFormat("%|if (__size__ == 0) return %s;", _defValue);
 			gml.addFormat("%|if (__size__ <= 4) return [];");
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
 			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", cppVecPost);
@@ -299,7 +306,7 @@ class CppFunc {
 			gml.addFormat("%|if (%b) %{", gmlCall);
 			if (hasBufArgs) gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(false);
-			gml.addFormat("%-} else return undefined;");
+			gml.addFormat("%-} else return %s;", _defValue);
 		}
 		//
 		cpp.addFormat("%-}%|%|");
