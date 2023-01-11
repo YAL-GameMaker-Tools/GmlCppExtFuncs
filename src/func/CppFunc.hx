@@ -105,11 +105,18 @@ class CppFunc {
 		
 		var config = CppGen.config;
 		var argGcTypes = [];
+		var ptrArgCount = 2;
 		var hasOptArgs = false;
 		for (arg in args) {
 			CppFuncArg.current = arg;
 			if (arg.value != null) hasOptArgs = true;
-			argGcTypes.push(arg.type.toGmlCppType());
+			var argGcType = arg.type.toGmlCppType();
+			if (!gcTypeUsesBuffer(argGcType)) {
+				if (ptrArgCount >= 4) {
+					argGcType = null;
+				} else ptrArgCount += 1;
+			}
+			argGcTypes.push(argGcType);
 		}
 		var gmlCleanup = new CppBuf();
 		
