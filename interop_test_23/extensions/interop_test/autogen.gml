@@ -1,3 +1,8 @@
+#define iq_never
+/// iq_never()
+var _buf = itr_test_prepare_buffer(1);
+iq_never_raw(buffer_get_address(_buf), ptr(1));
+
 #define iq_get_int
 /// iq_get_int()->int
 var _buf = itr_test_prepare_buffer(1);

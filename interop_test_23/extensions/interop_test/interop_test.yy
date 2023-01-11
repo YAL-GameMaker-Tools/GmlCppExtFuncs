@@ -20,6 +20,10 @@
   "installdir": "",
   "files": [
     {"filename":"interop_test.dll","origname":"extensions\\interop_test.dll","init":"","final":"","kind":1,"uncompress":false,"functions":[
+        {"externalName":"iq_never_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
+            1,
+            1,
+          ],"resourceVersion":"1.0","name":"iq_never_raw","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_int_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
             1,
             1,
@@ -121,6 +125,7 @@
       ],"ProxyFiles":[
         {"name":"interop_test_x64.dll","resourceVersion":"1.0","resourceType":"GMProxyFile","TargetMask":6,},
       ],"copyToTargets":9223372036854775807,"order":[
+        {"name":"iq_never_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int64_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_string_raw","path":"extensions/interop_test/interop_test.yy",},
@@ -168,6 +173,7 @@
         {"name":"itr_test_write_chars","path":"extensions/interop_test/interop_test.yy",},
       ],"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMExtensionFile",},
     {"filename":"autogen.gml","origname":"","init":"","final":"","kind":2,"uncompress":false,"functions":[
+        {"externalName":"iq_never","kind":2,"help":"iq_never()","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_never","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_int","kind":2,"help":"iq_get_int()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_int","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_int64","kind":2,"help":"iq_get_int64()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_int64","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_get_string","kind":2,"help":"iq_get_string()->string","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_get_string","tags":[],"resourceType":"GMExtensionFunction",},
@@ -217,6 +223,7 @@
       ],"constants":[
         
       ],"ProxyFiles":[],"copyToTargets":-1,"order":[
+        {"name":"iq_never","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_int64","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_get_string","path":"extensions/interop_test/interop_test.yy",},

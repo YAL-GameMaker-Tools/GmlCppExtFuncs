@@ -5,6 +5,10 @@
 
 #define trace(...) { printf("[interop_test:%d] ", __LINE__); printf(__VA_ARGS__); printf("\n"); fflush(stdout); }
 
+// @dllg:cond 0
+dllg void iq_never() {}
+// @dllg:cond
+
 dllg int iq_get_int() {
 	return 1;
 }

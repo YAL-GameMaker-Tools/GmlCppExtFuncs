@@ -1,12 +1,23 @@
 #include "gml_ext.h"
 // Struct forward declarations:
-// from interop_test.cpp:28:
+// from interop_test.cpp:32:
 struct _iq_get_struct_vec {
 	int ind;
 	char name[4];
 };
-// from interop_test.cpp:78:
+// from interop_test.cpp:82:
 struct iq_thing;
+#if 0
+
+extern void iq_never();
+dllx double iq_never_raw(void* _in_ptr, void* _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	iq_never();
+	return 1;
+}
+
+#endif // 0
+
 extern int iq_get_int();
 dllx double iq_get_int_raw(void* _in_ptr, void* _in_ptr_size) {
 	gml_istream _in(_in_ptr);

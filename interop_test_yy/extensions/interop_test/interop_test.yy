@@ -38,6 +38,22 @@
             "final": "",
             "functions": [
                 {
+                    "id": "d2c2df99-e6e8-3dd0-bd97-70c4f78e558f",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        1
+                    ],
+                    "externalName": "iq_never_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_never_raw",
+                    "returnType": 2
+                },
+                {
                     "id": "69796422-a2ac-796b-9fb5-ad19299fdd04",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -518,6 +534,21 @@
             "filename": "autogen.gml",
             "final": "",
             "functions": [
+                {
+                    "id": "73f89b42-3865-8fc6-3d23-f122bfc3a04a",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 0,
+                    "args": [
+                        
+                    ],
+                    "externalName": "iq_never",
+                    "help": "iq_never()",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_never",
+                    "returnType": 2
+                },
                 {
                     "id": "0ceaf341-f9f7-697a-4b7b-f2bd51e4eaeb",
                     "modelName": "GMExtensionFunction",
