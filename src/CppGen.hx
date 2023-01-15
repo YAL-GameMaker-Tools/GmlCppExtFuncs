@@ -67,8 +67,18 @@ class CppGen {
 		for (line in config.append) cpp.addFormat("%|%s", line);
 		
 		#if sys
-		File.saveContent(outGmlPath, gml.toString());
-		File.saveContent(outCppPath, cpp.toString());
+		inline function writeIfNotSame(path:String, text:String) {
+			if (!FileSystem.exists(path)) {
+				File.saveContent(path, text);
+			} else {
+				var curr = try {
+					File.getContent(path);
+				} catch (x:Dynamic) null;
+				if (curr != text) File.saveContent(path, text);
+			}
+		}
+		writeIfNotSame(outGmlPath, gml.toString());
+		writeIfNotSame(outCppPath, cpp.toString());
 		#else
 		trace(gml.toString());
 		trace(cpp.toString());
