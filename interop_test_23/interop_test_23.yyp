@@ -9,10 +9,11 @@
     {"id":{"name":"rm_test","path":"rooms/rm_test/rm_test.yy",},"order":1,},
     {"id":{"name":"interop_test","path":"extensions/interop_test/interop_test.yy",},"order":1,},
     {"id":{"name":"scr_test","path":"scripts/scr_test/scr_test.yy",},"order":2,},
-    {"id":{"name":"assert","path":"scripts/assert/assert.yy",},"order":4,},
+    {"id":{"name":"assert","path":"scripts/assert/assert.yy",},"order":5,},
     {"id":{"name":"sfmt","path":"scripts/sfmt/sfmt.yy",},"order":1,},
-    {"id":{"name":"is_equal","path":"scripts/is_equal/is_equal.yy",},"order":3,},
+    {"id":{"name":"is_equal","path":"scripts/is_equal/is_equal.yy",},"order":4,},
     {"id":{"name":"interop_test_23","path":"scripts/interop_test_23/interop_test_23.yy",},"order":1,},
+    {"id":{"name":"scr_test_m","path":"scripts/scr_test_m/scr_test_m.yy",},"order":3,},
   ],
   "Options": [
     {"name":"Amazon Fire","path":"options/amazonfire/options_amazonfire.yy",},

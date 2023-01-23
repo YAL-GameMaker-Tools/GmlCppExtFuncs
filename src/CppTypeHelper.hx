@@ -63,7 +63,9 @@ class CppTypeHelper {
 		if (tp != null) return tp;
 		tp = map[t.name];
 		if (tp != null) return tp;
-		Sys.println('Couldn\'t find type ${t.toString()}');
+		Sys.println('Couldn\'t find type ${t.toString()}'
+			//+ haxe.CallStack.toString(haxe.CallStack.callStack())
+		);
 		return new CppTypeProcError(t.toString());
 	}
 }

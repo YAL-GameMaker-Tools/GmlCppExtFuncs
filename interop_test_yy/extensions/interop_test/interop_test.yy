@@ -409,10 +409,8 @@
                     "id": "e1f1ecaa-a2ac-79e3-4268-f84c75dbcc1c",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 6,
+                    "argCount": 4,
                     "args": [
-                        1,
-                        1,
                         1,
                         1,
                         1,
@@ -423,6 +421,126 @@
                     "hidden": true,
                     "kind": 11,
                     "name": "iq_add_strlens_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "69796422-808e-5b6b-dbf1-cb7f402422f4",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_get_int_raw",
+                    "help": "im_get_int()",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_get_int",
+                    "returnType": 2
+                },
+                {
+                    "id": "3c2c3177-5d53-863e-4268-da6e5d71bb61",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_get_string_raw",
+                    "help": "im_get_string()",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_get_string",
+                    "returnType": 2
+                },
+                {
+                    "id": "f0e0fdbb-6e60-b5f2-ac86-cb7f4635dd0d",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_get_result_raw",
+                    "help": "im_get_result()",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_get_result",
+                    "returnType": 2
+                },
+                {
+                    "id": "12e98a8e-2a47-703a-fd45-49a621e2b13d",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_add_ints_raw",
+                    "help": "im_add_ints(a, b)",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_add_ints",
+                    "returnType": 2
+                },
+                {
+                    "id": "0f1f0244-b3bd-680d-062c-43f7ccbd00d2",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_add_rest_raw",
+                    "help": "im_add_rest(...values)",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_add_rest",
+                    "returnType": 2
+                },
+                {
+                    "id": "5a4a5711-2a24-f158-604a-e95d6d60ee37",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_ptr_to_int64_raw",
+                    "help": "im_ptr_to_int64(ptr)",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_ptr_to_int64",
+                    "returnType": 2
+                },
+                {
+                    "id": "d2c2df99-5d53-86d0-4268-3480b62400df",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_string_length_raw",
+                    "help": "im_string_length(str)",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_string_length",
+                    "returnType": 2
+                },
+                {
+                    "id": "c9523153-d68b-da93-6def-c21463f093b5",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "im_typeof_raw",
+                    "help": "im_typeof(val)",
+                    "hidden": false,
+                    "kind": 1,
+                    "name": "im_typeof",
                     "returnType": 2
                 }
             ],

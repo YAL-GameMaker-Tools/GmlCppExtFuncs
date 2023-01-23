@@ -23,6 +23,7 @@ class CppFunc {
 	public var defValue:String = null;
 	public var metaComment:String = null;
 	public var condition:String = "";
+	public var isMangled:Bool = false;
 	
 	public function new(name:String) {
 		this.name = name;
@@ -93,7 +94,25 @@ class CppFunc {
 		}
 	}
 	
+	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool):Int {
+		if (retCppType == null) retCppType = retType.toCppType();
+		var bufSize = 0;
+		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
+		for (i => arg in args) {
+			if (generateFuncExtern) {
+				if (i > 0) cpp.addString(", ");
+				CppFuncArg.current = arg;
+				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
+			}
+			if (arg.value != null) bufSize += 1;
+			if (calcBufSize) bufSize += arg.type.getSize();
+		}
+		if (generateFuncExtern) cpp.addFormat(");%|");
+		return bufSize;
+	}
+	
 	public function print(gml:CppBuf, cpp:CppBuf) {
+		if (isMangled) { CppFuncMangled.print(this, cpp); return; }
 		gml.addFormat("#define %s", name);
 		
 		var retType = this.retType;
@@ -124,18 +143,7 @@ class CppFunc {
 		printGmlDoc(gml, hasReturn, retTypeProc);
 		
 		// print extern function signature:
-		var bufSize = 0;
-		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
-		for (i => arg in args) {
-			if (generateFuncExtern) {
-				if (i > 0) cpp.addString(", ");
-				CppFuncArg.current = arg;
-				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
-			}
-			if (arg.value != null) bufSize += 1;
-			bufSize += arg.type.getSize();
-		}
-		if (generateFuncExtern) cpp.addFormat(");%|");
+		var bufSize = printExtern(cpp, retCppType, true);
 		if (retGcType == null) {
 			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;

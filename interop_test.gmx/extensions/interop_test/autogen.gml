@@ -262,5 +262,7 @@ return buffer_read(_buf, buffer_string);
 #define iq_add_strlens
 /// iq_add_strlens(a:string, b:string, c:string, d:string)->int
 var _buf = itr_test_prepare_buffer(32);
-return iq_add_strlens_raw(buffer_get_address(_buf), ptr(32), argument0, argument1, argument2, argument3);
+buffer_write(_buf, buffer_string, argument2);
+buffer_write(_buf, buffer_string, argument3);
+return iq_add_strlens_raw(buffer_get_address(_buf), ptr(32), argument0, argument1);
 

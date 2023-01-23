@@ -42,5 +42,5 @@ function scr_test(_use_structs) {
     assert(iq_thing_get_count(th), 5);
     iq_thing_destroy(th);
     
-    trace(sfmt("OK! (use_structs=%)",_use_structs));
+    trace(sfmt("Test OK! (use_structs=%)",_use_structs));
 }

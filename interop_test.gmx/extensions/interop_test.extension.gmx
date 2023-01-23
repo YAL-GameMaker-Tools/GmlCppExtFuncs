@@ -327,15 +327,85 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>6</argCount>
+          <argCount>4</argCount>
           <args>
             <arg>1</arg>
             <arg>1</arg>
             <arg>1</arg>
             <arg>1</arg>
-            <arg>1</arg>
-            <arg>1</arg>
           </args>
+        </function>
+        <function>
+          <name>im_get_int</name>
+          <externalName>im_get_int_raw</externalName>
+          <kind>1</kind>
+          <help>im_get_int()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_get_string</name>
+          <externalName>im_get_string_raw</externalName>
+          <kind>1</kind>
+          <help>im_get_string()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_get_result</name>
+          <externalName>im_get_result_raw</externalName>
+          <kind>1</kind>
+          <help>im_get_result()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_add_ints</name>
+          <externalName>im_add_ints_raw</externalName>
+          <kind>1</kind>
+          <help>im_add_ints(a, b)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_add_rest</name>
+          <externalName>im_add_rest_raw</externalName>
+          <kind>1</kind>
+          <help>im_add_rest(...values)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_ptr_to_int64</name>
+          <externalName>im_ptr_to_int64_raw</externalName>
+          <kind>1</kind>
+          <help>im_ptr_to_int64(ptr)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_string_length</name>
+          <externalName>im_string_length_raw</externalName>
+          <kind>1</kind>
+          <help>im_string_length(str)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_typeof</name>
+          <externalName>im_typeof_raw</externalName>
+          <kind>1</kind>
+          <help>im_typeof(val)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
         </function>
       </functions>
       <constants/>

@@ -1,4 +1,5 @@
 #include "gml_ext.h"
+#include "gml_extm.h"
 // Struct forward declarations:
 // from interop_test.cpp:32:
 struct _iq_get_struct_vec {
@@ -210,8 +211,97 @@ dllx double iq_def_ret_string_raw_post(void* _out_ptr, double _out_ptr_size) {
 }
 
 extern int iq_add_strlens(const char* a, const char* b, const char* c, const char* d);
-dllx double iq_add_strlens_raw(void* _in_ptr, void* _in_ptr_size, const char* _arg_a, const char* _arg_b, const char* _arg_c, const char* _arg_d) {
+dllx double iq_add_strlens_raw(void* _in_ptr, void* _in_ptr_size, const char* _arg_a, const char* _arg_b) {
 	gml_istream _in(_in_ptr);
+	const char* _arg_c;
+	_arg_c = _in.read_string();
+	const char* _arg_d;
+	_arg_d = _in.read_string();
 	return iq_add_strlens(_arg_a, _arg_b, _arg_c, _arg_d);
+}
+
+extern int im_get_int();
+/// im_get_int()
+dllm void im_get_int_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_get_int"
+	__YYArgCheck(0);
+	int _result = im_get_int();
+	__YYResult_int(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern const char* im_get_string();
+/// im_get_string()
+dllm void im_get_string_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_get_string"
+	__YYArgCheck(0);
+	const char* _result = im_get_string();
+	__YYResult_pcchar(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern void im_get_result(YYResult& result);
+/// im_get_result()
+dllm void im_get_result_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_get_result"
+	__YYArgCheck(0);
+	im_get_result(result);
+	#undef __YYFUNCNAME__
+}
+
+extern int im_add_ints(int a, int b);
+/// im_add_ints(a, b)
+dllm void im_add_ints_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_add_ints"
+	__YYArgCheck(2);
+	int _arg_a; __YYArg_int("a", _arg_a, 0);
+	int _arg_b; __YYArg_int("b", _arg_b, 1);
+	int _result = im_add_ints(_arg_a, _arg_b);
+	__YYResult_int(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern int im_add_rest(YYRest values);
+/// im_add_rest(...values)
+dllm void im_add_rest_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_add_rest"
+	__YYArgCheck_any;
+	YYRest _arg_values; __YYArg_YYRest("values", _arg_values, 0);
+	int _result = im_add_rest(_arg_values);
+	__YYResult_int(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern int64_t im_ptr_to_int64(void* ptr);
+/// im_ptr_to_int64(ptr)
+dllm void im_ptr_to_int64_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_ptr_to_int64"
+	__YYArgCheck(1);
+	void* _arg_ptr; __YYArg_pvoid("ptr", _arg_ptr, 0);
+	int64_t _result = im_ptr_to_int64(_arg_ptr);
+	__YYResult_int64_t(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern int im_string_length(const char* str);
+/// im_string_length(str)
+dllm void im_string_length_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_string_length"
+	__YYArgCheck(1);
+	const char* _arg_str; __YYArg_pcchar("str", _arg_str, 0);
+	int _result = im_string_length(_arg_str);
+	__YYResult_int(_result);
+	#undef __YYFUNCNAME__
+}
+
+extern const char* im_typeof(RValue* val);
+/// im_typeof(val)
+dllm void im_typeof_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
+	#define __YYFUNCNAME__ "im_typeof"
+	__YYArgCheck(1);
+	RValue* _arg_val; __YYArg_pRValue("val", _arg_val, 0);
+	const char* _result = im_typeof(_arg_val);
+	__YYResult_pcchar(_result);
+	#undef __YYFUNCNAME__
 }
 

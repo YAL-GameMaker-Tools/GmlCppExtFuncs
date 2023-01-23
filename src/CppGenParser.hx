@@ -18,6 +18,7 @@ class CppGenParser {
 	public static function procFile(path:String, cpp:String, indexStructs:Bool) {
 		var config = CppGen.config;
 		var kwMacro = config.functionTag;
+		var kwMacroM = config.functionTagM;
 		var kwMacroLQ = kwMacro.toLowerCase();
 		var kwMacroLen = kwMacro.length;
 		cpp = StringTools.replace(cpp, "\r", "");
@@ -86,9 +87,10 @@ class CppGenParser {
 						}
 					} else if (indexStructs && w == "struct") {
 						struct.CppStruct.read(q);
-					} else if (w == kwMacro) {
+					} else if (w == kwMacro || w == kwMacroM) {
 						var fn = func.CppFuncReader.read(q);
 						if (fn != null) {
+							if (w == kwMacroM) fn.isMangled = true;
 							fn.condition = fnCond;
 							if (defValue != null) {
 								fn.defValue = defValue;

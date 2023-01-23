@@ -1,5 +1,6 @@
 package ;
 import func.CppFunc;
+import func.CppFuncMangled;
 import haxe.io.Path;
 #if sys
 import sys.io.File;
@@ -29,7 +30,10 @@ class CppGen {
 		var cpp = new CppBuf();
 		
 		for (line in config.prepend) cpp.addFormat("%s%|", line);
-		
+		for (fn in CppFunc.list) if (fn.isMangled) {
+			config.includes.insert(1, "gml_extm.h");
+			break;
+		}
 		for (inc in config.includes) {
 			cpp.addFormat('#include "%s"%|', inc);
 		}
@@ -117,6 +121,9 @@ class CppGen {
 			var remove = switch (args[i]) {
 				case "--prefix": config.helperPrefix = args[i + 1]; 2;
 				case "--function-tag": config.functionTag = args[i + 1]; 2;
+				case "--function-tagm": config.functionTagM = args[i + 1]; 2;
+				case "--export-tag": config.exportPrefix = args[i + 1]; 2;
+				case "--export-tagm": config.exportPrefixM = args[i + 1]; 2;
 				case "--prepend": config.prepend.push(args[i + 1]); 2;
 				case "--append": config.append.push(args[i + 1]); 2;
 				case "--include": config.includes.push(args[i + 1]); 2;
