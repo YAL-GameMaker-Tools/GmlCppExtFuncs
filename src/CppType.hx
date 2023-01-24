@@ -205,6 +205,7 @@ class CppType {
 		var s = new StringBuf();
 		
 		for (_ in 0 ... ptrCount) s.add("p");
+		if (isRef) s.add("r");
 		if (isConst) s.add("c");
 		s.add(name.replace(" ", "_"));
 		
@@ -214,8 +215,8 @@ class CppType {
 				if (i > 0) s.add("__");
 				s.add(pt.toCppMacroType(true));
 			}
-			// 1<2<3,4>,5<6>> -> 1_of_2_sof_3__4_endof__5_sof_6_endof
-			if (nested) s.add("_endof");
+			// 1<2<3,4>,5<6>> -> 1_of_2_sof_3__4_eof__5_sof_6_eof
+			if (nested) s.add("_eof");
 		}
 		
 		__toCppMacroType_cache = s.toString();

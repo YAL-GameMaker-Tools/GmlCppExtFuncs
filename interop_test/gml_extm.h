@@ -39,6 +39,50 @@ struct RValue {
 	};
 	uint32_t flags = 0;
 	uint32_t kind = VALUE_REAL;
+	
+	inline bool needsFree() {
+		const auto flagSet = (1 << VALUE_STRING) | (1 << VALUE_OBJECT) | (1 << VALUE_ARRAY);
+		return ((1 << (kind & 31)) & flagSet) != 0;
+	}
+	inline void free() {
+		if (needsFree()) FREE_RValue(this);
+	}
+
+	inline void setReal(double value) {
+		free();
+		kind = VALUE_REAL;
+		val = value;
+	}
+	inline void setInt64(int64_t value) {
+		free();
+		kind = VALUE_INT64;
+		v64 = value;
+	}
+	inline void setTo(RValue* value) {
+		COPY_RValue(this, value);
+	}
+	
+	inline int getInt32(int defValue = 0) {
+		switch (kind & MASK_KIND_RVALUE) {
+			case VALUE_REAL: case VALUE_BOOL: return (int)val;
+			case VALUE_INT32: return v32;
+			case VALUE_INT64: return (int)v64;
+			default: return defValue;
+		}
+	}
+	inline int64_t getInt64(int64_t defValue = 0) {
+		switch (kind & MASK_KIND_RVALUE) {
+			case VALUE_REAL: case VALUE_BOOL: return (int64_t)val;
+			case VALUE_INT32: return v32;
+			case VALUE_INT64: return v64;
+			default: return defValue;
+		}
+	}
+	inline const char* getString(const char* defValue = nullptr) {
+		if ((kind & MASK_KIND_RVALUE) == VALUE_STRING) {
+			return str->text;
+		} else return defValue;
+	}
 
 	inline bool tryGetInt(int& result) {
 		switch (kind & MASK_KIND_RVALUE) {
@@ -74,7 +118,8 @@ using YYResult = RValue;
 struct YYRest {
 	int length;
 	RValue* items;
-	RValue* operator[] (int ind) { return &items[ind]; }
+	inline RValue operator[] (int ind) const { return items[ind]; }
+	inline RValue& operator[] (int ind) { return items[ind]; }
 };
 
 #define __YYArgCheck_any
@@ -89,7 +134,7 @@ struct YYRest {
 		return;\
 	}
 #define __YYArgCheck_rest(minArgs)\
-	if (argc < minArgs || argc > maxArgs) {\
+	if (argc < minArgs) {\
 		YYError(__YYFUNCNAME__ " :: argument count mismatch - want " #minArgs " or more, have %d", argc);\
 		return;\
 	}

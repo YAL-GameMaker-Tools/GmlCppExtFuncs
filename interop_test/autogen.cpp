@@ -221,7 +221,7 @@ dllx double iq_add_strlens_raw(void* _in_ptr, void* _in_ptr_size, const char* _a
 }
 
 extern int im_get_int();
-/// im_get_int()
+/// im_get_int()->
 dllm void im_get_int_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_get_int"
 	__YYArgCheck(0);
@@ -231,7 +231,7 @@ dllm void im_get_int_raw(RValue& result, CInstance* self, CInstance* other, int 
 }
 
 extern const char* im_get_string();
-/// im_get_string()
+/// im_get_string()->
 dllm void im_get_string_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_get_string"
 	__YYArgCheck(0);
@@ -250,7 +250,7 @@ dllm void im_get_result_raw(RValue& result, CInstance* self, CInstance* other, i
 }
 
 extern int im_add_ints(int a, int b);
-/// im_add_ints(a, b)
+/// im_add_ints(a, b)->
 dllm void im_add_ints_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_add_ints"
 	__YYArgCheck(2);
@@ -262,7 +262,7 @@ dllm void im_add_ints_raw(RValue& result, CInstance* self, CInstance* other, int
 }
 
 extern int im_add_rest(YYRest values);
-/// im_add_rest(...values)
+/// im_add_rest(...values)->
 dllm void im_add_rest_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_add_rest"
 	__YYArgCheck_any;
@@ -273,7 +273,7 @@ dllm void im_add_rest_raw(RValue& result, CInstance* self, CInstance* other, int
 }
 
 extern int64_t im_ptr_to_int64(void* ptr);
-/// im_ptr_to_int64(ptr)
+/// im_ptr_to_int64(ptr)->
 dllm void im_ptr_to_int64_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_ptr_to_int64"
 	__YYArgCheck(1);
@@ -284,7 +284,7 @@ dllm void im_ptr_to_int64_raw(RValue& result, CInstance* self, CInstance* other,
 }
 
 extern int im_string_length(const char* str);
-/// im_string_length(str)
+/// im_string_length(str)->
 dllm void im_string_length_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_string_length"
 	__YYArgCheck(1);
@@ -295,7 +295,7 @@ dllm void im_string_length_raw(RValue& result, CInstance* self, CInstance* other
 }
 
 extern const char* im_typeof(RValue* val);
-/// im_typeof(val)
+/// im_typeof(val)->
 dllm void im_typeof_raw(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_typeof"
 	__YYArgCheck(1);

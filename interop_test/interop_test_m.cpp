@@ -31,7 +31,7 @@ dllgm int im_add_ints(int a, int b) {
 dllgm int im_add_rest(YYRest values) {
 	auto result = 0;
 	for (int i = 0; i < values.length; i++) {
-		int v; if (values[i]->tryGetInt(v)) result += v;
+		int v; if (values[i].tryGetInt(v)) result += v;
 	}
 	return result;
 }
