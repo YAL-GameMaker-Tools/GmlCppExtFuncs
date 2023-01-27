@@ -145,16 +145,18 @@ struct YYRest {
 
 
 #define __YYArg_YYRest(name, v, i) v = { argc - i, arg + i };
-#define __YYArg_pRValue(name, v, i) v = &arg[i];
+#define __YYArg_RValue_ptr(name, v, i) v = &arg[i];
 #define __YYArg_int(name, v, i) if (!arg[i].tryGetInt(v)) __YYArgError(name, "an int", i);
 #define __YYArg_int64(name, v, i) if (!arg[i].tryGetInt64(v)) __YYArgError(name, "an int64", i);
-#define __YYArg_pvoid(name, v, i) if (!arg[i].tryGetPtr(v)) __YYArgError(name, "a pointer", i);
-#define __YYArg_pcchar(name, v, i) if (!arg[i].tryGetString(v)) __YYArgError(name, "a string", i);
+#define __YYArg_void_ptr(name, v, i) if (!arg[i].tryGetPtr(v)) __YYArgError(name, "a pointer", i);
+#define __YYArg_const_char_ptr(name, v, i) if (!arg[i].tryGetString(v)) __YYArgError(name, "a string", i);
 
 
+#define __YYResult_bool(v) result.kind = VALUE_BOOL; result.val = v;
 #define __YYResult_int(v) result.kind = VALUE_REAL; result.val = v;
 #define __YYResult_int64_t(v) result.kind = VALUE_INT64; result.v64 = v;
-#define __YYResult_pvoid(v) result.kind = VALUE_PTR; result.ptr = v;
-#define __YYResult_pcchar(v) YYCreateString(&result, v);
+#define __YYResult_void_ptr(v) result.kind = VALUE_PTR; result.ptr = v;
+#define __YYResult_const_char_ptr(v) YYCreateString(&result, v);
+
 
 // TODO: add macros for project-specific types here

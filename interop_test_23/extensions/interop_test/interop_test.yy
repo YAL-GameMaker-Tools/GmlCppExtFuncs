@@ -118,14 +118,14 @@
             1,
             1,
           ],"resourceVersion":"1.0","name":"iq_add_strlens_raw","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_get_int_raw","kind":1,"help":"im_get_int()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_int","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_get_string_raw","kind":1,"help":"im_get_string()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_string","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_get_result_raw","kind":1,"help":"im_get_result()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_result","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_add_ints_raw","kind":1,"help":"im_add_ints(a, b)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_add_ints","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_add_rest_raw","kind":1,"help":"im_add_rest(...values)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_add_rest","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_ptr_to_int64_raw","kind":1,"help":"im_ptr_to_int64(ptr)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_ptr_to_int64","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_string_length_raw","kind":1,"help":"im_string_length(str)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_string_length","tags":[],"resourceType":"GMExtensionFunction",},
-        {"externalName":"im_typeof_raw","kind":1,"help":"im_typeof(val)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_typeof","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_get_int_yyr","kind":1,"help":"im_get_int()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_int","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_get_string_yyr","kind":1,"help":"im_get_string()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_string","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_get_result_yyr","kind":1,"help":"im_get_result()","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_get_result","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_add_ints_yyr","kind":1,"help":"im_add_ints(a, b)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_add_ints","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_add_rest_yyr","kind":1,"help":"im_add_rest(...values)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_add_rest","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_ptr_to_int64_yyr","kind":1,"help":"im_ptr_to_int64(ptr)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_ptr_to_int64","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_string_length_yyr","kind":1,"help":"im_string_length(str)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_string_length","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"im_typeof_yyr","kind":1,"help":"im_typeof(val)","hidden":false,"returnType":2,"argCount":-1,"args":[],"resourceVersion":"1.0","name":"im_typeof","tags":[],"resourceType":"GMExtensionFunction",},
       ],"constants":[
         
       ],"ProxyFiles":[

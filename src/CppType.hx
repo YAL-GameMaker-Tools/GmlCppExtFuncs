@@ -204,10 +204,10 @@ class CppType {
 		if (__toCppMacroType_cache != null) return __toCppMacroType_cache;
 		var s = new StringBuf();
 		
-		for (_ in 0 ... ptrCount) s.add("p");
-		if (isRef) s.add("r");
-		if (isConst) s.add("c");
+		if (isConst) s.add("const_");
 		s.add(name.replace(" ", "_"));
+		if (isRef) s.add("_ref");
+		for (_ in 0 ... ptrCount) s.add("_ptr");
 		
 		if (params.length > 0) {
 			if (nested) s.add("_sof_"); else s.add("_of_");

@@ -10,6 +10,7 @@ class CppConfig {
 	public var prepend:Array<String> = [];
 	public var append:Array<String> = [];
 	public var cppName = "$_raw";
+	public var cppNameMangled = "$_yyr";
 	public var cppPost = "$_raw_post";
 	public var cppVector = "$_raw_vec";
 	public var exportPrefix = "dllx";

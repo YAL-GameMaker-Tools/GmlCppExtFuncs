@@ -49,7 +49,7 @@ class CppFuncMangled {
 			argDecl.addFormat('__YYArg_%s("%s", %s, %d);',
 				t.toCppMacroType(), arg.name, varName, argi);
 			if (isOpt) {
-				argDecl.addFormat("%-} else %s = %s", varName, arg.value);
+				argDecl.addFormat("%-} else %s = %s;", varName, arg.value);
 			}
 			argDecl.addLine();
 			
@@ -61,7 +61,7 @@ class CppFuncMangled {
 		}
 		
 		cpp.addFormat("/// %s(%b)%s\n", fn.name, argDoc, retVoid ? "" : "->");
-		var cppName = config.cppName.replace("$", fn.name);
+		var cppName = config.cppNameMangled.replace("$", fn.name);
 		cpp.addFormat("%s ", config.exportPrefixM);
 		cpp.addFormat("void %s", cppName);
 		cpp.addString("(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg)");

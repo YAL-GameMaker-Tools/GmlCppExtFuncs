@@ -431,7 +431,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_get_int_raw",
+                    "externalName": "im_get_int_yyr",
                     "help": "im_get_int()",
                     "hidden": false,
                     "kind": 1,
@@ -446,7 +446,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_get_string_raw",
+                    "externalName": "im_get_string_yyr",
                     "help": "im_get_string()",
                     "hidden": false,
                     "kind": 1,
@@ -461,7 +461,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_get_result_raw",
+                    "externalName": "im_get_result_yyr",
                     "help": "im_get_result()",
                     "hidden": false,
                     "kind": 1,
@@ -476,7 +476,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_add_ints_raw",
+                    "externalName": "im_add_ints_yyr",
                     "help": "im_add_ints(a, b)",
                     "hidden": false,
                     "kind": 1,
@@ -491,7 +491,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_add_rest_raw",
+                    "externalName": "im_add_rest_yyr",
                     "help": "im_add_rest(...values)",
                     "hidden": false,
                     "kind": 1,
@@ -506,7 +506,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_ptr_to_int64_raw",
+                    "externalName": "im_ptr_to_int64_yyr",
                     "help": "im_ptr_to_int64(ptr)",
                     "hidden": false,
                     "kind": 1,
@@ -521,7 +521,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_string_length_raw",
+                    "externalName": "im_string_length_yyr",
                     "help": "im_string_length(str)",
                     "hidden": false,
                     "kind": 1,
@@ -536,7 +536,7 @@
                     "args": [
                         
                     ],
-                    "externalName": "im_typeof_raw",
+                    "externalName": "im_typeof_yyr",
                     "help": "im_typeof(val)",
                     "hidden": false,
                     "kind": 1,
