@@ -1,6 +1,8 @@
 globalvar iq_use_structs;
 function scr_test(_use_structs) {
     iq_use_structs = _use_structs;
+    assert(iq_def_ret_string(), "OK!");
+    assert(iq_def_ret_int(), 3);
     assert(iq_get_int(), 1);
     assert(iq_get_int64(), 0x123456789ABCDEF);
     assert(iq_get_string(), "hi!");
@@ -9,6 +11,8 @@ function scr_test(_use_structs) {
     assert(iq_add_int64(a, b), a + b);
     assert(iq_get_int64_vec_sum([1, 2, 3]), 6);
     assert(iq_get_vec(), [1, 2, 3]);
+    assert(iq_get_opt_vec(true), [1, 2, 3]);
+    assert(iq_get_opt_vec(false), undefined);
     if (iq_use_structs) {
         assert(iq_get_struct_vec(), [
             { ind: 1, name: "one" },
@@ -38,5 +42,5 @@ function scr_test(_use_structs) {
     assert(iq_thing_get_count(th), 5);
     iq_thing_destroy(th);
     
-    trace(sfmt("OK! (use_structs=%)",_use_structs));
+    trace(sfmt("Test OK! (use_structs=%)",_use_structs));
 }

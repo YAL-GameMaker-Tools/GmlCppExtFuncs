@@ -22,6 +22,7 @@ class CppTypeHelper {
 		var u64 = simple("buffer_u64", "int", 8);
 		var f32 = simple("buffer_f32", "number", 4);
 		var f64 = simple("buffer_f64", "number", 8);
+		var str = new CppTypeProcString();
 		
 		return [
 			// 1-byte:
@@ -44,6 +45,7 @@ class CppTypeHelper {
 			// floating-point:
 			"float" => f32, "double" => f64,
 			// special cases:
+			"char*" => str,
 			"gml_ptr" => new CppTypeProcGmlPointer(),
 			"gml_ptr_destroy" => new CppTypeProcGmlPointer(),
 			"vector" => new CppTypeProcVector(),
@@ -61,7 +63,9 @@ class CppTypeHelper {
 		if (tp != null) return tp;
 		tp = map[t.name];
 		if (tp != null) return tp;
-		Sys.println('Couldn\'t find type ${t.toString()}');
+		Sys.println('Couldn\'t find type ${t.toString()}'
+			//+ haxe.CallStack.toString(haxe.CallStack.callStack())
+		);
 		return new CppTypeProcError(t.toString());
 	}
 }

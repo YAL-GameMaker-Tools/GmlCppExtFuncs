@@ -16,5 +16,6 @@ if %ERRORLEVEL% EQU 0 (
 	--cpp "%projectDir%autogen.cpp"^
 	--gml "%solutionDir%interop_test_23/extensions/interop_test/autogen.gml"^
 	--struct iq_use_structs^
-	%projectDir%interop_test.cpp
+	%projectDir%interop_test.cpp^
+	%projectDir%interop_test_m.cpp
 )

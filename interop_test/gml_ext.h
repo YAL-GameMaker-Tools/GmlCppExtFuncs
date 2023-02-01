@@ -9,13 +9,17 @@
 using namespace std;
 
 #define dllg /* tag */
+#define dllgm /* tag;mangled */
 
 #if defined(_WINDOWS)
 #define dllx extern "C" __declspec(dllexport)
+#define dllm __declspec(dllexport)
 #elif defined(GNUC)
 #define dllx extern "C" __attribute__ ((visibility("default"))) 
+#define dllm __attribute__ ((visibility("default"))) 
 #else
 #define dllx extern "C"
+#define dllm /* */
 #endif
 
 #ifdef _WINDEF_
@@ -151,14 +155,14 @@ public:
 	template<class T> void write_vector(std::vector<T>& vec) {
 		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be write");
 		auto n = vec.size();
-		write<uint32_t>(n);
+		write<uint32_t>((uint32_t)n);
 		memcpy(pos, vec.data(), n * sizeof(T));
 		pos += n * sizeof(T);
 	}
 
 	void write_string_vector(std::vector<const char*> vec) {
 		auto n = vec.size();
-		write<uint32_t>(n);
+		write<uint32_t>((uint32_t)n);
 		for (auto i = 0u; i < n; i++) {
 			write_string(vec[i]);
 		}

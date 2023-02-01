@@ -13,10 +13,17 @@ class CppFunc {
 	public var name:String;
 	public var cppFuncName:String;
 	public var generateFuncExtern:Bool = true;
-	public var args:Array<func.CppFuncArg> = [];
+	public var args:Array<CppFuncArg> = [];
 	public var retType:CppType;
+	/**
+	 * GML code for default return value if the native extension failed to load.
+	 * This forces functions with GML-friendly return types to internally return OK/fail
+	 * since functions from unloaded binaries simply return 0 or "".
+	 */
+	public var defValue:String = null;
 	public var metaComment:String = null;
 	public var condition:String = "";
+	public var isMangled:Bool = false;
 	
 	public function new(name:String) {
 		this.name = name;
@@ -87,32 +94,10 @@ class CppFunc {
 		}
 	}
 	
-	public function print(gml:CppBuf, cpp:CppBuf) {
-		gml.addFormat("#define %s", name);
-		
-		var retType = this.retType;
-		var retGcType = retType.toGmlCppType();
-		var retCppType = retType.toCppType();
-		var hasReturn = retCppType != "void";
-		var retTypeProc = hasReturn ? retType.proc : null;
-		var retTypeOpt = retType.unpackOptional();
-		
-		var config = CppGen.config;
-		var argGcTypes = [];
-		var hasOptArgs = false;
-		for (arg in args) {
-			CppFuncArg.current = arg;
-			if (arg.value != null) hasOptArgs = true;
-			argGcTypes.push(arg.type.toGmlCppType());
-		}
-		var gmlCleanup = new CppBuf();
-		
-		// documentation line:
-		printGmlDoc(gml, hasReturn, retTypeProc);
-		
-		// print extern function signature:
+	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool):Int {
+		if (retCppType == null) retCppType = retType.toCppType();
 		var bufSize = 0;
-		if (generateFuncExtern)cpp.addFormat("extern %s %s(", retCppType, name);
+		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
 		for (i => arg in args) {
 			if (generateFuncExtern) {
 				if (i > 0) cpp.addString(", ");
@@ -120,9 +105,45 @@ class CppFunc {
 				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
 			}
 			if (arg.value != null) bufSize += 1;
-			bufSize += arg.type.getSize();
+			if (calcBufSize) bufSize += arg.type.getSize();
 		}
 		if (generateFuncExtern) cpp.addFormat(");%|");
+		return bufSize;
+	}
+	
+	public function print(gml:CppBuf, cpp:CppBuf) {
+		if (isMangled) { CppFuncMangled.print(this, cpp); return; }
+		gml.addFormat("#define %s", name);
+		
+		var retType = this.retType;
+		var retGcType = defValue != null ? null : retType.toGmlCppType();
+		var retCppType = retType.toCppType();
+		var hasReturn = retCppType != "void";
+		var retTypeProc = hasReturn ? retType.proc : null;
+		var retTypeOpt = retType.unpackOptional();
+		
+		var config = CppGen.config;
+		var argGcTypes = [];
+		var ptrArgCount = 2;
+		var hasOptArgs = false;
+		for (arg in args) {
+			CppFuncArg.current = arg;
+			if (arg.value != null) hasOptArgs = true;
+			var argGcType = arg.type.toGmlCppType();
+			if (!gcTypeUsesBuffer(argGcType)) {
+				if (ptrArgCount >= 4) {
+					argGcType = null;
+				} else ptrArgCount += 1;
+			}
+			argGcTypes.push(argGcType);
+		}
+		var gmlCleanup = new CppBuf();
+		
+		// documentation line:
+		printGmlDoc(gml, hasReturn, retTypeProc);
+		
+		// print extern function signature:
+		var bufSize = printExtern(cpp, retCppType, true);
 		if (retGcType == null) {
 			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;
@@ -130,32 +151,34 @@ class CppFunc {
 		if (bufSize == 0) bufSize = 1;
 		
 		//
-		var vecType = (retTypeOpt != null ? retTypeOpt : retType).unpackVector();
-		var cppVecType = "", cppVecStore = "", cppVecPost = "";
-		if (vecType != null) {
-			cppVecStore = config.cppVector.replace("$", name);
-			cppVecPost = config.cppPost.replace("$", name);
-			cppVecType = vecType.toCppType();
-			cpp.addFormat("static vector<%s> %s;%|", cppVecType, cppVecStore);
+		var dynSizeStore = config.cppVector.replace("$", name);
+		var dynSizeSnip:String = null;
+		var dynSizePost = "";
+		if (retTypeProc != null && retGcType == null) {
+			dynSizeSnip = retTypeProc.getDynSize(retType, dynSizeStore);
+			if (dynSizeSnip != null) {
+				dynSizePost = config.cppPost.replace("$", name);
+				cpp.addFormat("static %s %s;%|", retCppType, dynSizeStore);
+			}
 		}
 		
 		//
 		var argPtr = "_in_ptr";
-		if (vecType == null && hasReturn && retGcType == null) {
+		if (dynSizeSnip == null && hasReturn && retGcType == null) {
 			argPtr = "_inout_ptr";
 		}
 		//
 		var cppName = config.cppName.replace("$", name);
 		cpp.addFormat("%s ", config.exportPrefix);
 		cpp.addFormat("%s ", retGcType != null ? retGcType : "double");
-		cpp.addFormat("%s(void* %s, double %(s)_size", cppName, argPtr, argPtr);
+		cpp.addFormat("%s(void* %s, void* %(s)_size", cppName, argPtr, argPtr);
 		//
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
 		cppArgs.addFormat("gml_istream _in(%s);", argPtr);
 		
 		var gmlCall = new CppBuf();
-		gmlCall.addFormat("%s(buffer_get_address(_buf), %d", cppName, bufSize);
+		gmlCall.addFormat("%s(buffer_get_address(_buf), ptr(%d)", cppName, bufSize);
 		
 		gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		var hasBufArgs = false;
@@ -237,23 +260,13 @@ class CppFunc {
 		cppCall.addFormat(")");
 		
 		//
-		if (vecType != null) {
-			if (retTypeOpt != null) {
-				cpp.addFormat("%|auto _ret = %b;", cppCall);
-				cpp.addFormat("%|if (!_ret.has_value()) return 0;");
-				cpp.addFormat("%|%s = _ret.value();", cppVecStore);
-			} else {
-				cpp.addFormat("%|%s = %b;", cppVecStore, cppCall);
-			}
-			cpp.addFormat("%|return (double)(4 + %s.size() * sizeof(%s));", cppVecStore, cppVecType);
+		if (dynSizeSnip != null) {
+			cpp.addFormat("%|%s = %b;", dynSizeStore, cppCall);
+			cpp.addFormat("%|return (double)(%s);", dynSizeSnip);
 			cpp.addFormat("%-}%|");
-			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, cppVecPost);
+			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, dynSizePost);
 			cpp.addFormat("gml_ostream _out(_out_ptr);");
-			if (retTypeOpt != null) {
-				retTypeOpt.proc.cppWrite(cpp, retTypeOpt, cppVecStore);
-			} else {
-				retTypeProc.cppWrite(cpp, retType, cppVecStore);
-			}
+			retTypeProc.cppWrite(cpp, retType, dynSizeStore);
 			cpp.addFormat("%|return 1;");
 		} else if (!hasReturn) {
 			cpp.addFormat("%|%b;", cppCall);
@@ -280,12 +293,13 @@ class CppFunc {
 				return retTypeProc.usesStructs(retType);
 			});
 		}
-		if (vecType != null) {
+		//
+		var _defValue = defValue != null ? defValue : "undefined";
+		if (dynSizeSnip != null) {
 			gml.addFormat("%|var __size__ = %b;", gmlCall);
-			gml.addFormat("%|if (__size__ == 0) return undefined;");
-			gml.addFormat("%|if (__size__ <= 4) return [];");
+			gml.addFormat("%|if (__size__ == 0) return %s;", _defValue);
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
-			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", cppVecPost);
+			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", dynSizePost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(true);
 		} else if (!hasReturn) {
@@ -299,7 +313,7 @@ class CppFunc {
 			gml.addFormat("%|if (%b) %{", gmlCall);
 			if (hasBufArgs) gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(false);
-			gml.addFormat("%-} else return undefined;");
+			gml.addFormat("%-} else return %s;", _defValue);
 		}
 		//
 		cpp.addFormat("%-}%|%|");

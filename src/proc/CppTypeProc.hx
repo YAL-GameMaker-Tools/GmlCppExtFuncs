@@ -70,6 +70,14 @@ class CppTypeProc {
 	public function getSize(type:CppType):Int {
 		return 8;
 	}
+	
+	/**
+	 * Can return a snippet of code 
+	 */
+	public function getDynSize(type:CppType, val:String):String {
+		return null;
+	}
+	
 	public function getAlignment(type:CppType):Int {
 		return getSize(type);
 	}

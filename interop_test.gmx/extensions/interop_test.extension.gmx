@@ -46,6 +46,18 @@
       <ProxyFiles/>
       <functions>
         <function>
+          <name>iq_never_raw</name>
+          <externalName>iq_never_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
           <name>iq_get_int_raw</name>
           <externalName>iq_get_int_raw</externalName>
           <kind>11</kind>
@@ -54,7 +66,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -66,7 +78,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -78,7 +90,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -90,12 +102,36 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
           <name>iq_get_vec_raw_post</name>
           <externalName>iq_get_vec_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_opt_vec_raw</name>
+          <externalName>iq_get_opt_vec_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_opt_vec_raw_post</name>
+          <externalName>iq_get_opt_vec_raw_post</externalName>
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
@@ -114,7 +150,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -138,7 +174,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -150,7 +186,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -162,7 +198,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -174,7 +210,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -186,7 +222,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -198,7 +234,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -210,7 +246,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -222,7 +258,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -234,7 +270,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -246,8 +282,130 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_def_ret_int_raw</name>
+          <externalName>iq_def_ret_int_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_def_ret_string_raw</name>
+          <externalName>iq_def_ret_string_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_def_ret_string_raw_post</name>
+          <externalName>iq_def_ret_string_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
             <arg>2</arg>
           </args>
+        </function>
+        <function>
+          <name>iq_add_strlens_raw</name>
+          <externalName>iq_add_strlens_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>4</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>im_get_int</name>
+          <externalName>im_get_int_yyr</externalName>
+          <kind>1</kind>
+          <help>im_get_int()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_get_string</name>
+          <externalName>im_get_string_yyr</externalName>
+          <kind>1</kind>
+          <help>im_get_string()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_get_result</name>
+          <externalName>im_get_result_yyr</externalName>
+          <kind>1</kind>
+          <help>im_get_result()</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_add_ints</name>
+          <externalName>im_add_ints_yyr</externalName>
+          <kind>1</kind>
+          <help>im_add_ints(a, b)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_add_rest</name>
+          <externalName>im_add_rest_yyr</externalName>
+          <kind>1</kind>
+          <help>im_add_rest(...values)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_ptr_to_int64</name>
+          <externalName>im_ptr_to_int64_yyr</externalName>
+          <kind>1</kind>
+          <help>im_ptr_to_int64(ptr)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_string_length</name>
+          <externalName>im_string_length_yyr</externalName>
+          <kind>1</kind>
+          <help>im_string_length(str)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>im_typeof</name>
+          <externalName>im_typeof_yyr</externalName>
+          <kind>1</kind>
+          <help>im_typeof(val)</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
         </function>
       </functions>
       <constants/>
@@ -278,8 +436,8 @@
         <function>
           <name>itr_test_prepare_buffer</name>
           <externalName>itr_test_prepare_buffer</externalName>
-          <kind>2</kind>
-          <help>itr_test_prepare_buffer(size:int)-&gt;buffer~</help>
+          <kind>11</kind>
+          <help></help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
@@ -289,8 +447,8 @@
         <function>
           <name>itr_test_read_chars</name>
           <externalName>itr_test_read_chars</externalName>
-          <kind>2</kind>
-          <help>itr_test_read_chars(buffer:buffer, len:int)-&gt;string~</help>
+          <kind>11</kind>
+          <help></help>
           <returnType>2</returnType>
           <argCount>2</argCount>
           <args>
@@ -329,6 +487,15 @@
       <ProxyFiles/>
       <functions>
         <function>
+          <name>iq_never</name>
+          <externalName>iq_never</externalName>
+          <kind>2</kind>
+          <help>iq_never()</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
           <name>iq_get_int</name>
           <externalName>iq_get_int</externalName>
           <kind>2</kind>
@@ -363,6 +530,17 @@
           <returnType>2</returnType>
           <argCount>0</argCount>
           <args/>
+        </function>
+        <function>
+          <name>iq_get_opt_vec</name>
+          <externalName>iq_get_opt_vec</externalName>
+          <kind>2</kind>
+          <help>iq_get_opt_vec(ret:bool)-&gt;array&lt;int&gt;?</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
         </function>
         <function>
           <name>iq_get_struct_vec</name>
@@ -479,6 +657,38 @@
           <returnType>2</returnType>
           <argCount>2</argCount>
           <args>
+            <arg>2</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_def_ret_int</name>
+          <externalName>iq_def_ret_int</externalName>
+          <kind>2</kind>
+          <help>iq_def_ret_int()-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_def_ret_string</name>
+          <externalName>iq_def_ret_string</externalName>
+          <kind>2</kind>
+          <help>iq_def_ret_string()-&gt;string</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_add_strlens</name>
+          <externalName>iq_add_strlens</externalName>
+          <kind>2</kind>
+          <help>iq_add_strlens(a:string, b:string, c:string, d:string)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>4</argCount>
+          <args>
+            <arg>2</arg>
+            <arg>2</arg>
             <arg>2</arg>
             <arg>2</arg>
           </args>

@@ -199,6 +199,30 @@ class CppType {
 		return __toCppType_cache;
 	}
 	
+	private var __toCppMacroType_cache:String;
+	public function toCppMacroType(nested:Bool = false) {
+		if (__toCppMacroType_cache != null) return __toCppMacroType_cache;
+		var s = new StringBuf();
+		
+		if (isConst) s.add("const_");
+		s.add(name.replace(" ", "_"));
+		if (isRef) s.add("_ref");
+		for (_ in 0 ... ptrCount) s.add("_ptr");
+		
+		if (params.length > 0) {
+			if (nested) s.add("_sof_"); else s.add("_of_");
+			for (i => pt in params) {
+				if (i > 0) s.add("__");
+				s.add(pt.toCppMacroType(true));
+			}
+			// 1<2<3,4>,5<6>> -> 1_of_2_sof_3__4_eof__5_sof_6_eof
+			if (nested) s.add("_eof");
+		}
+		
+		__toCppMacroType_cache = s.toString();
+		return __toCppMacroType_cache;
+	}
+	
 	private var __toKey_cache:String;
 	public function toKey():String {
 		if (__toKey_cache != null) return __toKey_cache;

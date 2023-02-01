@@ -6,7 +6,7 @@ import tools.CppBuf;
  * @author YellowAfterlife
  */
 class CppTypeProcOptional extends CppTypeProc {
-	static inline function unpack(type:CppType) {
+	static inline function unpack(type:CppType):CppType {
 		return type.params[0];
 	}
 	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
@@ -49,5 +49,13 @@ class CppTypeProcOptional extends CppTypeProc {
 	}
 	override public function getSize(type:CppType):Int {
 		return unpack(type).getSize() + 1;
+	}
+	override public function getDynSize(type:CppType, val:String):String {
+		var parType = unpack(type);
+		if (parType == null) return null;
+		var parProc = parType.proc;
+		if (parProc == null) return null;
+		var parDynSize = parProc.getDynSize(parType, val + ".value()");
+		return parDynSize != null ? '$val.has_value() ? 1 + ($parDynSize) : 1' : null;
 	}
 }

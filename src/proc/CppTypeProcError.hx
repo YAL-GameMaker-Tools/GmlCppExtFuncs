@@ -22,6 +22,6 @@ class CppTypeProcError extends CppTypeProc {
 		return "void/* Unsupported type $name */";
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
-		cpp.addFormat("#error Unsupported type %s%|", name);
+		cpp.addFormat("%|#error Unsupported type %s", name);
 	}
 }

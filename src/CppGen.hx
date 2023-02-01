@@ -1,5 +1,6 @@
 package ;
 import func.CppFunc;
+import func.CppFuncMangled;
 import haxe.io.Path;
 #if sys
 import sys.io.File;
@@ -20,75 +21,8 @@ class CppGen {
 	public static var outCppPath:String = null;
 	public static var outGmlPath:String = null;
 	
-	public static function procFile(path:String, cpp:String, indexStructs:Bool) {
-		var kwMacro = config.functionTag;
-		var kwMacroLen = kwMacro.length;
-		cpp = StringTools.replace(cpp, "\r", "");
-		var q = new CppReader(cpp, Path.withoutDirectory(path));
-		var fnCond = "";
-		while (q.loop) {
-			var c = q.read();
-			switch (c) {
-				case '"'.code, "'".code: q.skipCString(c);
-				case "/".code: {
-					switch (q.peek()) {
-						case "/".code:
-							q.skip(2);
-							q.skipLineSpaces();
-							if (q.peek() == "@".code
-								&& q.peeknAt(1, kwMacroLen) == kwMacro
-								&& q.peekAt(kwMacroLen + 1) == ":".code
-							) {
-								q.skip(2 + kwMacroLen);
-								var meta = q.readIdent();
-								switch (meta) {
-									case "docName":
-										q.skipLineSpaces();
-										var cppName = q.readLineNonSpace();
-										q.skipLineSpaces();
-										var docName = q.readLineNonSpace();
-										CppType.docNames[cppName] = docName;
-									case "cond":
-										q.skipLineSpaces();
-										fnCond = q.readLine().trim();
-								}
-							} else q.skipUntil("\n".code);
-						case "*".code: q.skipUntilStr("*/");
-					}
-				}
-				case "#".code: {
-					q.skipUntil("\n".code);
-					while (q.loop && q.peekAt( -2) == "\\".code) q.skipUntil("\n".code);
-				};
-				case _ if (c.isIdent0()): {
-					var w = q.readIdent(true);
-					if (w == "using") {
-						q.skipSpaces();
-						var name = q.readIdent();
-						q.skipSpaces();
-						if (q.skipIfEqu("=".code)) {
-							q.skipSpaces();
-							var type = CppType.read(q);
-							//trace(path, q.getRow(q.pos), name, type);
-							CppType.typedefs[name] = type;
-						}
-					} else if (w == "typedef") {
-						var type = CppType.read(q);
-						q.skipSpaces();
-						var name = q.readIdent();
-						if (name != "") {
-							//trace(path, q.getRow(q.pos), name, type);
-							CppType.typedefs[name] = type;
-						}
-					} else if (indexStructs && w == "struct") {
-						struct.CppStruct.read(q);
-					} else if (w == kwMacro) {
-						var fn = func.CppFuncReader.read(q);
-						if (fn != null) fn.condition = fnCond;
-					}
-				}
-			}
-		} // can continue
+	public static inline function procFile(path:String, cpp:String, indexStructs:Bool) {
+		CppGenParser.procFile(path, cpp, indexStructs);
 	}
 	
 	public static function finish() {
@@ -96,7 +30,10 @@ class CppGen {
 		var cpp = new CppBuf();
 		
 		for (line in config.prepend) cpp.addFormat("%s%|", line);
-		
+		for (fn in CppFunc.list) if (fn.isMangled) {
+			config.includes.insert(1, "gml_extm.h");
+			break;
+		}
 		for (inc in config.includes) {
 			cpp.addFormat('#include "%s"%|', inc);
 		}
@@ -134,8 +71,18 @@ class CppGen {
 		for (line in config.append) cpp.addFormat("%|%s", line);
 		
 		#if sys
-		File.saveContent(outGmlPath, gml.toString());
-		File.saveContent(outCppPath, cpp.toString());
+		inline function writeIfNotSame(path:String, text:String) {
+			if (!FileSystem.exists(path)) {
+				File.saveContent(path, text);
+			} else {
+				var curr = try {
+					File.getContent(path);
+				} catch (x:Dynamic) null;
+				if (curr != text) File.saveContent(path, text);
+			}
+		}
+		writeIfNotSame(outGmlPath, gml.toString());
+		writeIfNotSame(outCppPath, cpp.toString());
 		#else
 		trace(gml.toString());
 		trace(cpp.toString());
@@ -174,6 +121,9 @@ class CppGen {
 			var remove = switch (args[i]) {
 				case "--prefix": config.helperPrefix = args[i + 1]; 2;
 				case "--function-tag": config.functionTag = args[i + 1]; 2;
+				case "--function-tagm": config.functionTagM = args[i + 1]; 2;
+				case "--export-tag": config.exportPrefix = args[i + 1]; 2;
+				case "--export-tagm": config.exportPrefixM = args[i + 1]; 2;
 				case "--prepend": config.prepend.push(args[i + 1]); 2;
 				case "--append": config.append.push(args[i + 1]); 2;
 				case "--include": config.includes.push(args[i + 1]); 2;
