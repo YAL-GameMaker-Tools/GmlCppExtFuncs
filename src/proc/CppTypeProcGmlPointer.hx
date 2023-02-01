@@ -33,9 +33,12 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		gml.addFormat("%|var %s = %s", _ptr, _box);
 		if (useStructs) {
 			gml.addString(".__ptr__;");
-		} else gml.addString("[1];");
-		gml.addFormat('%|if (%s == 0) { show_error(', _ptr);
-		gml.addFormat('"This %s is destroyed.", true); exit; }', _typename);
+			gml.addFormat('%|if (%s == pointer_null) ', _ptr);
+		} else {
+			gml.addString("[1];");
+			gml.addFormat('%|if (int64(%s) == 0) ', _ptr);
+		}
+		gml.addFormat('{ show_error("This %s is destroyed.", true); exit; }', _typename);
 		if (type.name == "gml_ptr_destroy") {
 			gml.addFormat("%|%s", _box);
 			if (useStructs) {
