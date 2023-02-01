@@ -33,6 +33,10 @@ typedef int gml_asset_index_of;
 template <typename T> using gml_ptr = T*;
 /// Same as gml_ptr, but replaces the GML-side pointer by a nullptr after passing it to C++
 template <typename T> using gml_ptr_destroy = T*;
+/// Wraps any ID (or anything that casts to int64, really) for GML.
+template <typename T> using gml_id = T;
+/// Same as gml_id, but replaces the GML-side ID by a 0 after passing it to C++
+template <typename T> using gml_id_destroy = T;
 
 class gml_buffer {
 private:

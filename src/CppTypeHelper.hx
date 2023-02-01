@@ -23,6 +23,8 @@ class CppTypeHelper {
 		var f32 = simple("buffer_f32", "number", 4);
 		var f64 = simple("buffer_f64", "number", 8);
 		var str = new CppTypeProcString();
+		var gmlPtr = new CppTypeProcGmlPointer(false);
+		var gmlID = new CppTypeProcGmlPointer(true);
 		
 		return [
 			// 1-byte:
@@ -46,8 +48,10 @@ class CppTypeHelper {
 			"float" => f32, "double" => f64,
 			// special cases:
 			"char*" => str,
-			"gml_ptr" => new CppTypeProcGmlPointer(),
-			"gml_ptr_destroy" => new CppTypeProcGmlPointer(),
+			"gml_ptr" => gmlPtr,
+			"gml_ptr_destroy" => gmlPtr,
+			"gml_id" => gmlID,
+			"gml_id_destroy" => gmlID,
 			"vector" => new CppTypeProcVector(),
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),
