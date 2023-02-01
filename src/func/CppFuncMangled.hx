@@ -60,7 +60,7 @@ class CppFuncMangled {
 			argi += 1;
 		}
 		
-		cpp.addFormat("/// %s(%b)%s\n", fn.name, argDoc, retVoid ? "" : "->");
+		cpp.addFormat("/// %s(%b)%s\n", fn.name, argDoc, retVoid && !hasResult ? "" : "->");
 		var cppName = config.cppNameMangled.replace("$", fn.name);
 		cpp.addFormat("%s ", config.exportPrefixM);
 		cpp.addFormat("void %s", cppName);
