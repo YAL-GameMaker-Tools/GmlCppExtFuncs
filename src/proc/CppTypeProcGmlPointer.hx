@@ -20,7 +20,7 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
 		var t = type.toCppType();
-		cpp.addFormat("%|_out.write<int64_t>((%s)%s);", isID ? "int64" : "intptr_t", val);
+		cpp.addFormat("%|_out.write<int64_t>((%s)%s);", isID ? "int64_t" : "intptr_t", val);
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var _box = '_box_$z';
@@ -65,7 +65,7 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		var _typename = type.params[0].name;
 		gml.addFormat("%|var %s = buffer_read(_buf, buffer_u64);", _ptr);
 		gml.addFormat("%|var %s;", _box);
-		gml.addFormat("%|if (%s != %s) %{", _ptr, isID ? "-1" : "0");
+		gml.addFormat("%|if (%s != %s) %{", _ptr,  "0");
 			gml.addFormat("%|%s = ", _box);
 			var _ptrv = isID ? _ptr : 'ptr($_ptr)';
 			if (CppGen.config.useStructs) {
