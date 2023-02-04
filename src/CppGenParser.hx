@@ -33,6 +33,7 @@ class CppGenParser {
 					switch (q.peek()) {
 						case "/".code:
 							q.skip(2);
+							if (q.peek() == "/".code) q.skip();
 							q.skipLineSpaces();
 							if (q.peek() == "@".code
 								&& q.peeknAt(1, kwMacroLen).toLowerCase() == kwMacroLQ
