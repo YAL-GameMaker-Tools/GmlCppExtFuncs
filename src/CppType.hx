@@ -13,17 +13,31 @@ class CppType {
 	public static var typedefs:Map<String, CppType> = new Map();
 	public static var docNames:Map<String, String> = new Map();
 	
+	/** "char" for `const char*` */
 	public var name:String;
+	
+	/** `const int` vs `int` */
 	public var isConst:Bool = false;
+	
 	/** 0 -> int, 1 -> int*, 2 -> int**, etc. */
 	public var ptrCount:Int = 0;
+	
+	/** `int&` vs `int` */
 	public var isRef:Bool = false;
+	
+	/** `[CppType("int")]` for `vector<int>` */
 	public var params:Array<CppType> = [];
+	
+	/** "vector" for `vector<int>` */
 	public var docKey:String;
+	
+	/** "vector<int>" for `vector<int>` */
+	public var docKeyFull:String;
 	
 	public function new(name:String) {
 		this.name = name;
 		docKey = name;
+		docKeyFull = name;
 	}
 	public function markUsed(level:Int) {
 		if (level > 0) {
@@ -99,7 +113,7 @@ class CppType {
 			}
 		}
 		if (name == "") return null;
-		var cppType = typedefs[name];
+		var cppType:CppType = typedefs[name];
 		var isTypedef = cppType != null;
 		var wantCopy = isTypedef;
 		var wantReset = isTypedef;
@@ -113,21 +127,33 @@ class CppType {
 		//
 		if (cppType == null) {
 			cppType = new CppType(name);
-		} else cppType.docKey = name;
+		} else {
+			cppType.docKeyFull = cppType.docKey = name;
+		}
 		if (isConst) prepare().isConst = isConst;
 		//
 		q.skipSpaces();
 		if (q.peek() == "<".code) {
 			prepare();
 			q.skip();
+			var full = cppType.docKey + "<";
+			var sep = false;
 			while (q.loop) {
-				cppType.params.push(read(q, null, false));
+				var paramType = read(q, null, false);
+				if (sep) full += ","; else sep = true;
+				full += paramType.docKeyFull;
+				cppType.params.push(paramType);
 				q.skipSpaces();
 				switch (q.read()) {
 					case ",".code:
 						q.skipSpaces();
 					case ">".code: break;
 				}
+			}
+			if (CppTypeHelper.isSugar(cppType)) {
+				cppType.docKeyFull = cppType.docKey = cppType.params[0].docKey;
+			} else {
+				cppType.docKeyFull = full + ">";
 			}
 		}
 		//

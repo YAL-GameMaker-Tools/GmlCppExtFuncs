@@ -72,4 +72,8 @@ class CppTypeHelper {
 		);
 		return new CppTypeProcError(t.toString());
 	}
+	public static function isSugar(t:CppType):Bool {
+		var p = find(t);
+		return (p is CppTypeProcGmlPointer);
+	}
 }
