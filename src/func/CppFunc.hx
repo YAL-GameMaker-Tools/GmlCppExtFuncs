@@ -171,14 +171,14 @@ class CppFunc {
 		var cppName = config.cppName.replace("$", name);
 		cpp.addFormat("%s ", config.exportPrefix);
 		cpp.addFormat("%s ", retGcType != null ? retGcType : "double");
-		cpp.addFormat("%s(void* %s, void* %(s)_size", cppName, argPtr, argPtr);
+		cpp.addFormat("%s(void* %s, double %(s)_size", cppName, argPtr, argPtr);
 		//
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
 		cppArgs.addFormat("gml_istream _in(%s);", argPtr);
 		
 		var gmlCall = new CppBuf();
-		gmlCall.addFormat("%s(buffer_get_address(_buf), ptr(%d)", cppName, bufSize);
+		gmlCall.addFormat("%s(buffer_get_address(_buf), %d", cppName, bufSize);
 		
 		gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		var hasBufArgs = false;
