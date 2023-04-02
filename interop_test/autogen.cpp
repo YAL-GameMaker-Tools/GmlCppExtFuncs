@@ -1,5 +1,6 @@
 #include "gml_ext.h"
 #include "gml_extm.h"
+#include "interop_test.h"
 // Struct forward declarations:
 // from interop_test.cpp:32:
 struct _iq_get_struct_vec {
@@ -188,6 +189,32 @@ dllx double iq_thing_set_count_raw(void* _in_ptr, void* _in_ptr_size) {
 	return 1;
 }
 
+extern gml_id<iq_id> iq_id_create();
+dllx double iq_id_create_raw(void* _inout_ptr, void* _inout_ptr_size) {
+	gml_istream _in(_inout_ptr);
+	gml_id<iq_id> _ret = iq_id_create();
+	gml_ostream _out(_inout_ptr);
+	_out.write<int64_t>((int64)_ret);
+	return 1;
+}
+
+extern int iq_id_value(gml_id<iq_id> id);
+dllx double iq_id_value_raw(void* _in_ptr, void* _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	gml_id<iq_id> _arg_id;
+	_arg_id = (gml_id<iq_id>)_in.read<int64_t>();;
+	return iq_id_value(_arg_id);
+}
+
+extern void iq_id_destroy(gml_id_destroy<iq_id> id);
+dllx double iq_id_destroy_raw(void* _in_ptr, void* _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	gml_id_destroy<iq_id> _arg_id;
+	_arg_id = (gml_id_destroy<iq_id>)_in.read<int64_t>();;
+	iq_id_destroy(_arg_id);
+	return 1;
+}
+
 extern int iq_def_ret_int();
 dllx double iq_def_ret_int_raw(void* _inout_ptr, void* _inout_ptr_size) {
 	gml_istream _in(_inout_ptr);
@@ -241,7 +268,7 @@ dllm void im_get_string_yyr(RValue& result, CInstance* self, CInstance* other, i
 }
 
 extern void im_get_result(YYResult& result);
-/// im_get_result()
+/// im_get_result()->
 dllm void im_get_result_yyr(RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg) {
 	#define __YYFUNCNAME__ "im_get_result"
 	__YYArgCheck(0);

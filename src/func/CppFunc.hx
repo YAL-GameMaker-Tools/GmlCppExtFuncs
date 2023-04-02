@@ -32,6 +32,7 @@ class CppFunc {
 	
 	function printGmlDoc(gml:CppBuf, hasReturn:Bool, retTypeProc:CppTypeProc) {
 		if (metaComment != null && metaComment.startsWith("(")) {
+			// `/// (...args)->`
 			gml.addFormat("%|/// %s%s%|", name, metaComment);
 			return;
 		}

@@ -286,6 +286,42 @@
           </args>
         </function>
         <function>
+          <name>iq_id_create_raw</name>
+          <externalName>iq_id_create_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_value_raw</name>
+          <externalName>iq_id_value_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_destroy_raw</name>
+          <externalName>iq_id_destroy_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
           <name>iq_def_ret_int_raw</name>
           <externalName>iq_def_ret_int_raw</externalName>
           <kind>11</kind>
@@ -658,6 +694,37 @@
           <argCount>2</argCount>
           <args>
             <arg>2</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_create</name>
+          <externalName>iq_id_create</externalName>
+          <kind>2</kind>
+          <help>iq_id_create()-&gt;</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_id_value</name>
+          <externalName>iq_id_value</externalName>
+          <kind>2</kind>
+          <help>iq_id_value(id)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_destroy</name>
+          <externalName>iq_id_destroy</externalName>
+          <kind>2</kind>
+          <help>iq_id_destroy(id)</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
             <arg>2</arg>
           </args>
         </function>

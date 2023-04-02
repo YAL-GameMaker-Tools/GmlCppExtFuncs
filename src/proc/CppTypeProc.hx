@@ -86,6 +86,7 @@ class CppTypeProc {
 	}
 	public function getGmlDocTypeEx(type:CppType):String {
 		var t = CppType.docNames[type.docKey];
+		if (t == null) t = CppType.docNames[type.docKeyFull];
 		return t != null ? t : getGmlDocType(type);
 	}
 	public function usesStructs(type:CppType):Bool {

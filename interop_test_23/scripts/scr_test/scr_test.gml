@@ -42,5 +42,10 @@ function scr_test(_use_structs) {
     assert(iq_thing_get_count(th), 5);
     iq_thing_destroy(th);
     
+    var _id = iq_id_create();
+    assert(_id != undefined, true);
+    assert(iq_id_value(_id) != 0, true);
+    iq_id_destroy(_id);
+    
     trace(sfmt("Test OK! (use_structs=%)",_use_structs));
 }

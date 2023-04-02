@@ -100,6 +100,18 @@
             1,
             1,
           ],"resourceVersion":"1.0","name":"iq_thing_set_count_raw","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_create_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
+            1,
+            1,
+          ],"resourceVersion":"1.0","name":"iq_id_create_raw","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_value_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
+            1,
+            1,
+          ],"resourceVersion":"1.0","name":"iq_id_value_raw","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_destroy_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
+            1,
+            1,
+          ],"resourceVersion":"1.0","name":"iq_id_destroy_raw","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_def_ret_int_raw","kind":11,"help":"","hidden":true,"returnType":2,"argCount":2,"args":[
             1,
             1,
@@ -151,6 +163,9 @@
         {"name":"iq_thing_destroy_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_thing_get_count_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_thing_set_count_raw","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_create_raw","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_value_raw","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_destroy_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_def_ret_int_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_def_ret_string_raw","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_def_ret_string_raw_post","path":"extensions/interop_test/interop_test.yy",},
@@ -226,6 +241,13 @@
             2,
             2,
           ],"resourceVersion":"1.0","name":"iq_thing_set_count","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_create","kind":2,"help":"iq_id_create()->","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_id_create","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_value","kind":2,"help":"iq_id_value(id)->int","hidden":false,"returnType":2,"argCount":1,"args":[
+            2,
+          ],"resourceVersion":"1.0","name":"iq_id_value","tags":[],"resourceType":"GMExtensionFunction",},
+        {"externalName":"iq_id_destroy","kind":2,"help":"iq_id_destroy(id)","hidden":false,"returnType":2,"argCount":1,"args":[
+            2,
+          ],"resourceVersion":"1.0","name":"iq_id_destroy","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_def_ret_int","kind":2,"help":"iq_def_ret_int()->int","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_def_ret_int","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_def_ret_string","kind":2,"help":"iq_def_ret_string()->string","hidden":false,"returnType":2,"argCount":0,"args":[],"resourceVersion":"1.0","name":"iq_def_ret_string","tags":[],"resourceType":"GMExtensionFunction",},
         {"externalName":"iq_add_strlens","kind":2,"help":"iq_add_strlens(a:string, b:string, c:string, d:string)->int","hidden":false,"returnType":2,"argCount":4,"args":[
@@ -254,6 +276,9 @@
         {"name":"iq_thing_destroy","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_thing_get_count","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_thing_set_count","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_create","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_value","path":"extensions/interop_test/interop_test.yy",},
+        {"name":"iq_id_destroy","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_def_ret_int","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_def_ret_string","path":"extensions/interop_test/interop_test.yy",},
         {"name":"iq_add_strlens","path":"extensions/interop_test/interop_test.yy",},

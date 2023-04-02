@@ -358,6 +358,54 @@
                     "returnType": 2
                 },
                 {
+                    "id": "d2c2df99-a2ac-79d0-bd97-3480bd60bb6f",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        1
+                    ],
+                    "externalName": "iq_id_create_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_id_create_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "384320bd-cb56-f8bd-88ab-75685e65c6f1",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        1
+                    ],
+                    "externalName": "iq_id_value_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_id_value_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "f12d4392-1a68-5d29-204b-b57f7b7779a4",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        1
+                    ],
+                    "externalName": "iq_id_destroy_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_id_destroy_raw",
+                    "returnType": 2
+                },
+                {
                     "id": "4b5b4600-f7f9-2c49-062c-43f7c706ff26",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -907,6 +955,51 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_thing_set_count",
+                    "returnType": 2
+                },
+                {
+                    "id": "0a74b787-db01-5823-0de2-ea0482f1ab11",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 0,
+                    "args": [
+                        
+                    ],
+                    "externalName": "iq_id_create",
+                    "help": "iq_id_create()->",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_id_create",
+                    "returnType": 2
+                },
+                {
+                    "id": "1807f9ee-2efe-3b4f-a255-0cc608392e65",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_id_value",
+                    "help": "iq_id_value(id)->int",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_id_value",
+                    "returnType": 2
+                },
+                {
+                    "id": "a0c52bc4-70d6-5cf2-c53d-7486f8a4b054",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_id_destroy",
+                    "help": "iq_id_destroy(id)",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_id_destroy",
                     "returnType": 2
                 },
                 {
