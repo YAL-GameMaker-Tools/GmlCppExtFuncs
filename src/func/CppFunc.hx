@@ -300,6 +300,11 @@ class CppFunc {
 			gml.addFormat("%|var __size__ = %b;", gmlCall);
 			gml.addFormat("%|if (__size__ == 0) return %s;", _defValue);
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
+			gml.addFormat("%|// GMS >= 2.3:");
+			gml.addFormat("%|buffer_set_used_size(_buf, __size__);");
+			gml.addFormat("%|/*/");
+			gml.addFormat("%|buffer_poke(_buf, __size__ - 1, buffer_u8, 0);");
+			gml.addFormat("%|//*/");
 			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", dynSizePost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(true);

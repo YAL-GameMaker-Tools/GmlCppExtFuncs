@@ -77,11 +77,17 @@ class CppType {
 	
 	/** If this is a vector<T>, returns T */
 	public function unpackVector():CppType {
-		return name == "vector" ? params[0] : null;
+		return switch (name) {
+			case "vector", "tiny_array", "tiny_const_array": params[0];
+			default: null;
+		}
 	}
 	
 	public function unpackOptional():CppType {
-		return name == "optional" ? params[0] : null;
+		return switch (name) {
+			case "optional", "tiny_optional": params[0];
+			default: null;
+		}
 	}
 	
 	/** If this is a vector<T>, returns T */

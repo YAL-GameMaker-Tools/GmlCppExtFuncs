@@ -1,6 +1,8 @@
 package ;
 import proc.*;
 import proc.CppTypeProcSimple;
+import proc.CppTypeProcVector;
+import proc.CppTypeProcOptional;
 
 /**
  * ...
@@ -53,8 +55,11 @@ class CppTypeHelper {
 			"gml_id" => gmlID,
 			"gml_id_destroy" => gmlID,
 			"vector" => new CppTypeProcVector(),
+			"tiny_array" => new CppTypeProcTinyArray(),
+			"tiny_const_array" => new CppTypeProcTinyConstArray(),
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),
+			"tiny_optional" => new CppTypeProcOptional(),
 			"gml_buffer" => new CppTypeProcGmlBuffer(),
 			"GAME_HWND" => new CppTypeProcGameHwnd(),
 			"gml_asset_index_of" => new CppTypeProcAssetIndexOf(),

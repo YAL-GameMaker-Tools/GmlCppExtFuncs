@@ -55,3 +55,22 @@ class CppTypeProcVector extends CppTypeProc {
 		return '4 + $val.size() * sizeof($param)';
 	}
 }
+class CppTypeProcTinyArray extends CppTypeProcVector {
+	override public function cppRead(cpp:CppBuf, type:CppType):String {
+		return '#error Use tiny_const_array for function inputs';
+	}
+	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+		var ts = type.unpackVector().toCppType();
+		cpp.addFormat('%|_out.write_tiny_array<$ts>($val);');
+	}
+}
+class CppTypeProcTinyConstArray extends CppTypeProcVector {
+	override public function cppRead(cpp:CppBuf, type:CppType):String {
+		var ts = type.unpackVector().toCppType();
+		return '_in.read_tiny_const_array<$ts>()';
+	}
+	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+		var ts = type.unpackVector().toCppType();
+		cpp.addFormat('%|_out.write_tiny_const_array<$ts>($val);');
+	}
+}
