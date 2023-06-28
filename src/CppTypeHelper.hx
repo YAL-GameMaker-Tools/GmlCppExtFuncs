@@ -59,7 +59,7 @@ class CppTypeHelper {
 			"tiny_const_array" => new CppTypeProcTinyConstArray(),
 			"tuple" => new CppTypeProcTuple(),
 			"optional" => new CppTypeProcOptional(),
-			"tiny_optional" => new CppTypeProcOptional(),
+			"tiny_optional" => new CppTypeProcTinyOptional(),
 			"gml_buffer" => new CppTypeProcGmlBuffer(),
 			"GAME_HWND" => new CppTypeProcGameHwnd(),
 			"gml_asset_index_of" => new CppTypeProcAssetIndexOf(),
