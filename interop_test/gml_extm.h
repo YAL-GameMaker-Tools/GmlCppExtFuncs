@@ -114,7 +114,12 @@ struct RValue {
 	}
 };
 
+#define YYFuncArgs RValue& result, CInstance* self, CInstance* other, int argc, RValue* arg
+typedef void(*YYFunc) (YYFuncArgs);
+
 using YYResult = RValue;
+using YYSelf = CInstance*;
+using YYOther = CInstance*;
 struct YYRest {
 	int length;
 	RValue* items;
@@ -149,6 +154,7 @@ struct YYRest {
 #define __YYArg_int(name, v, i) if (!arg[i].tryGetInt(v)) __YYArgError(name, "an int", i);
 #define __YYArg_int64(name, v, i) if (!arg[i].tryGetInt64(v)) __YYArgError(name, "an int64", i);
 #define __YYArg_void_ptr(name, v, i) if (!arg[i].tryGetPtr(v)) __YYArgError(name, "a pointer", i);
+#define __YYArg_YYFunc(name, v, i) if (!arg[i].tryGetPtr(v)) __YYArgError(name, "a pointer", i);
 #define __YYArg_const_char_ptr(name, v, i) if (!arg[i].tryGetString(v)) __YYArgError(name, "a string", i);
 
 

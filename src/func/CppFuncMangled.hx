@@ -32,6 +32,13 @@ class CppFuncMangled {
 				} else argCall.addString("&result");
 				continue;
 			}
+			if (t.name == "YYSelf" || t.name == "YYOther") {
+				var isSelf = t.name == "YYSelf";
+				if (argCall.length > 0) argCall.addString(", ");
+				argCall.addString(isSelf ? "self" : "other");
+				continue;
+			}
+			
 			var isOpt = arg.value != null;
 			if (argDoc.length > 0) argDoc.addString(", ");
 			if (t.name == "YYRest") {
