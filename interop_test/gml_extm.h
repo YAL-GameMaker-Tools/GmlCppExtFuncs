@@ -39,7 +39,7 @@ struct RValue {
 	};
 	uint32_t flags = 0;
 	uint32_t kind = VALUE_REAL;
-	
+
 	inline bool needsFree() {
 		const auto flagSet = (1 << VALUE_STRING) | (1 << VALUE_OBJECT) | (1 << VALUE_ARRAY);
 		return ((1 << (kind & 31)) & flagSet) != 0;
@@ -62,10 +62,15 @@ struct RValue {
 		COPY_RValue(this, value);
 	}
 	
+	/*
+	note: for purposes of getting a number out of an RValue,
+	it seems more appropriate to discard the metadata bits of a VALUE_REF
+	*/
+	
 	inline int getInt32(int defValue = 0) {
 		switch (kind & MASK_KIND_RVALUE) {
 			case VALUE_REAL: case VALUE_BOOL: return (int)val;
-			case VALUE_INT32: return v32;
+			case VALUE_INT32: case VALUE_REF: return v32;
 			case VALUE_INT64: return (int)v64;
 			default: return defValue;
 		}
@@ -73,7 +78,7 @@ struct RValue {
 	inline int64_t getInt64(int64_t defValue = 0) {
 		switch (kind & MASK_KIND_RVALUE) {
 			case VALUE_REAL: case VALUE_BOOL: return (int64_t)val;
-			case VALUE_INT32: return v32;
+			case VALUE_INT32: case VALUE_REF: return v32;
 			case VALUE_INT64: return v64;
 			default: return defValue;
 		}
