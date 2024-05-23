@@ -25,6 +25,14 @@ class CppGen {
 		CppGenParser.procFile(path, cpp, indexStructs);
 	}
 	
+	public static function warn(text:String) {
+		#if js
+		js.Browser.console.warn(text);
+		#else
+		Sys.println(text);
+		#end
+	}
+	
 	public static function finish() {
 		var gml = new CppBuf();
 		var cpp = new CppBuf();
@@ -149,7 +157,7 @@ class CppGen {
 		finish();
 		#else
 		var h = new haxe.Http("test.cpp?v=" + Date.now().getTime());
-		h.onData = function(s) {
+		h.onData = function(cpp) {
 			procFile("test.cpp", cpp, true);
 			finish();
 		}

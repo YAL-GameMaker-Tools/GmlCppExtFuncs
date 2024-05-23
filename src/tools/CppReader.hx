@@ -144,7 +144,7 @@ class CppReader {
 	
 	public function getRow(pos:Int):Int {
 		var row = 0;
-		while (pos >= 0) {
+		while (pos > 0) {
 			row += 1;
 			pos = str.lastIndexOf("\n", pos - 1);
 		}

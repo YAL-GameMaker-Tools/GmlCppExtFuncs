@@ -32,7 +32,7 @@ class CppGenParser {
 				case "/".code: {
 					switch (q.peek()) {
 						case "/".code:
-							q.skip(2);
+							q.skip();
 							if (q.peek() == "/".code) q.skip();
 							q.skipLineSpaces();
 							if (q.peek() == "@".code
@@ -55,7 +55,7 @@ class CppGenParser {
 										q.skipLineSpaces();
 										defValue = q.readLine().trim();
 									default:
-										Sys.println("Unknown documentation tag "
+										CppGen.warn("Unknown documentation tag "
 											+ q.peeknAt(1, kwMacroLen) + ":" + meta);
 								}
 							} else q.skipUntil("\n".code);
