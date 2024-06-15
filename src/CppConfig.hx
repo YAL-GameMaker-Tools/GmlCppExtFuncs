@@ -17,7 +17,11 @@ class CppConfig {
 	public var exportPrefixM = "dllm";
 	public var functionTag = "dllg";
 	public var functionTagM = "dllgm";
-	public var useStructs = true;
+	//
+	public var storageMode:GmlStorageMode = GmlStorageMode.SmStruct;
+	public var boxMode:GmlBoxMode = GmlBoxMode.BmStruct;
+	public var isGMK = false;
+	//
 	public var structMode = "0";
 	public var structModeVal(get, never):Null<Bool>;
 	public var useWASM:Bool = false;
@@ -33,4 +37,23 @@ class CppConfig {
 		
 	}
 	
+}
+enum GmlStorageMode {
+	/** GMS 2.3.x and GM2022+ */
+	SmStruct;
+	/** GM:S to GMS 2.2.x */
+	SmArray;
+	/** GM8 and earlier */
+	SmMap;
+	/** GM8 and earlier */
+	SmList;
+}
+
+enum GmlBoxMode {
+	/** GMS 2.3.x and GM2022+ */
+	BmStruct;
+	/** GM:S to GMS 2.2.x */
+	BmArray;
+	/** GM8 and earlier */
+	BmList;
 }

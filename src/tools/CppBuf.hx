@@ -17,21 +17,42 @@ class CppBuf extends StringBuf {
 	public inline function addInt(i:Int) add(i);
 	public inline function addBuffer(b:StringBuf) add(b.toString());
 	
-	static var addFormat_map:Map<String, CppBufFormatMeta> = (function() {
+	static var addFormat_map:Map<String, CppBufFormatPart> = (function() {
 		inline function simple(fn:CppBufFormatFunc) {
 			return new CppBufFormatMeta(fn, true);
 		}
 		inline function arg(fn:CppBufFormatFunc) {
 			return new CppBufFormatMeta(fn, false);
 		}
+		inline function addVarDeclPre(b:CppBuf, name:Any) {
+			b.addFormat("var %s", name);
+			if (CppGen.config.isGMK) {
+				b.addFormat("; %s", name);
+			}
+		}
+		function addVarDecl(b:CppBuf, name:Any, val:Any) {
+			addVarDeclPre(b, name);
+			b.addString(" = ");
+			b.addString(val);
+		}
 		return [
-			"%s" => arg(function(b:CppBuf, val:Any, i:Int) b.addString(val)),
-			"%b" => arg(function(b:CppBuf, val:Any, i:Int) b.addBuffer(val)),
-			"%d" => arg(function(b:CppBuf, val:Any, i:Int) b.addInt(val)),
-			"%|" => simple(function(b:CppBuf, val:Any, i:Int) b.addLine(0)),
-			"%+" => simple(function(b:CppBuf, val:Any, i:Int) b.addLine(1)),
-			"%-" => simple(function(b:CppBuf, val:Any, i:Int) b.addLine( -1)),
-			"%{" => simple(function(b:CppBuf, val:Any, i:Int) {
+			"%s" => FOne((b, val) -> b.addString(val)),
+			"%b" => FOne((b, val) -> b.addBuffer(val)),
+			"%d" => FOne((b, val) -> b.addInt(val)),
+			"%vdp" => FOne((b, name) -> {
+				addVarDeclPre(b, name);
+			}),
+			"%vds" => FTwo(addVarDecl),
+			"%vdb" => FTwo((b, name, val) -> {
+				var old = CppGen.config.isGMK;
+				if (old) b.add("{ ");
+				addVarDecl(b, name, val);
+				if (old) b.add(" }");
+			}),
+			"%|" => FZero(b -> b.addLine(0)),
+			"%+" => FZero(b -> b.addLine(1)),
+			"%-" => FZero(b -> b.addLine( -1)),
+			"%{" => FZero(b -> {
 				b.add("{");
 				b.indent++;
 			}),
@@ -67,7 +88,7 @@ class CppBuf extends StringBuf {
 			}
 			var meta = addFormat_map[tag];
 			if (meta == null) throw 'Unknown format $tag in $fmt';
-			parts.push(meta.simple ? FSimple(meta.func) : FNext(meta.func));
+			parts.push(meta);
 			start = q.pos;
 		}
 		flush(q.pos);
@@ -80,14 +101,16 @@ class CppBuf extends StringBuf {
 		var argc = rest.length;
 		for (part in parts) {
 			switch (part) {
-				case FString(s):
-					addString(s);
-				case FSimple(f):
-					f(this, null, -1);
-				case FNext(f):
+				case FString(s): addString(s);
+				case FZero(f): f(this);
+				case FOne(f):
 					if (argi >= argc) throw "Not enough rest-arguments for %arg";
-					f(this, rest[argi], argi);
-					argi++;
+					f(this, rest[argi++]);
+				case FTwo(f):
+					if (argi + 1 >= argc) throw "Not enough rest-arguments for %arg";
+					var a = rest[argi++];
+					var b = rest[argi++];
+					f(this, a, b);
 			}
 		}
 		if (argi < argc) throw "Too many %args";
@@ -101,12 +124,15 @@ class CppBuf extends StringBuf {
 			switch (part) {
 				case FString(s):
 					b.addString(s);
-				case FSimple(f):
-					f(b, null, -1);
-				case FNext(f):
+				case FZero(f): f(b);
+				case FOne(f):
 					if (argi >= argc) throw "Not enough rest-arguments for %arg";
-					f(b, rest[argi], argi);
-					argi++;
+					f(b, rest[argi++]);
+				case FTwo(f):
+					if (argi + 1 >= argc) throw "Not enough rest-arguments for %arg";
+					var a = rest[argi++];
+					var c = rest[argi++];
+					f(b, a, c);
 			}
 		}
 		if (argi < argc) throw "Too many %args";
@@ -116,8 +142,9 @@ class CppBuf extends StringBuf {
 typedef CppBufFormatFunc = (b:CppBuf, val:Any, i:Int)->Void;
 enum CppBufFormatPart {
 	FString(s:String);
-	FSimple(fn:CppBufFormatFunc);
-	FNext(fn:CppBufFormatFunc);
+	FZero(fn:CppBuf->Void);
+	FOne(fn:CppBuf->Any->Void);
+	FTwo(fn:CppBuf->Any->Any->Void);
 }
 class CppBufFormatMeta {
 	public var func:CppBufFormatFunc;

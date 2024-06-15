@@ -1,4 +1,5 @@
 package ;
+import tools.GmkGen;
 import func.CppFunc;
 import func.CppFuncMangled;
 import haxe.io.Path;
@@ -20,6 +21,7 @@ class CppGen {
 	
 	public static var outCppPath:String = null;
 	public static var outGmlPath:String = null;
+	public static var outGmkPath:String = null;
 	
 	public static inline function procFile(path:String, cpp:String, indexStructs:Bool) {
 		CppGenParser.procFile(path, cpp, indexStructs);
@@ -33,17 +35,39 @@ class CppGen {
 		#end
 	}
 	
+	static function writeIfNotSame(path:String, text:String) {
+		#if sys
+		if (!FileSystem.exists(path)) {
+			File.saveContent(path, text);
+		} else {
+			var curr = try {
+				File.getContent(path);
+			} catch (x:Dynamic) null;
+			if (curr != text) File.saveContent(path, text);
+		}
+		#else
+		trace(path);
+		trace(text);
+		#end
+	}
+	
 	public static function finish() {
 		var gml = new CppBuf();
 		var cpp = new CppBuf();
 		
-		for (line in config.prepend) cpp.addFormat("%s%|", line);
+		for (line in config.prepend) {
+			cpp.addFormat("%s%|", line);
+		}
 		for (fn in CppFunc.list) if (fn.isMangled) {
 			config.includes.insert(1, "gml_extm.h");
 			break;
 		}
 		for (inc in config.includes) {
 			cpp.addFormat('#include "%s"%|', inc);
+		}
+		
+		if (outGmkPath != null) {
+			cpp.addFormat("gmk_buffer %s;%|", GmkGen.argBuffer);
 		}
 		
 		if (CppStruct.list.length > 0) {
@@ -78,23 +102,13 @@ class CppGen {
 		
 		for (line in config.append) cpp.addFormat("%|%s", line);
 		
-		#if sys
-		inline function writeIfNotSame(path:String, text:String) {
-			if (!FileSystem.exists(path)) {
-				File.saveContent(path, text);
-			} else {
-				var curr = try {
-					File.getContent(path);
-				} catch (x:Dynamic) null;
-				if (curr != text) File.saveContent(path, text);
-			}
+		var gmlCode = gml.toString();
+		var cppCode = cpp.toString();
+		if (outGmkPath != null) {
+			cppCode = tools.GmkGen.run(gmlCode, cppCode);
 		}
-		writeIfNotSame(outGmlPath, gml.toString());
-		writeIfNotSame(outCppPath, cpp.toString());
-		#else
-		trace(gml.toString());
-		trace(cpp.toString());
-		#end
+		writeIfNotSame(outGmlPath, gmlCode);
+		writeIfNotSame(outCppPath, cppCode);
 	}
 	#if sys
 	static function procArg(full:String, indexStructs:Bool) {
@@ -139,6 +153,7 @@ class CppGen {
 				case "--gml": outGmlPath = args[i + 1]; 2;
 				case "--cpp": outCppPath = args[i + 1]; 2;
 				case "--wasm": config.useWASM = true; 1;
+				case "--gmk": outGmkPath = args[i + 1]; 2;
 				#if sys
 				case "--index": procArg(args[i + 1], false); 2;
 				#end

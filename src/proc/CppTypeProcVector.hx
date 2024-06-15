@@ -10,12 +10,21 @@ class CppTypeProcVector extends CppTypeProc {
 		var _arr = '_arr_$z';
 		var _ind = '_ind_$z';
 		var _len = '_len_$z';
+		var isGMK = CppGen.config.isGMK;
 		gml.addFormat("var %s = buffer_read(_buf, buffer_u32);", _len);
-		gml.addFormat("%|var %s = array_create(%s);", _arr, _len);
-		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) %{", _ind, _ind, _len, _ind);
+		if (isGMK) {
+			gml.addFormat("%|%vdp = ds_list_create();", _arr);
+		} else {
+			gml.addFormat("%|%vdp = array_create(%s);", _arr, _len);
+		}
+		gml.addFormat("%|for (%vdb; %s < %s; %s += 1) %{", _ind,"0", _ind,_len, _ind);
 		var vect = type.params[0];
 		var val = vect.proc.gmlRead(gml, vect, z +1);
-		gml.addFormat("%|%s[%s] = %s;", _arr, _ind, val);
+		if (isGMK) {
+			gml.addFormat("%|ds_list_add(%s, %s);", _arr, val);
+		} else {
+			gml.addFormat("%|%s[%s] = %s;", _arr, _ind, val);
+		}
 		gml.addFormat("%-}");
 		return _arr;
 	}
@@ -23,12 +32,19 @@ class CppTypeProcVector extends CppTypeProc {
 		var _arr = '_arr_$z';
 		var _ind = '_ind_$z';
 		var _len = '_len_$z';
-		gml.addFormat("%|var %s = %s;", _arr, val);
-		gml.addFormat("%|var %s = array_length_1d(%s);", _len, _arr);
+		var isGMK = CppGen.config.isGMK;
+		gml.addFormat("%|%vdp = %s;", _arr, val);
+		gml.addFormat("%|%vdp = %s(%s);", _len,
+			isGMK ? "ds_list_size" : "array_length_1d", _arr
+		);
 		gml.addFormat("%|buffer_write(_buf, buffer_u32, %s);", _len);
-		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) %{", _ind, _ind, _len, _ind);
+		gml.addFormat("%|for (%vdb; %s < %s; %s += 1) %{", _ind,"0", _ind,_len, _ind);
 		var vect = type.params[0];
-		vect.proc.gmlWrite(gml, vect, z + 1, '$_arr[$_ind]');
+		if (isGMK) {
+			vect.proc.gmlWrite(gml, vect, z + 1, 'ds_list_find_value($_arr, $_ind)');
+		} else {
+			vect.proc.gmlWrite(gml, vect, z + 1, '$_arr[$_ind]');
+		}
 		gml.addFormat("%-}");
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType):String {

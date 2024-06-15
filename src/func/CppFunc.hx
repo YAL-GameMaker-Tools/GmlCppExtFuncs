@@ -176,12 +176,21 @@ class CppFunc {
 		//
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
+		if (CppGen.outGmkPath != null) {
+			cppArgs.addFormat("auto _gmkb = %s.data();%|", tools.GmkGen.argBuffer);
+			cppArgs.addFormat("if (_gmkb) %s = _gmkb;%|", argPtr);
+		}
 		cppArgs.addFormat("gml_istream _in(%s);", argPtr);
 		
 		var gmlCall = new CppBuf();
 		gmlCall.addFormat("%s(buffer_get_address(_buf), %d", cppName, bufSize);
 		
-		gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
+		var hasGMK = CppGen.outGmkPath != null;
+		if (hasGMK) {
+			gml.addFormat("var _buf; _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
+		} else {
+			gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
+		}
 		var hasBufArgs = false;
 		var argi = 0;
 		for (i => arg in args) {
@@ -211,31 +220,59 @@ class CppFunc {
 		var structMode = CppGen.config.structMode;
 		var structModeVal = CppGen.config.structModeVal;
 		var structModeCond = structMode != "auto";
-		inline function structModeProc(_proc:Void->Void, useStructs:Void->Bool) {
-			inline function proc(z:Bool) {
-				CppGen.config.useStructs = z;
+		function structModeProc(_proc:Void->Void, useStructs:Void->Bool) {
+			function proc(sm, bm, gmk = false) {
+				config.storageMode = sm;
+				config.boxMode = bm;
+				config.isGMK = gmk;
 				_proc();
 			}
-			if (structModeVal != null) {
-				proc(structModeVal);
+			var gmk = CppGen.outGmkPath != null;
+			if (gmk) {
+				var arrayOnly = structModeVal == false || !useStructs();
+				if (arrayOnly) {
+					gml.addFormat("%|/* GMS >= 1:");
+					proc(SmArray, BmArray);
+					gml.addFormat("%|//*/");
+				} else {
+					gml.addFormat("%|/* GMS >= 2.3:");
+					proc(SmStruct, BmStruct);
+					gml.addFormat("%|//*/");
+					gml.addFormat("%|/* GMS < 2.3 && GMS >= 1:");
+					proc(SmArray, BmArray);
+					gml.addFormat("%|//*/");
+				}
+				gml.addFormat("%|// GMS < 1:");
+				proc(arrayOnly ? SmList : SmMap, BmList, true);
+				gml.addFormat("%|//*/");
+			} else if (structModeVal != null) {
+				if (structModeVal) {
+					proc(SmStruct, BmStruct);
+				} else {
+					proc(SmArray, BmArray);
+				}
 			} else {
 				if (useStructs()) {
 					gml.addFormat("%|// GMS >= 2.3:");
-					if (structModeCond) gml.addFormat("%|if (%s) %{", structMode);
-					proc(true);
+					if (structModeCond) {
+						gml.addFormat("%|if (%s) %{", structMode);
+					}
+					proc(SmStruct, BmStruct);
 					if (structModeCond) {
 						gml.addFormat("%-} else //*/");
 						gml.addFormat("%|%{");
 					} else {
 						gml.addFormat("%|/*/");
 					}
-					proc(false);
+					proc(SmArray, BmArray);
 					if (structModeCond) {
 						gml.addFormat("%-}");
 					} else {
 						gml.addFormat("%|//*/");
 					}
-				} else proc(false);
+				} else {
+					proc(SmArray, BmArray);
+				}
 			}
 		}
 		//
@@ -286,7 +323,7 @@ class CppFunc {
 				if (pre) gml.addLine();
 				var rx = retTypeProc.gmlRead(gml, retType, 0);
 				if (gmlCleanup.length > 0) {
-					gml.addFormat("%|var _result = %s;", rx);
+					gml.addFormat("%|%vdp = %s;", "_result", rx);
 					gml.addBuffer(gmlCleanup);
 					gml.addFormat("%|return _result;");
 				} else gml.addFormat("%|return %s;", rx);
@@ -295,16 +332,42 @@ class CppFunc {
 			});
 		}
 		//
-		var _defValue = defValue != null ? defValue : "undefined";
+		var _retDefault:Array<String>;
+		if (CppGen.outGmkPath != null && defValue == null) {
+			_retDefault = [
+				'// GMS >= 1:',
+				'return undefined;',
+				'/*/',
+				'return -1;',
+				'//*/',
+			];
+		} else {
+			_retDefault = [
+				'return ' + (defValue ?? "undefined") + ';'
+			];
+		}
+		inline function addDefaultRet() {
+			if (_retDefault.length != 1) {
+				gml.addFormat("%{");
+				for (line in _retDefault) {
+					gml.addFormat("%|%s", line);
+				}
+				gml.addFormat("%-}");
+			} else {
+				gml.addString(_retDefault[0]);
+			}
+		}
 		if (dynSizeSnip != null) {
-			gml.addFormat("%|var __size__ = %b;", gmlCall);
-			gml.addFormat("%|if (__size__ == 0) return %s;", _defValue);
+			gml.addFormat("%|%vdp = %b;", "__size__", gmlCall);
+			gml.addFormat("%|if (__size__ == 0) "); addDefaultRet();
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
+			
 			gml.addFormat("%|// GMS >= 2.3:");
 			gml.addFormat("%|buffer_set_used_size(_buf, __size__);");
 			gml.addFormat("%|/*/");
 			gml.addFormat("%|buffer_poke(_buf, __size__ - 1, buffer_u8, 0);");
 			gml.addFormat("%|//*/");
+			
 			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", dynSizePost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			printReturn(true);
@@ -313,13 +376,17 @@ class CppFunc {
 			gml.addBuffer(gmlCleanup);
 		} else if (retGcType != null) {
 			if (gmlCleanup.length > 0) {
-				gml.addFormat("%|var _result = %b;%b%|return _result;", gmlCall, gmlCleanup);
+				gml.addFormat("%|%vdp = %b;", "_result", gmlCall);
+				gml.addBuffer(gmlCleanup);
+				gml.addFormat("%|return _result;");
 			} else gml.addFormat("%|return %b;", gmlCall);
 		} else {
 			gml.addFormat("%|if (%b) %{", gmlCall);
-			if (hasBufArgs) gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
+			if (hasBufArgs) {
+				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
+			}
 			printReturn(false);
-			gml.addFormat("%-} else return %s;", _defValue);
+			gml.addFormat("%-} else "); addDefaultRet();
 		}
 		//
 		cpp.addFormat("%-}%|%|");

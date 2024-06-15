@@ -21,7 +21,7 @@ class CppTypeProcOptional extends CppTypeProc {
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var v = '_val_$z';
-		gml.addFormat("%|var %s = %s;", v, val);
+		gml.addFormat("%|%vdp = %s;", v, val);
 		gml.addFormat("%|buffer_write(_buf, buffer_bool, %s != undefined);", v);
 		gml.addFormat("%|if (%s != undefined) %{", v);
 		var t = unpack(type);
