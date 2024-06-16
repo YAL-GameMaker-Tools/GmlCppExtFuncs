@@ -113,9 +113,14 @@ class GmkGen {
 				cppBuf.addFormat("%s double %s(double val) {%+", ep, fnWrite);
 				var isU64 = t.gmlType == "u64";
 				if (isU64) {
-					cppBuf.addFormat("#ifdef TINY");
-					cppBuf.addFormat("%|// todo: __ftol equivalent");
-					cppBuf.addFormat("%|%s.write((int64_t)(int)val);", argBuffer);
+					// oh no
+					cppBuf.addFormat("#if defined(TINY) && (INTPTR_MAX == INT32_MAX)");
+					cppBuf.addFormat("%|int64_t result;");
+					cppBuf.addFormat("%|__asm {");
+					cppBuf.addFormat("%+fld val");
+					cppBuf.addFormat("%|fistp result");
+					cppBuf.addFormat("%-}");
+					cppBuf.addFormat("%|%s.write(result);", argBuffer);
 					cppBuf.addFormat("%|#else%|");
 				}
 				cppBuf.addFormat("%s.write((%s)val);", argBuffer, t.cppType);
