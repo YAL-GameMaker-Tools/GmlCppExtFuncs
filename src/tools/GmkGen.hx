@@ -36,16 +36,21 @@ class GmkGen {
 		var config = CppGen.config;
 		var ep = config.exportPrefix;
 		var hp = config.helperPrefix;
+		inline function addGMKI() {
+			cppBuf.addFormat("/// #gmki%|");
+		}
 		//
 		{
-			var rxPrepare = new EReg("\\b" + hp + "_prepare_buffer" + "\\b", "g");
+			var rxPrepare = new EReg("\\b" + hp + "_prepare_buffer" + "\\b"
+			+ "\\(" + "(.*?)" + "\\)", "g");
 			var fnPrepare = hp + "_gmkb_prepare";
 			var found = false;
 			gml = rxPrepare.map(gml, function(rx) {
 				found = true;
-				return fnPrepare;
+				return "external_call(global.f_" + fnPrepare + ", " + rx.matched(1) + ")";
 			});
 			if (found) {
+				addGMKI();
 				cppBuf.addFormat("%s double %s(double _size) {", ep, fnPrepare);
 				cppBuf.addFormat("%+%s.prepare((int)_size);", argBuffer);
 				cppBuf.addFormat("%|return 1;");
@@ -59,9 +64,10 @@ class GmkGen {
 			var found = false;
 			gml = rxRewind.map(gml, rx -> {
 				found = true;
-				return fnRewind + "()";
+				return "external_call(global.f_" + fnRewind + ")";
 			});
 			if (found) {
+				addGMKI();
 				cppBuf.addFormat("%s double %s() {", ep, fnRewind);
 				cppBuf.addFormat("%+%s.rewind();", argBuffer);
 				cppBuf.addFormat("%|return 1;");
@@ -79,13 +85,14 @@ class GmkGen {
 			var found = false;
 			gml = rxRead.map(gml, function(rx) {
 				found = true;
-				return fnRead + "()";
+				return "external_call(global.f_" + fnRead + ")";
 			});
 			if (found) {
 				if (!prefix) {
 					prefix = true;
 					cppBuf.addFormat("// reads:%|");
 				}
+				addGMKI();
 				cppBuf.addFormat("%s double %s() {", ep, fnRead);
 				cppBuf.addFormat("%+return (double)%s.read<%s>();", argBuffer, t.cppType);
 				cppBuf.addFormat("%-}%|");
@@ -103,13 +110,14 @@ class GmkGen {
 			var found = false;
 			gml = rxWrite.map(gml, function(rx) {
 				found = true;
-				return fnWrite + "(" + rx.matched(1) + ")";
+				return "external_call(global.f_" + fnWrite + ", " + rx.matched(1) + ")";
 			});
 			if (found) {
 				if (!prefix) {
 					prefix = true;
 					cppBuf.addFormat("// writes:%|");
 				}
+				addGMKI();
 				cppBuf.addFormat("%s double %s(double val) {%+", ep, fnWrite);
 				var isU64 = t.gmlType == "u64";
 				if (isU64) {
@@ -129,6 +137,15 @@ class GmkGen {
 				cppBuf.addFormat("%-}%|");
 			}
 		}
+		//
+		gml = new EReg(""
+			+ "(\\w+_raw)"
+			+ "\\("
+			+ "buffer_get_address\\(_buf\\)"
+		, "g").map(gml, function(rx) {
+			return "external_call(global.f_" + rx.matched(1) + ', ""';
+		});
+		//
 		gml = StringTools.replace(gml, "buffer_get_address(_buf)", '""');
 		
 		#if sys
