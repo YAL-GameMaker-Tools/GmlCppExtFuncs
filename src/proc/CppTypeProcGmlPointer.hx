@@ -79,9 +79,13 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 					gml.addFormat("%|ds_list_destroy(%s);", _box);
 			}
 		}
-		gml.addFormat("%|buffer_write(_buf, buffer_u64, %s);",
-			(isGMK || isID) ? _ptr : 'int64($_ptr)'
-		);
+		if (isGMK) {
+			gml.addFormat('%|%bw;', 'ptr', _ptr);
+		} else if (!isID) {
+			gml.addFormat('%|%bw;', 'u64', 'int64($_ptr)');
+		} else {
+			gml.addFormat('%|%bw;', 'u64', _ptr);
+		}
 	}
 	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
 		var boxMode = CppGen.config.boxMode;
@@ -110,6 +114,9 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		return _box;
 	}
 	override public function usesStructs(type:CppType):Bool {
+		return true;
+	}
+	override public function usesGmkSpec(type:CppType):Bool {
 		return true;
 	}
 }

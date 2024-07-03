@@ -89,9 +89,20 @@ class CppTypeProc {
 		if (t == null) t = CppType.docNames[type.docKeyFull];
 		return t != null ? t : getGmlDocType(type);
 	}
+	
+	/** Does this use structs? (and might need a conditional block) */
 	public function usesStructs(type:CppType):Bool {
 		return false;
 	}
+	
+	/** Does this use GM<=8.1 logic? (and might need another conditional block) */
+	public function usesGmkSpec(type:CppType):Bool {
+		return false;
+	}
+	
+	/**
+	 * Some things (such as GameHwnd) are passed to C++, but are not passed to the GML wrapper.
+	 */
 	public function useGmlArgument():Bool {
 		return true;
 	}

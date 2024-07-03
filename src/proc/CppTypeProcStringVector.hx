@@ -23,10 +23,9 @@ class CppTypeProcStringVector extends CppTypeProc {
 		var _len = '_len_$z';
 		gml.addFormat("%|var %s = %s;", _arr, val);
 		gml.addFormat("%|var %s = array_length_1d(%s);", _len, _arr);
-		gml.addFormat("%|buffer_write(_buf, buffer_u32, %s);", _len);
+		gml.addFormat('%|%bw;', 'u32', _len);
 		gml.addFormat("%|for (var %s = 0; %s < %s; %s++) %{", _ind, _ind, _len, _ind);
-		var vect = type.params[0];
-		gml.addFormat("%|buffer_write(_buf, buffer_string, %s[%s]);", _arr, _ind);
+			gml.addFormat('%|%bw;', 'string', '$_arr[$_ind]');
 		gml.addFormat("%-}");
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType):String {

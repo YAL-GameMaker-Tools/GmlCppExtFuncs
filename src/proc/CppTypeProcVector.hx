@@ -37,7 +37,7 @@ class CppTypeProcVector extends CppTypeProc {
 		gml.addFormat("%|%vdp = %s(%s);", _len,
 			isGMK ? "ds_list_size" : "array_length_1d", _arr
 		);
-		gml.addFormat("%|buffer_write(_buf, buffer_u32, %s);", _len);
+		gml.addFormat('%|%bw;', 'u32', _len);
 		gml.addFormat("%|for (%vdb; %s < %s; %s += 1) %{", _ind,"0", _ind,_len, _ind);
 		var vect = type.params[0];
 		if (isGMK) {
@@ -65,6 +65,10 @@ class CppTypeProcVector extends CppTypeProc {
 	override public function usesStructs(type:CppType):Bool {
 		var t = type.params[0];
 		return t.proc.usesStructs(t);
+	}
+	override public function usesGmkSpec(type:CppType):Bool {
+		var t = type.params[0];
+		return t.proc.usesGmkSpec(t);
 	}
 	override public function getDynSize(type:CppType, val:String):String {
 		var param = type.unpackVector().toCppType();

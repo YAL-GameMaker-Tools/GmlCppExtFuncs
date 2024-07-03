@@ -180,4 +180,7 @@ class CppTypeProcStruct extends CppTypeProc {
 	override public function usesStructs(type:CppType):Bool {
 		return true;
 	}
+	override public function usesGmkSpec(type:CppType):Bool {
+		return true;
+	}
 }

@@ -9,6 +9,7 @@ import sys.io.File;
 	@author YellowAfterlife
 **/
 class GmkGen {
+	public static var usedHelpers:Map<String, Bool> = new Map();
 	static var numberTypes:Array<GmkGenPair> = (function() {
 		var result:Array<GmkGenPair> = [];
 		function add(gmlType:String, cppType:String) {
@@ -36,6 +37,7 @@ class GmkGen {
 		var config = CppGen.config;
 		var ep = config.exportPrefix;
 		var hp = config.helperPrefix;
+		gml = tools.GmlConditionalComments.proc(gml, 0.81, true);
 		inline function addGMKI() {
 			cppBuf.addFormat("/// #gmki%|");
 		}
@@ -75,31 +77,64 @@ class GmkGen {
 			}
 		};
 		//
-		var prefix = false;
+		var startedSection = false;
+		inline function beginSection() {
+			startedSection = false;
+		}
+		inline function ensureSection(name:String) {
+			if (!startedSection) {
+				startedSection = true;
+				cppBuf.addFormat("// %s:%|", name);
+			}
+		}
+		// number reads:
+		beginSection();
 		for (t in numberTypes) {
 			var rxRead = new EReg("\\b" + "buffer_read" + "\\("
 				+ "\\s*" + "_buf,"
 				+ "\\s*" + "buffer_" + t.gmlType
 			+ "\\)", "g");
 			var fnRead = hp + "_gmkb_read_" + t.gmlType;
-			var found = false;
+			
+			var found = usedHelpers[fnRead];
 			gml = rxRead.map(gml, function(rx) {
 				found = true;
 				return "external_call(global.f_" + fnRead + ")";
 			});
+			
 			if (found) {
-				if (!prefix) {
-					prefix = true;
-					cppBuf.addFormat("// reads:%|");
-				}
+				ensureSection("reads");
 				addGMKI();
 				cppBuf.addFormat("%s double %s() {", ep, fnRead);
 				cppBuf.addFormat("%+return (double)%s.read<%s>();", argBuffer, t.cppType);
 				cppBuf.addFormat("%-}%|");
 			}
 		}
-		//
-		prefix = false;
+		// number writes:
+		beginSection();
+		if (true) { // ptr as u64 (but this is x86 so we're only using the lower 32 bits)
+			var rxWrite = new EReg("\\b" + "buffer_write" + "\\("
+				+ "\\s*" + "_buf,"
+				+ "\\s*" + "buffer_ptr" + ","
+				+ "\\s*" + "(.+?)" // -> arg
+			+ "\\)", 'g');
+			var fnWrite = hp + "_gmkb_write_ptr";
+			
+			var found = usedHelpers[fnWrite];
+			gml = rxWrite.map(gml, function(rx) {
+				found = true;
+				return "external_call(global.f_" + fnWrite + ", " + rx.matched(1) + ")";
+			});
+			
+			if (found) {
+				ensureSection("writes");
+				addGMKI();
+				cppBuf.addFormat("%s double %s(double val) {%+", ep, fnWrite);
+				cppBuf.addFormat("%s.write((int64_t)(int32_t)val);", argBuffer);
+				cppBuf.addFormat("%|return 1;");
+				cppBuf.addFormat("%-}%|");
+			}
+		}
 		for (t in numberTypes) {
 			var rxWrite = new EReg("\\b" + "buffer_write" + "\\("
 				+ "\\s*" + "_buf,"
@@ -107,16 +142,15 @@ class GmkGen {
 				+ "\\s*" + "(.+?)" // -> arg
 			+ "\\)", 'g');
 			var fnWrite = hp + "_gmkb_write_" + t.gmlType;
-			var found = false;
+			
+			var found = usedHelpers[fnWrite];
 			gml = rxWrite.map(gml, function(rx) {
 				found = true;
 				return "external_call(global.f_" + fnWrite + ", " + rx.matched(1) + ")";
 			});
+			
 			if (found) {
-				if (!prefix) {
-					prefix = true;
-					cppBuf.addFormat("// writes:%|");
-				}
+				ensureSection("writes");
 				addGMKI();
 				cppBuf.addFormat("%s double %s(double val) {%+", ep, fnWrite);
 				var isU64 = t.gmlType == "u64";

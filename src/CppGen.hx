@@ -22,6 +22,10 @@ class CppGen {
 	public static var outCppPath:String = null;
 	public static var outGmlPath:String = null;
 	public static var outGmkPath:String = null;
+	public static var hasGmkPath(get, never):Bool;
+	static function get_hasGmkPath(){
+		return outGmkPath != null;
+	}
 	
 	public static inline function procFile(path:String, cpp:String, indexStructs:Bool) {
 		CppGenParser.procFile(path, cpp, indexStructs);

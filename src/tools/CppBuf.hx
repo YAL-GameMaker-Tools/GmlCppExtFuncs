@@ -26,7 +26,7 @@ class CppBuf extends StringBuf {
 		}
 		inline function addVarDeclPre(b:CppBuf, name:Any) {
 			b.addFormat("var %s", name);
-			if (CppGen.config.isGMK) {
+			if (CppGen.hasGmkPath) {
 				b.addFormat("; %s", name);
 			}
 		}
@@ -48,6 +48,16 @@ class CppBuf extends StringBuf {
 				if (old) b.add("{ ");
 				addVarDecl(b, name, val);
 				if (old) b.add(" }");
+			}),
+			"%bw" => FTwo((b, type, val) -> {
+				var config = CppGen.config;
+				if (config.isGMK) {
+					var f = config.helperPrefix + "_gmkb_write_" + type;
+					GmkGen.usedHelpers[f] = true;
+					b.addFormat('external_call(global.f_%s, %s)', f, val);
+				} else {
+					b.addFormat('buffer_write(_buf, buffer_%s, %s)', type, val);
+				}
 			}),
 			"%|" => FZero(b -> b.addLine(0)),
 			"%+" => FZero(b -> b.addLine(1)),

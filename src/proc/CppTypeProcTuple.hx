@@ -45,4 +45,8 @@ class CppTypeProcTuple extends CppTypeProc {
 		for (t in type.params) if (t.proc.usesStructs(t)) return true;
 		return false;
 	}
+	override public function usesGmkSpec(type:CppType):Bool {
+		for (t in type.params) if (t.proc.usesGmkSpec(t)) return true;
+		return false;
+	}
 }

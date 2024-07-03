@@ -37,27 +37,28 @@ class CppTypeProcGmlBuffer extends CppTypeProc {
 			var pfx = CppGen.config.helperPrefix;
 			var vlen = '_len_$z';
 			gml.addFormat("%|if (%(s)_is_js) %{", pfx);
-			gml.addFormat("%|var %s = buffer_get_size(%s);", vlen, v);
-			gml.addFormat("%|%s = %(s)_wasm_alloc(%s", vwb, pfx, vlen);
-			if (getArgUses().isInput) gml.addFormat(", buffer_get_address(%s)", v);
-			gml.addString(");");
-			gml.addFormat("%|buffer_write(_buf, buffer_u64, %s);", vwb);
-			gml.addFormat("%|buffer_write(_buf, buffer_s32, %s);", vlen);
-			gml.addFormat("%|buffer_write(_buf, buffer_s32, buffer_tell(%s));", v);
+				gml.addFormat("%|var %s = buffer_get_size(%s);", vlen, v);
+				gml.addFormat("%|%s = %(s)_wasm_alloc(%s", vwb, pfx, vlen);
+				if (getArgUses().isInput) gml.addFormat(", buffer_get_address(%s)", v);
+				gml.addString(");");
+				gml.addFormat('%|%bw;', 'u64', vwb);
+				gml.addFormat('%|%bw;', 's32', vlen);
+				gml.addFormat('%|%bw;', 's32', 'buffer_tell($v)');
 			gml.addFormat("%-} else %{");
 		}
 		
 		// native:
-		gml.addFormat("%|buffer_write(_buf, buffer_u64, int64(buffer_get_address(%s)));", v);
-		gml.addFormat("%|buffer_write(_buf, buffer_s32, buffer_get_size(%s));", v);
-		gml.addFormat("%|buffer_write(_buf, buffer_s32, buffer_tell(%s));", v);
-		if (wasm) gml.addFormat("%-}");
+		gml.addFormat('%|%bw;', 'u64', 'int64(buffer_get_address($v))');
+		gml.addFormat('%|%bw;', 's32', 'buffer_get_size($v)');
+		gml.addFormat('%|%bw;', 's32', 'buffer_tell($v)');
+		if (wasm) gml.addFormat("%-}"); // closes if-js-else
 		
+		// no buffer:
 		gml.addFormat("%-} else %{");
 		if (wasm) gml.addFormat("%|%s = undefined;", vwb);
-		gml.addFormat("%|buffer_write(_buf, buffer_u64, 0);");
-		gml.addFormat("%|buffer_write(_buf, buffer_s32, 0);");
-		gml.addFormat("%|buffer_write(_buf, buffer_s32, 0);");
+		gml.addFormat('%|%bw;', 'u64', '0');
+		gml.addFormat('%|%bw;', 's32', '0');
+		gml.addFormat('%|%bw;', 's32', '0');
 		gml.addFormat("%-}");
 	}
 	override public function gmlCleanup(gml:CppBuf, type:CppType, z:Int, val:String):Void {
