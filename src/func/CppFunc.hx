@@ -95,18 +95,28 @@ class CppFunc {
 		}
 	}
 	
-	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool):Int {
+	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool, argGcTypes):Int {
 		if (retCppType == null) retCppType = retType.toCppType();
 		var bufSize = 0;
+		var ptrArgCount = 2;
 		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
 		for (i => arg in args) {
+			
 			if (generateFuncExtern) {
 				if (i > 0) cpp.addString(", ");
 				CppFuncArg.current = arg;
 				cpp.addFormat("%s %s", arg.type.toCppType(), arg.name);
 			}
-			if (arg.value != null) bufSize += 1;
-			if (calcBufSize) bufSize += arg.type.getSize();
+			if (calcBufSize) {
+				if (arg.value != null) bufSize += 1;
+				
+				var argGcType = argGcTypes != null ? argGcTypes[i] : null;
+				if (!gcTypeUsesBuffer(argGcType) && ptrArgCount < 4) {
+					ptrArgCount += 1;
+				} else {
+					bufSize += arg.type.getSize();
+				}
+			}
 		}
 		if (generateFuncExtern) cpp.addFormat(");%|");
 		return bufSize;
@@ -144,7 +154,7 @@ class CppFunc {
 		printGmlDoc(gml, hasReturn, retTypeProc);
 		
 		// print extern function signature:
-		var bufSize = printExtern(cpp, retCppType, true);
+		var bufSize = printExtern(cpp, retCppType, true, argGcTypes);
 		if (retGcType == null) {
 			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;

@@ -12,7 +12,7 @@ class CppFuncMangled {
 		isUsed = true;
 		var retCppType = fn.retType.toCppType();
 		var retVoid = retCppType == "void";
-		fn.printExtern(cpp, retCppType, false);
+		fn.printExtern(cpp, retCppType, false, null);
 		var config = CppGen.config;
 		
 		var argDoc:CppBuf = new CppBuf();
