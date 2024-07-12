@@ -11,13 +11,17 @@ class CppTypeProc {
 	}
 	
 	/**
-	 * Should append GML code to read a value written by C++ from `_buf`.
-	 * Additional lines should be prepended with a line break (or use gml.addFormat("%|...")).
-	 * @param	gml    (code buffer)
-	 * @param	type   Value type
-	 * @param	depth  (for generating non-conflicting local variable names)
-	 * @return	GML code for use as a final value
-	 */
+		Should return a snip of GML code to read a value (that was written by C++) from `_buf`.
+		
+		GML code can be appended into `gml` if additional logic is necessary.
+		
+		When doing so, each line should be followed by a linebreak (or addFormat("...%|"))
+		
+		@param	gml    (code buffer)
+		@param	type   Value type
+		@param	depth  (for generating non-conflicting local variable names)
+		@return	GML code for use as a final value
+	**/
 	public function gmlRead(gml:CppBuf, type:CppType, depth:Int):String {
 		throw "todo";
 	}

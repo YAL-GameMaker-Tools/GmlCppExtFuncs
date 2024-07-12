@@ -350,6 +350,7 @@ class CppFunc {
 			if (hasBufArgs) {
 				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			}
+			gml.addLine();
 			printReturn(false);
 			gml.addFormat("%-} else "); addDefaultRet();
 		}

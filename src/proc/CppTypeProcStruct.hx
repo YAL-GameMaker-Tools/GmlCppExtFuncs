@@ -69,7 +69,7 @@ class CppTypeProcStruct extends CppTypeProc {
 			var align = fd.type.getAlignment();
 			var pad = calcPadding(pos, align);
 			if (pad > 0) {
-				gml.addFormat("buffer_seek(_buf, buffer_seek_relative, %d); // align to %d (offset %d)%|", pad, align, pos+pad);
+				gml.addFormat("%|buffer_seek(_buf, buffer_seek_relative, %d); // align to %d (offset %d)", pad, align, pos+pad);
 				pos += pad;
 			}
 			

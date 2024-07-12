@@ -25,7 +25,7 @@ class CppTypeProcVector extends CppTypeProc {
 		} else {
 			gml.addFormat("%|%s[%s] = %s;", _arr, _ind, val);
 		}
-		gml.addFormat("%-}");
+		gml.addFormat("%-}%|");
 		return _arr;
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
