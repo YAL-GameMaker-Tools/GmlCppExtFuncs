@@ -40,4 +40,5 @@ class CppTypeProcStringVector extends CppTypeProc {
 	override public function usesStructs(type:CppType):Bool {
 		return false;
 	}
+	// todo: dynsize
 }

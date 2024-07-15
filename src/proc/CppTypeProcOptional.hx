@@ -54,9 +54,20 @@ class CppTypeProcOptional extends CppTypeProc {
 		var parType = unpack(type);
 		if (parType == null) return null;
 		var parProc = parType.proc;
-		if (parProc == null) return null;
 		var parDynSize = parProc.getDynSize(parType, val + ".value()");
 		return parDynSize != null ? '$val.has_value() ? 1 + ($parDynSize) : 1' : null;
+	}
+	override function usesStructs(type:CppType):Bool {
+		var parType = unpack(type);
+		if (parType == null) return null;
+		var parProc = parType.proc;
+		return parType.proc.usesStructs(parType);
+	}
+	override function keepGmlArgVar(type:CppType):Bool {
+		var parType = unpack(type);
+		if (parType == null) return null;
+		var parProc = parType.proc;
+		return parType.proc.keepGmlArgVar(type);
 	}
 }
 class CppTypeProcTinyOptional extends CppTypeProcOptional {

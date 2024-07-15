@@ -110,4 +110,7 @@ class CppTypeProc {
 	public function useGmlArgument():Bool {
 		return true;
 	}
+	public function keepGmlArgVar(type:CppType):Bool {
+		return false;
+	}
 }

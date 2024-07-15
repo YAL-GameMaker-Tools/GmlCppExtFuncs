@@ -1,4 +1,5 @@
 package ;
+import proc.CppTypeProcCustom;
 import func.CppFunc;
 import haxe.io.Path;
 #if sys
@@ -38,7 +39,7 @@ class CppGenParser {
 							if (q.peek() == "@".code
 								&& q.peeknAt(1, kwMacroLen).toLowerCase() == kwMacroLQ
 								&& q.peekAt(kwMacroLen + 1) == ":".code
-							) {
+							) { // `// @dllg meta:`
 								q.skip(2 + kwMacroLen);
 								var meta = q.readIdent();
 								switch (meta.toLowerCase()) {
@@ -59,7 +60,36 @@ class CppGenParser {
 											+ q.peeknAt(1, kwMacroLen) + ":" + meta);
 								}
 							} else q.skipUntil("\n".code);
-						case "*".code: q.skipUntilStr("*/");
+						case "*".code: {
+							q.skip();
+							if (q.peek() == "*".code && q.peekAt(1) != "/".code) q.skip();
+							q.skipSpaces();
+							if (q.peek() == "@".code
+								&& q.peeknAt(1, kwMacroLen).toLowerCase() == kwMacroLQ
+								&& q.peekAt(kwMacroLen + 1) == ":".code
+							) { // `/* @dllg:meta ... */
+								q.skip(2 + kwMacroLen);
+								var meta = q.readIdent();
+								q.skipLineSpaces();
+								var start = q.pos;
+								var end = q.skipUntilStr("*/") ? q.pos - 2 : q.pos;
+								
+								var block = q.substring(start, end);
+								block = block.replace("\r", "");
+								while (block.endsWith("*")) {
+									block = block.substr(0, block.length - 1);
+								}
+								block = block.trim();
+								
+								if (meta == "type") {
+									CppTypeProcCustom.parse(block);
+								} else {
+									CppGen.warn("Unknown documentation tag "
+										+ meta
+									);
+								}
+							} else q.skipUntilStr("*/");
+						}
 					}
 				}
 				case "#".code: {
@@ -79,11 +109,12 @@ class CppGenParser {
 							CppType.typedefs[name] = type;
 						}
 					} else if (w == "typedef") {
+						// todo: bad behaviour on `typedef unsigned long long X` and alike - skip to `;` and run a regex?
 						var type = CppType.read(q);
 						q.skipSpaces();
 						var name = q.readIdent();
 						if (name != "") {
-							//trace(path, q.getRow(q.pos), name, type);
+							//trace(path, q.getRow(q.pos), name, type, type.name, type.ptrCount);
 							CppType.typedefs[name] = type;
 						}
 					} else if (indexStructs && w == "struct") {

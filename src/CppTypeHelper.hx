@@ -9,7 +9,7 @@ import proc.CppTypeProcOptional;
  * @author YellowAfterlife
  */
 class CppTypeHelper {
-	static var map:Map<String, CppTypeProc> = (function() {
+	public static var map:Map<String, CppTypeProc> = (function() {
 		inline function simple(name:String, docName:String, size:Int) {
 			return new CppTypeProcSimple(name, docName, size);
 		}

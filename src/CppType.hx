@@ -108,6 +108,8 @@ class CppType {
 			switch (name) {
 				case "unsigned":
 					name = "unsigned " + q.readSpIdent();
+				case "signed":
+					name = q.readSpIdent();
 				case "const":
 					isConst = true;
 					name = q.readSpIdent();
@@ -192,7 +194,8 @@ class CppType {
 	
 	public function toGmlCppType():String {
 		if (ptrCount == 1) switch (name) {
-			case "char", "byte", "uint8_t": return (isConst ? "const " : "") + '$name*';
+			case "char" if (isConst): return "const char*";
+			case "byte", "uint8_t": return (isConst ? "const " : "") + '$name*';
 		}
 		return switch (name) {
 			case "void", "bool",
@@ -275,6 +278,6 @@ class CppType {
 	}
 	
 	@:keep public function toString() {
-		return toCppType();
+		return 'CppType(cpp: "${toCppType()}", name: "${name}", ptrCount: ${ptrCount}, params: [${params.join(", ")}] }';
 	}
 }

@@ -76,12 +76,23 @@ class CppFunc {
 		var argi = 0;
 		for (i => arg in args) {
 			var argGcType = argGcTypes[i];
+			var tp = arg.type.proc;
 			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
+			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
+			
 			if (arg.type.proc.useGmlArgument()) argi += 1;
+			gml.addFormat('%|// %s %s %s', arg.name, '' + keepGmlArgVar, arg.type);
 			if (gcTypeUsesBuffer(argGcType)) {
+				if (keepGmlArgVar) {
+					gml.addFormat('%|var _arg_%s;', arg.name);
+				}
 				if (arg.value != null) {
 					gml.addFormat("%|if (argument_count >= %d) {%+", argi);
 					gml.addFormat('%bw;', "bool", "true");
+				}
+				if (keepGmlArgVar) {
+					gml.addFormat('%|_arg_%s = %s;', arg.name, argGmlRef);
+					argGmlRef = '_arg_' + arg.name;
 				}
 				
 				CppFuncArg.current = arg;
@@ -89,8 +100,16 @@ class CppFunc {
 				arg.type.proc.gmlCleanup(gmlCleanup, arg.type, 0, argGmlRef);
 				
 				if (arg.value != null) {
-					gml.addFormat("%-} else %bw;", "bool", "false");
+					gml.addFormat("%-} else ");
+					if (keepGmlArgVar) {
+						gml.addFormat('%{');
+						gml.addFormat('%|%s = %s;%|', argGmlRef, CppGen.config.isGMK ? '0' : 'undefined');
+					}
+					gml.addFormat("%bw;", "bool", "false");
+					if (keepGmlArgVar) gml.addFormat('%-}');
 				}
+			} else if (keepGmlArgVar) {
+				gml.addFormat('%vds = %s;', '_arg_' + arg.name, argGmlRef);
 			}
 		}
 	}
@@ -211,6 +230,7 @@ class CppFunc {
 			if (gcTypeUsesBuffer(argGcType)) {
 				hasBufArgs = true;
 				var td = CppTypeHelper.find(arg.type);
+				//if (td is proc.CppTypeProcError) trace(name, arg.name, arg.type);
 				cppArgs.addFormat("%|%s _arg_%s;%|", arg.type.toCppType(), arg.name);
 				
 				if (arg.value != null) cppArgs.addFormat("if (_in.read<bool>()) {%+");

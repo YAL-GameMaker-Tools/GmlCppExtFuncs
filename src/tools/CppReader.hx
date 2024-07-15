@@ -122,14 +122,15 @@ class CppReader {
 		}
 	}
 	
-	public function skipUntilStr(s:String) {
+	public function skipUntilStr(s:String):Bool {
 		var n = s.length;
 		while (loop) {
 			if (substr(pos, n) == s) {
 				pos += n;
-				break;
+				return true;
 			} else pos++;
 		}
+		return false;
 	}
 	
 	public function skipCString(c1:tools.CharCode) {
