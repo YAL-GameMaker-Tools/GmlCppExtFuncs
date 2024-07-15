@@ -12,10 +12,10 @@ class CppTypeProcString extends CppTypeProcSimple {
 	override public function getDynSize(type:CppType, val:String):String {
 		return '1 + strlen($val)';
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		return '_in.read_string()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat('%|_out.write_string(%s);', val);
 	}
 }

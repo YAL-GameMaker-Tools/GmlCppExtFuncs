@@ -7,10 +7,10 @@ import tools.CppBuf;
  * @author YellowAfterlife
  */
 class CppTypeProcGmlBuffer extends CppTypeProc {
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		return '_in.read_gml_buffer()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat("%|#error You may not return GML buffers at this time");
 	}
 	

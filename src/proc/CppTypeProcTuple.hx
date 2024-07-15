@@ -23,7 +23,7 @@ class CppTypeProcTuple extends CppTypeProc {
 			tupType.proc.gmlWrite(gml, tupType, z + 1, val);
 		}
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var b = new CppBuf();
 		b.add("_in.read_tuple<");
 		for (i => t in type.params) {
@@ -33,7 +33,7 @@ class CppTypeProcTuple extends CppTypeProc {
 		b.add(">();");
 		return b.toString();
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat("%|_out.write_tuple<");
 		for (i => t in type.params) {
 			if (i > 0) cpp.add(", ");

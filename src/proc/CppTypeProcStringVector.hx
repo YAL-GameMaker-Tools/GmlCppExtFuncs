@@ -28,10 +28,10 @@ class CppTypeProcStringVector extends CppTypeProc {
 			gml.addFormat('%|%bw;', 'string', '$_arr[$_ind]');
 		gml.addFormat("%-}");
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		return '_in.read_string_vector()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat('%|_out.write_string_vector($val);');
 	}
 	override public function getGmlDocType(type:CppType):String {

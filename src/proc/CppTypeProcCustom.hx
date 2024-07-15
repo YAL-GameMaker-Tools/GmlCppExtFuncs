@@ -36,18 +36,18 @@ class CppTypeProcCustom extends CppTypeProc {
 		gml.addFormat("%|%s", patch(gml, custom.gmlCleanup, depth, val));
 	}
 	
-	override function cppRead(cpp:CppBuf, type:CppType):String {
+	override function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		if (custom.cppRead != null) {
-			return patch(cpp, custom.cppRead);
+			return patch(cpp, custom.cppRead, depth);
 		} else {
-			return super.cppRead(cpp, type);
+			return super.cppRead(cpp, type, depth);
 		}
 	}
-	override function cppWrite(cpp:CppBuf, type:CppType, val:String) {
+	override function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String) {
 		if (custom.cppWrite != null) {
-			cpp.addFormat("%|%s", patch(cpp, custom.cppWrite, null, val));
+			cpp.addFormat("%|%s", patch(cpp, custom.cppWrite, depth, val));
 		} else {
-			super.cppWrite(cpp, type, val);
+			super.cppWrite(cpp, type, depth, val);
 		}
 	}
 	

@@ -18,10 +18,10 @@ class CppTypeProcError extends CppTypeProc {
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		gml.addFormat('%|show_error("Unsupported type %s", true)', name);
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		return 'void/* Unsupported type $name */';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat("%|#error Unsupported type %s", name);
 	}
 }

@@ -28,17 +28,17 @@ class CppTypeProcOptional extends CppTypeProc {
 		t.proc.gmlWrite(gml, t, z + 1, v);
 		gml.addFormat("%-}");
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var ts = unpack(type).toCppType();
 		return '_in.read_optional<$ts>()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat('%|%{');
 		cpp.addFormat('%|auto& _opt = %s;', val);
 		cpp.addFormat('%|if (_opt.has_value()) %{');
 		cpp.addFormat('%|_out.write<bool>(true);');
 		var t = unpack(type);
-		t.proc.cppWrite(cpp, t, '_opt.value()');
+		t.proc.cppWrite(cpp, t, depth, '_opt.value()');
 		cpp.addFormat('%|%-} else _out.write<bool>(false);');
 		cpp.addFormat('%|%-}');
 	}
@@ -71,7 +71,7 @@ class CppTypeProcOptional extends CppTypeProc {
 	}
 }
 class CppTypeProcTinyOptional extends CppTypeProcOptional {
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var ts = CppTypeProcOptional.unpack(type).toCppType();
 		return '_in.read_tiny_optional<$ts>()';
 	}

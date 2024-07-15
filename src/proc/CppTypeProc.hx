@@ -47,7 +47,7 @@ class CppTypeProc {
 	 * @param	type  Value type
 	 * @return	C++ code to use as a final value
 	 */
-	public function cppRead(cpp:CppBuf, type:CppType):String {
+	public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var ts = type.toCppType();
 		return '_in.read<$ts>()';
 	}
@@ -58,7 +58,7 @@ class CppTypeProc {
 	 * @param	type  Value type
 	 * @param	val   Value as a C++ expression string
 	 */
-	public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		cpp.addFormat('%|_out.write<%s>(%s);', type.toCppType(), val);
 	}
 	

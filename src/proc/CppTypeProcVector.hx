@@ -47,11 +47,11 @@ class CppTypeProcVector extends CppTypeProc {
 		}
 		gml.addFormat("%-}");
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var ts = type.unpackVector().toCppType();
 		return '_in.read_vector<$ts>()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		var ts = type.unpackVector().toCppType();
 		cpp.addFormat('%|_out.write_vector<$ts>($val);');
 	}
@@ -76,20 +76,20 @@ class CppTypeProcVector extends CppTypeProc {
 	}
 }
 class CppTypeProcTinyArray extends CppTypeProcVector {
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		return '#error Use tiny_const_array for function inputs';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		var ts = type.unpackVector().toCppType();
 		cpp.addFormat('%|_out.write_tiny_array<$ts>($val);');
 	}
 }
 class CppTypeProcTinyConstArray extends CppTypeProcVector {
-	override public function cppRead(cpp:CppBuf, type:CppType):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
 		var ts = type.unpackVector().toCppType();
 		return '_in.read_tiny_const_array<$ts>()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
 		var ts = type.unpackVector().toCppType();
 		cpp.addFormat('%|_out.write_tiny_const_array<$ts>($val);');
 	}

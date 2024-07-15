@@ -81,7 +81,6 @@ class CppFunc {
 			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
 			
 			if (arg.type.proc.useGmlArgument()) argi += 1;
-			gml.addFormat('%|// %s %s %s', arg.name, '' + keepGmlArgVar, arg.type);
 			if (gcTypeUsesBuffer(argGcType)) {
 				if (keepGmlArgVar) {
 					gml.addFormat('%|var _arg_%s;', arg.name);
@@ -235,7 +234,7 @@ class CppFunc {
 				
 				if (arg.value != null) cppArgs.addFormat("if (_in.read<bool>()) {%+");
 				
-				cppArgs.addFormat('_arg_%s = %s;', arg.name, td.cppRead(cppArgs, arg.type));
+				cppArgs.addFormat('_arg_%s = %s;', arg.name, td.cppRead(cppArgs, arg.type, 0));
 				
 				if (arg.value != null) cppArgs.addFormat("%-} else _arg_%s = %s;", arg.name, arg.value);
 			} else {
@@ -284,7 +283,7 @@ class CppFunc {
 			cpp.addFormat("%-}%|");
 			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, dynSizePost);
 			cpp.addFormat("gml_ostream _out(_out_ptr);");
-			retTypeProc.cppWrite(cpp, retType, dynSizeStore);
+			retTypeProc.cppWrite(cpp, retType, 0, dynSizeStore);
 			cpp.addFormat("%|return 1;");
 		} else if (!hasReturn) {
 			cpp.addFormat("%|%b;", cppCall);
@@ -294,7 +293,7 @@ class CppFunc {
 		} else {
 			cpp.addFormat("%|%s _ret = %b;", retCppType, cppCall);
 			cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
-			retTypeProc.cppWrite(cpp, retType, '_ret');
+			retTypeProc.cppWrite(cpp, retType, 0, '_ret');
 			cpp.addFormat("%|return 1;");
 		}
 		//
