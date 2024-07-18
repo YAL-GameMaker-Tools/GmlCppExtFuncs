@@ -1,4 +1,4 @@
-function scr_test_m() {
+function scr_test_yyri() {
     assert(im_get_int(), 1);
     assert(im_get_string(), "wow");
     assert(im_get_result(), "result");

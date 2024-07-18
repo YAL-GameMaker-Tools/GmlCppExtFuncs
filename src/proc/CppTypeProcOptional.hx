@@ -13,9 +13,9 @@ class CppTypeProcOptional extends CppTypeProc {
 		var v = '_val_$z';
 		gml.addFormat("var %s;", v);
 		gml.addFormat("%|if (buffer_read(_buf, buffer_bool)) {%+");
-		var t = unpack(type);
-		var val = t.proc.gmlRead(gml, t, z + 1);
-		gml.addFormat("%s = %s;", v, val);
+			var t = unpack(type);
+			var val = t.proc.gmlRead(gml, t, z + 1);
+			gml.addFormat("%s = %s;", v, val);
 		gml.addFormat("%-} else %s = undefined;%|", v);
 		return v;
 	}
@@ -24,23 +24,26 @@ class CppTypeProcOptional extends CppTypeProc {
 		gml.addFormat("%|%vdp = %s;", v, val);
 		gml.addFormat('%|%bw;', 'bool', v + ' != undefined');
 		gml.addFormat("%|if (%s != undefined) %{", v);
-		var t = unpack(type);
-		t.proc.gmlWrite(gml, t, z + 1, v);
+			var t = unpack(type);
+			t.proc.gmlWrite(gml, t, z + 1, v);
 		gml.addFormat("%-}");
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
-		var ts = unpack(type).toCppType();
-		return '_in.read_optional<$ts>()';
+	override public function cppRead(cpp:CppBuf, type:CppType, vp:String):String {
+		cpp.addFormat("%|%s %s;", type.toCppType(), vp);
+		cpp.addFormat("if (_in.read<bool>()) %{");
+			var ot = unpack(type);
+			var val = ot.proc.cppRead(cpp, ot, vp + '_v');
+			cpp.addFormat("%|%s = %s;", vp, val);
+		cpp.addFormat("%-} else %s = {};", vp);
+		return vp;
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
-		cpp.addFormat('%|%{');
-		cpp.addFormat('%|auto& _opt = %s;', val);
-		cpp.addFormat('%|if (_opt.has_value()) %{');
-		cpp.addFormat('%|_out.write<bool>(true);');
-		var t = unpack(type);
-		t.proc.cppWrite(cpp, t, depth, '_opt.value()');
+	override public function cppWrite(cpp:CppBuf, type:CppType, vp:String, val:String):Void {
+		cpp.addFormat('%|auto& %s = %s;', vp, val);
+		cpp.addFormat('%|if (%s.has_value()) %{', vp);
+			cpp.addFormat('%|_out.write<bool>(true);');
+			var t = unpack(type);
+			t.proc.cppWrite(cpp, t, vp + '_v', vp + '.value()');
 		cpp.addFormat('%|%-} else _out.write<bool>(false);');
-		cpp.addFormat('%|%-}');
 	}
 	override public function getGmlDocType(type:CppType):String {
 		var t = unpack(type);
@@ -60,18 +63,16 @@ class CppTypeProcOptional extends CppTypeProc {
 	override function usesStructs(type:CppType):Bool {
 		var parType = unpack(type);
 		if (parType == null) return null;
-		var parProc = parType.proc;
 		return parType.proc.usesStructs(parType);
 	}
 	override function keepGmlArgVar(type:CppType):Bool {
 		var parType = unpack(type);
 		if (parType == null) return null;
-		var parProc = parType.proc;
 		return parType.proc.keepGmlArgVar(type);
 	}
 }
 class CppTypeProcTinyOptional extends CppTypeProcOptional {
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var ts = CppTypeProcOptional.unpack(type).toCppType();
 		return '_in.read_tiny_optional<$ts>()';
 	}

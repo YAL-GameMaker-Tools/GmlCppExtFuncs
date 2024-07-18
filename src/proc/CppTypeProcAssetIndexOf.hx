@@ -12,7 +12,7 @@ class CppTypeProcAssetIndexOf extends CppTypeProc {
 		var name = CppFuncArg.current.name;
 		gml.addFormat('%|%bw;', "s32", 'asset_get_index("$name")');
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var ts = type.toCppType();
 		return '($ts)_in.read<int32_t>()';
 	}

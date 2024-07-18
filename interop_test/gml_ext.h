@@ -6,7 +6,6 @@
 #include <stdint.h>
 #include <cstring>
 #include <tuple>
-using namespace std;
 
 #define dllg /* tag */
 #define dllgm /* tag;mangled */
@@ -73,70 +72,12 @@ public:
 		return r;
 	}
 
-	template<class T> std::vector<T> read_vector() {
-		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be read");
-		auto n = read<uint32_t>();
-		std::vector<T> vec(n);
-		std::memcpy(vec.data(), pos, sizeof(T) * n);
-		pos += sizeof(T) * n;
-		return vec;
-	}
-	std::vector<const char*> read_string_vector() {
-		auto n = read<uint32_t>();
-		std::vector<const char*> vec(n);
-		for (auto i = 0u; i < n; i++) {
-			vec[i] = read_string();
-		}
-		return vec;
-	}
-
 	gml_buffer read_gml_buffer() {
 		auto _data = (uint8_t*)read<int64_t>();
 		auto _size = read<int32_t>();
 		auto _tell = read<int32_t>();
 		return gml_buffer(_data, _size, _tell);
 	}
-
-	#pragma region Tuples
-	#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
-	template<typename... Args>
-	std::tuple<Args...> read_tuple() {
-		std::tuple<Args...> tup;
-		std::apply([this](auto&&... arg) {
-			((
-				arg = this->read<std::remove_reference_t<decltype(arg)>>()
-				), ...);
-			}, tup);
-		return tup;
-	}
-
-	template<class T> optional<T> read_optional() {
-		if (read<bool>()) {
-			return read<T>;
-		} else return {};
-	}
-	#else
-	template<class A, class B> std::tuple<A, B> read_tuple() {
-		A a = read<A>();
-		B b = read<B>();
-		return std::tuple<A, B>(a, b);
-	}
-
-	template<class A, class B, class C> std::tuple<A, B, C> read_tuple() {
-		A a = read<A>();
-		B b = read<B>();
-		C c = read<C>();
-		return std::tuple<A, B, C>(a, b, c);
-	}
-
-	template<class A, class B, class C, class D> std::tuple<A, B, C, D> read_tuple() {
-		A a = read<A>();
-		B b = read<B>();
-		C c = read<C>();
-		D d = read<d>();
-		return std::tuple<A, B, C, D>(a, b, c, d);
-	}
-	#endif
 };
 
 class gml_ostream {
@@ -155,51 +96,4 @@ public:
 		for (int i = 0; s[i] != 0; i++) write<char>(s[i]);
 		write<char>(0);
 	}
-
-	template<class T> void write_vector(std::vector<T>& vec) {
-		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be write");
-		auto n = vec.size();
-		write<uint32_t>((uint32_t)n);
-		memcpy(pos, vec.data(), n * sizeof(T));
-		pos += n * sizeof(T);
-	}
-
-	void write_string_vector(std::vector<const char*> vec) {
-		auto n = vec.size();
-		write<uint32_t>((uint32_t)n);
-		for (auto i = 0u; i < n; i++) {
-			write_string(vec[i]);
-		}
-	}
-
-	#if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || __cplusplus >= 201703L)
-	template<typename... Args>
-	void write_tuple(std::tuple<Args...> tup) {
-		std::apply([this](auto&&... arg) {
-			(this->write(arg), ...);
-			}, tup);
-	}
-
-	template<class T> void write_optional(optional<T>& val) {
-		auto hasValue = val.has_value();
-		write<bool>(hasValue);
-		if (hasValue) write<T>(val.value());
-	}
-	#else
-	template<class A, class B> void write_tuple(std::tuple<A, B>& tup) {
-		write<A>(std::get<0>(tup));
-		write<B>(std::get<1>(tup));
-	}
-	template<class A, class B, class C> void write_tuple(std::tuple<A, B, C>& tup) {
-		write<A>(std::get<0>(tup));
-		write<B>(std::get<1>(tup));
-		write<C>(std::get<2>(tup));
-	}
-	template<class A, class B, class C, class D> void write_tuple(std::tuple<A, B, C, D>& tup) {
-		write<A>(std::get<0>(tup));
-		write<B>(std::get<1>(tup));
-		write<C>(std::get<2>(tup));
-		write<D>(std::get<3>(tup));
-	}
-	#endif
 };

@@ -54,7 +54,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -66,7 +66,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -78,7 +78,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -90,91 +90,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_vec_raw</name>
-          <externalName>iq_get_vec_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_vec_raw_post</name>
-          <externalName>iq_get_vec_raw_post</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
             <arg>2</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_opt_vec_raw</name>
-          <externalName>iq_get_opt_vec_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_opt_vec_raw_post</name>
-          <externalName>iq_get_opt_vec_raw_post</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>2</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_struct_vec_raw</name>
-          <externalName>iq_get_struct_vec_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_struct_vec_raw_post</name>
-          <externalName>iq_get_struct_vec_raw_post</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>2</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_two_int64s_raw</name>
-          <externalName>iq_get_two_int64s_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
           </args>
         </function>
         <function>
@@ -186,139 +102,19 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
-          <name>iq_add_two_int64s_raw</name>
-          <externalName>iq_add_two_int64s_raw</externalName>
+          <name>iq_inc_opt_int_raw</name>
+          <externalName>iq_inc_opt_int_raw</externalName>
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_int64_vec_sum_raw</name>
-          <externalName>iq_get_int64_vec_sum_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_length_of_strings_raw</name>
-          <externalName>iq_get_length_of_strings_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_buffer_sum_raw</name>
-          <externalName>iq_get_buffer_sum_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_thing_create_raw</name>
-          <externalName>iq_thing_create_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_thing_destroy_raw</name>
-          <externalName>iq_thing_destroy_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_thing_get_count_raw</name>
-          <externalName>iq_thing_get_count_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_thing_set_count_raw</name>
-          <externalName>iq_thing_set_count_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_id_create_raw</name>
-          <externalName>iq_id_create_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_id_value_raw</name>
-          <externalName>iq_id_value_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_id_destroy_raw</name>
-          <externalName>iq_id_destroy_raw</externalName>
-          <kind>11</kind>
-          <help></help>
-          <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -330,7 +126,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -342,7 +138,7 @@
           <argCount>2</argCount>
           <args>
             <arg>1</arg>
-            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -366,9 +162,273 @@
           <argCount>4</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
             <arg>1</arg>
             <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_buffer_sum_raw</name>
+          <externalName>iq_get_buffer_sum_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
             <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_create_raw</name>
+          <externalName>iq_id_create_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_value_raw</name>
+          <externalName>iq_id_value_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_destroy_raw</name>
+          <externalName>iq_id_destroy_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_create_raw</name>
+          <externalName>iq_thing_create_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_destroy_raw</name>
+          <externalName>iq_thing_destroy_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_get_count_raw</name>
+          <externalName>iq_thing_get_count_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_set_count_raw</name>
+          <externalName>iq_thing_set_count_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_struct_vec_raw</name>
+          <externalName>iq_get_struct_vec_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_struct_vec_raw_post</name>
+          <externalName>iq_get_struct_vec_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_mixed_raw</name>
+          <externalName>iq_mixed_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_mixed_raw_post</name>
+          <externalName>iq_mixed_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_int64_pair_raw</name>
+          <externalName>iq_get_int64_pair_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_int64_pair_sum_raw</name>
+          <externalName>iq_int64_pair_sum_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_int64_pair_swap_raw</name>
+          <externalName>iq_int64_pair_swap_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_int64_pair_vec_sum_raw</name>
+          <externalName>iq_get_int64_pair_vec_sum_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_vec_raw</name>
+          <externalName>iq_get_vec_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_vec_raw_post</name>
+          <externalName>iq_get_vec_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_opt_vec_raw</name>
+          <externalName>iq_get_opt_vec_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_opt_vec_raw_post</name>
+          <externalName>iq_get_opt_vec_raw_post</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_int64_vec_sum_raw</name>
+          <externalName>iq_get_int64_vec_sum_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_length_of_strings_raw</name>
+          <externalName>iq_get_length_of_strings_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
           </args>
         </function>
         <function>
@@ -559,60 +619,19 @@
           <args/>
         </function>
         <function>
-          <name>iq_get_vec</name>
-          <externalName>iq_get_vec</externalName>
-          <kind>2</kind>
-          <help>iq_get_vec()-&gt;array&lt;int&gt;</help>
-          <returnType>2</returnType>
-          <argCount>0</argCount>
-          <args/>
-        </function>
-        <function>
-          <name>iq_get_opt_vec</name>
-          <externalName>iq_get_opt_vec</externalName>
-          <kind>2</kind>
-          <help>iq_get_opt_vec(ret:bool)-&gt;array&lt;int&gt;?</help>
-          <returnType>2</returnType>
-          <argCount>1</argCount>
-          <args>
-            <arg>2</arg>
-          </args>
-        </function>
-        <function>
-          <name>iq_get_struct_vec</name>
-          <externalName>iq_get_struct_vec</externalName>
-          <kind>2</kind>
-          <help>iq_get_struct_vec()-&gt;array&lt;any&gt;</help>
-          <returnType>2</returnType>
-          <argCount>0</argCount>
-          <args/>
-        </function>
-        <function>
-          <name>iq_get_two_int64s</name>
-          <externalName>iq_get_two_int64s</externalName>
-          <kind>2</kind>
-          <help>iq_get_two_int64s()-&gt;</help>
-          <returnType>2</returnType>
-          <argCount>0</argCount>
-          <args/>
-        </function>
-        <function>
           <name>iq_add_int64</name>
           <externalName>iq_add_int64</externalName>
           <kind>2</kind>
-          <help>iq_add_int64(a:int, b:int)-&gt;int</help>
+          <help>iq_add_int64(a:int, b:int = 0)-&gt;int</help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>2</arg>
-            <arg>2</arg>
-          </args>
+          <argCount>-1</argCount>
+          <args/>
         </function>
         <function>
-          <name>iq_add_two_int64s</name>
-          <externalName>iq_add_two_int64s</externalName>
+          <name>iq_inc_opt_int</name>
+          <externalName>iq_inc_opt_int</externalName>
           <kind>2</kind>
-          <help>iq_add_two_int64s(tup)-&gt;int</help>
+          <help>iq_inc_opt_int(i:int?)-&gt;int?</help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
@@ -620,24 +639,34 @@
           </args>
         </function>
         <function>
-          <name>iq_get_int64_vec_sum</name>
-          <externalName>iq_get_int64_vec_sum</externalName>
+          <name>iq_def_ret_int</name>
+          <externalName>iq_def_ret_int</externalName>
           <kind>2</kind>
-          <help>iq_get_int64_vec_sum(arr:array&lt;int&gt;)-&gt;int</help>
+          <help>iq_def_ret_int()-&gt;int</help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
-          <args>
-            <arg>2</arg>
-          </args>
+          <argCount>0</argCount>
+          <args/>
         </function>
         <function>
-          <name>iq_get_length_of_strings</name>
-          <externalName>iq_get_length_of_strings</externalName>
+          <name>iq_def_ret_string</name>
+          <externalName>iq_def_ret_string</externalName>
           <kind>2</kind>
-          <help>iq_get_length_of_strings(strings:array&lt;string&gt;)-&gt;int</help>
+          <help>iq_def_ret_string()-&gt;string</help>
           <returnType>2</returnType>
-          <argCount>1</argCount>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_add_strlens</name>
+          <externalName>iq_add_strlens</externalName>
+          <kind>2</kind>
+          <help>iq_add_strlens(a:string, b:string, c:string, d:string)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>4</argCount>
           <args>
+            <arg>2</arg>
+            <arg>2</arg>
+            <arg>2</arg>
             <arg>2</arg>
           </args>
         </function>
@@ -646,6 +675,37 @@
           <externalName>iq_get_buffer_sum</externalName>
           <kind>2</kind>
           <help>iq_get_buffer_sum(buf:buffer)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_create</name>
+          <externalName>iq_id_create</externalName>
+          <kind>2</kind>
+          <help>iq_id_create()-&gt;</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_id_value</name>
+          <externalName>iq_id_value</externalName>
+          <kind>2</kind>
+          <help>iq_id_value(id)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_id_destroy</name>
+          <externalName>iq_id_destroy</externalName>
+          <kind>2</kind>
+          <help>iq_id_destroy(id)</help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
@@ -698,19 +758,19 @@
           </args>
         </function>
         <function>
-          <name>iq_id_create</name>
-          <externalName>iq_id_create</externalName>
+          <name>iq_get_struct_vec</name>
+          <externalName>iq_get_struct_vec</externalName>
           <kind>2</kind>
-          <help>iq_id_create()-&gt;</help>
+          <help>iq_get_struct_vec()-&gt;array&lt;any&gt;</help>
           <returnType>2</returnType>
           <argCount>0</argCount>
           <args/>
         </function>
         <function>
-          <name>iq_id_value</name>
-          <externalName>iq_id_value</externalName>
+          <name>iq_mixed</name>
+          <externalName>iq_mixed</externalName>
           <kind>2</kind>
-          <help>iq_id_value(id)-&gt;int</help>
+          <help>iq_mixed(q)-&gt;</help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
@@ -718,10 +778,19 @@
           </args>
         </function>
         <function>
-          <name>iq_id_destroy</name>
-          <externalName>iq_id_destroy</externalName>
+          <name>iq_get_int64_pair</name>
+          <externalName>iq_get_int64_pair</externalName>
           <kind>2</kind>
-          <help>iq_id_destroy(id)</help>
+          <help>iq_get_int64_pair()-&gt;</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_int64_pair_sum</name>
+          <externalName>iq_int64_pair_sum</externalName>
+          <kind>2</kind>
+          <help>iq_int64_pair_sum(pair)-&gt;int</help>
           <returnType>2</returnType>
           <argCount>1</argCount>
           <args>
@@ -729,34 +798,66 @@
           </args>
         </function>
         <function>
-          <name>iq_def_ret_int</name>
-          <externalName>iq_def_ret_int</externalName>
+          <name>iq_int64_pair_swap</name>
+          <externalName>iq_int64_pair_swap</externalName>
           <kind>2</kind>
-          <help>iq_def_ret_int()-&gt;int</help>
+          <help>iq_int64_pair_swap(pair)-&gt;</help>
           <returnType>2</returnType>
-          <argCount>0</argCount>
-          <args/>
-        </function>
-        <function>
-          <name>iq_def_ret_string</name>
-          <externalName>iq_def_ret_string</externalName>
-          <kind>2</kind>
-          <help>iq_def_ret_string()-&gt;string</help>
-          <returnType>2</returnType>
-          <argCount>0</argCount>
-          <args/>
-        </function>
-        <function>
-          <name>iq_add_strlens</name>
-          <externalName>iq_add_strlens</externalName>
-          <kind>2</kind>
-          <help>iq_add_strlens(a:string, b:string, c:string, d:string)-&gt;int</help>
-          <returnType>2</returnType>
-          <argCount>4</argCount>
+          <argCount>1</argCount>
           <args>
             <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_int64_pair_vec_sum</name>
+          <externalName>iq_get_int64_pair_vec_sum</externalName>
+          <kind>2</kind>
+          <help>iq_get_int64_pair_vec_sum(arr:array&lt;any&gt;)-&gt;</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
             <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_vec</name>
+          <externalName>iq_get_vec</externalName>
+          <kind>2</kind>
+          <help>iq_get_vec()-&gt;array&lt;int&gt;</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
+        </function>
+        <function>
+          <name>iq_get_opt_vec</name>
+          <externalName>iq_get_opt_vec</externalName>
+          <kind>2</kind>
+          <help>iq_get_opt_vec(ret:bool)-&gt;array&lt;int&gt;?</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
             <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_int64_vec_sum</name>
+          <externalName>iq_get_int64_vec_sum</externalName>
+          <kind>2</kind>
+          <help>iq_get_int64_vec_sum(arr:array&lt;int&gt;)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_get_length_of_strings</name>
+          <externalName>iq_get_length_of_strings</externalName>
+          <kind>2</kind>
+          <help>iq_get_length_of_strings(strings:array&lt;string&gt;)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
             <arg>2</arg>
           </args>
         </function>

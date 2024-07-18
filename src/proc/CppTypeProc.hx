@@ -47,7 +47,7 @@ class CppTypeProc {
 	 * @param	type  Value type
 	 * @return	C++ code to use as a final value
 	 */
-	public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var ts = type.toCppType();
 		return '_in.read<$ts>()';
 	}
@@ -58,7 +58,7 @@ class CppTypeProc {
 	 * @param	type  Value type
 	 * @param	val   Value as a C++ expression string
 	 */
-	public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
+	public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		cpp.addFormat('%|_out.write<%s>(%s);', type.toCppType(), val);
 	}
 	
@@ -77,14 +77,12 @@ class CppTypeProc {
 	
 	/**
 	 * Can return a snippet of code 
+	 * TODO: replace with a system that can += a variable instead
 	 */
 	public function getDynSize(type:CppType, val:String):String {
 		return null;
 	}
 	
-	public function getAlignment(type:CppType):Int {
-		return getSize(type);
-	}
 	public function getGmlDocType(type:CppType):String {
 		return null;
 	}

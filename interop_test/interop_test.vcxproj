@@ -198,8 +198,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="interop_test.cpp" />
-    <ClCompile Include="interop_test_m.cpp" />
+    <ClCompile Include="test_basics.cpp" />
+    <ClCompile Include="test_buffer.cpp" />
+    <ClCompile Include="test_gml_id.cpp" />
+    <ClCompile Include="test_gml_ptr.cpp" />
+    <ClCompile Include="test_struct.cpp" />
+    <ClCompile Include="test_tuple.cpp" />
+    <ClCompile Include="test_vector.cpp" />
+    <ClCompile Include="test_yyri.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>

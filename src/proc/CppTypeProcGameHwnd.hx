@@ -13,7 +13,7 @@ class CppTypeProcGameHwnd extends CppTypeProc {
 			gml.addFormat('%|%bw;', 'u64', 'int64(window_handle())');
 		}
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var ts = type.toCppType();
 		return '($ts)_in.read<uint64_t>()';
 	}

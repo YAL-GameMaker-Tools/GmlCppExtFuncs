@@ -18,11 +18,11 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 	override public function getSize(type:CppType):Int {
 		return 8;
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var t = type.toCppType();
 		return '($t)_in.read<int64_t>();';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		var t = type.toCppType();
 		cpp.addFormat("%|_out.write<int64_t>((%s)%s);", isID ? "int64_t" : "intptr_t", val);
 	}

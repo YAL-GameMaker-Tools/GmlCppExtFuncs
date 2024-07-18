@@ -1,3 +1,4 @@
 -cp src
 -neko bin/GmlCppExtFuncs.n
 -main CppGen
+--cmd cmd /C interop_test\preBuild.bat dll .\ interop_test\ x64 default 

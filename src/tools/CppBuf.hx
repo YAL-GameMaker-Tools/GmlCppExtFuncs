@@ -33,7 +33,7 @@ class CppBuf extends StringBuf {
 		function addVarDecl(b:CppBuf, name:Any, val:Any) {
 			addVarDeclPre(b, name);
 			b.addString(" = ");
-			b.addString(val);
+			b.add(val);
 		}
 		return [
 			"%s" => FOne((b, val) -> b.addString(val)),
@@ -74,6 +74,8 @@ class CppBuf extends StringBuf {
 		var parts = addFormat_cache[fmt];
 		if (parts != null) return parts;
 		parts = [];
+		var argCount = 0;
+		
 		var start = 0;
 		var q = new tools.CppReader(fmt, "");
 		inline function flush(till:Int) {
@@ -85,14 +87,20 @@ class CppBuf extends StringBuf {
 			flush(at);
 			var tag;
 			var c = q.peek();
-			if (c.isIdent0()) {
+			if (c.isDigit()) {
+				q.skip();
+				parts.push(FOneAt(c - "0".code));
+				start = q.pos;
+				continue;
+			}
+			if (c.isIdent0()) { // %s, %tag
 				tag = q.readIdent(true);
 			}
-			else if (c == "(".code) {
+			else if (c == "(".code) { // %(tag)
 				q.skipUntil(")".code);
 				tag = "%" + q.substring(at + 2, q.pos - 1);
 			}
-			else {
+			else { // %|, %+, etc.
 				tag = q.substr(at, 2);
 				q.pos += 1;
 			}
@@ -116,6 +124,9 @@ class CppBuf extends StringBuf {
 				case FOne(f):
 					if (argi >= argc) throw "Not enough rest-arguments for %arg";
 					f(this, rest[argi++]);
+				case FOneAt(i):
+					if (i >= argc) throw 'Not enough rest-arguments for %$i';
+					add(rest[i]);
 				case FTwo(f):
 					if (argi + 1 >= argc) throw "Not enough rest-arguments for %arg";
 					var a = rest[argi++];
@@ -129,24 +140,27 @@ class CppBuf extends StringBuf {
 		var parts = addFormat_pre(fmt);
 		var argi = 0;
 		var argc = rest.length;
-		var b = new CppBuf();
+		var buf = new CppBuf();
 		for (part in parts) {
 			switch (part) {
 				case FString(s):
-					b.addString(s);
-				case FZero(f): f(b);
+					buf.addString(s);
+				case FZero(f): f(buf);
 				case FOne(f):
 					if (argi >= argc) throw "Not enough rest-arguments for %arg";
-					f(b, rest[argi++]);
+					f(buf, rest[argi++]);
+				case FOneAt(i):
+					if (i >= argc) throw 'Not enough rest-arguments for %$i';
+					buf.add(rest[i]);
 				case FTwo(f):
 					if (argi + 1 >= argc) throw "Not enough rest-arguments for %arg";
 					var a = rest[argi++];
 					var c = rest[argi++];
-					f(b, a, c);
+					f(buf, a, c);
 			}
 		}
 		if (argi < argc) throw "Too many %args";
-		return b.toString();
+		return buf.toString();
 	}
 }
 typedef CppBufFormatFunc = (b:CppBuf, val:Any, i:Int)->Void;
@@ -154,6 +168,7 @@ enum CppBufFormatPart {
 	FString(s:String);
 	FZero(fn:CppBuf->Void);
 	FOne(fn:CppBuf->Any->Void);
+	FOneAt(i:Int);
 	FTwo(fn:CppBuf->Any->Any->Void);
 }
 class CppBufFormatMeta {

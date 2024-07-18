@@ -23,23 +23,46 @@ class CppTypeProcTuple extends CppTypeProc {
 			tupType.proc.gmlWrite(gml, tupType, z + 1, val);
 		}
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
-		var b = new CppBuf();
-		b.add("_in.read_tuple<");
-		for (i => t in type.params) {
-			if (i > 0) b.add(", ");
-			b.add(t.toCppType());
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
+		cpp.addFormat("%|%s %s; %{", type.toCppType(), prefix);
+		var vb = new CppBuf();
+		for (i => tupType in type.params) {
+			var tupVar = prefix + "_t" + i;
+			cpp.addFormat("%|%s %s = %s;",
+				tupType.toCppType(),
+				tupVar,
+				tupType.proc.cppRead(cpp, tupType, prefix + "_" + i)
+			);
+			if (i > 0) vb.add(", ");
+			vb.add(tupVar);
 		}
-		b.add(">();");
-		return b.toString();
+		cpp.addFormat("%|%s = { %b };", prefix, vb);
+		cpp.addFormat("%-}");
+		return prefix;
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
-		cpp.addFormat("%|_out.write_tuple<");
+	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
+		var v = prefix;
+		//cpp.addFormat('%|%{');
+		cpp.addFormat('%|auto& %s = %s;', v, val);
 		for (i => t in type.params) {
-			if (i > 0) cpp.add(", ");
-			cpp.add(t.toCppType());
+			t.proc.cppWrite(cpp, t, prefix + "_t" + i, 'std::get<$i>($v)');
 		}
-		cpp.addFormat(">(%s);", val);
+		//cpp.addFormat('%-}');
+	}
+	override function getDynSize(type:CppType, val:String):String {
+		var parts = [];
+		var hasDynSize = false;
+		for (i => t in type.params) {
+			var d = t.proc.getDynSize(t, 'std::get<$i>($val)');
+			parts.push(d);
+			if (d != null) hasDynSize = true;
+		}
+		if (!hasDynSize) return null;
+		for (i => sz in parts) if (sz == null) {
+			var t = type.params[i];
+			parts[i] = "" + t.proc.getSize(t);
+		}
+		return '(' + parts.join(' + ') + ')';
 	}
 	override public function usesStructs(type:CppType):Bool {
 		for (t in type.params) if (t.proc.usesStructs(t)) return true;

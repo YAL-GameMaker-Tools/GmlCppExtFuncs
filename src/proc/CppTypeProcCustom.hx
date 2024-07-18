@@ -36,18 +36,18 @@ class CppTypeProcCustom extends CppTypeProc {
 		gml.addFormat("%|%s", patch(gml, custom.gmlCleanup, depth, val));
 	}
 	
-	override function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		if (custom.cppRead != null) {
-			return patch(cpp, custom.cppRead, depth);
+			return patch(cpp, custom.cppRead, null);
 		} else {
-			return super.cppRead(cpp, type, depth);
+			return super.cppRead(cpp, type, null);
 		}
 	}
-	override function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String) {
+	override function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String) {
 		if (custom.cppWrite != null) {
-			cpp.addFormat("%|%s", patch(cpp, custom.cppWrite, depth, val));
+			cpp.addFormat("%|%s", patch(cpp, custom.cppWrite, null, val));
 		} else {
-			super.cppWrite(cpp, type, depth, val);
+			super.cppWrite(cpp, type, null, val);
 		}
 	}
 	
@@ -91,7 +91,7 @@ class CppTypeProcCustom extends CppTypeProc {
 			switch (metaName.toLowerCase()) {
 				case "gmlread":  tc.gmlRead  = metaText;
 				case "gmlwrite": tc.gmlWrite = metaText;
-				case "gmlcustom": tc.gmlCleanup = metaText;
+				case "gmlcleanup": tc.gmlCleanup = metaText;
 				case "cppread":  tc.cppRead  = metaText;
 				case "cppwrite": tc.cppWrite = metaText;
 				//

@@ -69,9 +69,6 @@ class CppType {
 	public function getSize():Int {
 		return proc.getSize(this);
 	}
-	public function getAlignment():Int {
-		return proc.getAlignment(this);
-	}
 	
 	//{ unpack
 	

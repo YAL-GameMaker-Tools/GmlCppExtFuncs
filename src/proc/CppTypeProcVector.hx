@@ -47,13 +47,29 @@ class CppTypeProcVector extends CppTypeProc {
 		}
 		gml.addFormat("%-}");
 	}
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
-		var ts = type.unpackVector().toCppType();
-		return '_in.read_vector<$ts>()';
+	override public function cppRead(cpp:CppBuf, type:CppType, vp:String):String {
+		var _len = vp + '_n';
+		var _ind = vp + '_i';
+		var _item = vp + '_v';
+		cpp.addFormat('%|auto %s = _in.read<uint32_t>();', _len);
+		cpp.addFormat('%|%s %s(%s);', type.toCppType(), vp, _len);
+		cpp.addFormat('%|for (auto %s = 0u; %s < %s; %s++) %{', _ind, _ind,_len, _ind);
+			var itemType = type.unpackVector();
+			cpp.addFormat('%|%s[%s] = %s;', vp, _ind, itemType.proc.cppRead(cpp, itemType, _item));
+		cpp.addFormat('%-}');
+		return vp;
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
-		var ts = type.unpackVector().toCppType();
-		cpp.addFormat('%|_out.write_vector<$ts>($val);');
+	override public function cppWrite(cpp:CppBuf, type:CppType, vp:String, val:String):Void {
+		var vp_len = vp + '_n';
+		var vp_ind = vp + '_i';
+		var vp_item = vp + '_v';
+		cpp.addFormat('%|auto& %s = %s;', vp, val);
+		cpp.addFormat('%|auto %s = %s.size();', vp_len, vp);
+		cpp.addFormat('%|_out.write<uint32_t>((uint32_t)%s);', vp_len);
+		cpp.addFormat('%|for (auto %s = 0u; %0 < %s; %0++) %{', vp_ind, vp_len);
+			var itemType = type.unpackVector();
+			itemType.proc.cppWrite(cpp, itemType, vp_item, vp + '[$vp_ind]');
+		cpp.addFormat('%-}');
 	}
 	override public function getGmlDocType(type:CppType):String {
 		var t = type.params[0];
@@ -76,20 +92,20 @@ class CppTypeProcVector extends CppTypeProc {
 	}
 }
 class CppTypeProcTinyArray extends CppTypeProcVector {
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		return '#error Use tiny_const_array for function inputs';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		var ts = type.unpackVector().toCppType();
 		cpp.addFormat('%|_out.write_tiny_array<$ts>($val);');
 	}
 }
 class CppTypeProcTinyConstArray extends CppTypeProcVector {
-	override public function cppRead(cpp:CppBuf, type:CppType, depth:Int):String {
+	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var ts = type.unpackVector().toCppType();
 		return '_in.read_tiny_const_array<$ts>()';
 	}
-	override public function cppWrite(cpp:CppBuf, type:CppType, depth:Int, val:String):Void {
+	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		var ts = type.unpackVector().toCppType();
 		cpp.addFormat('%|_out.write_tiny_const_array<$ts>($val);');
 	}
