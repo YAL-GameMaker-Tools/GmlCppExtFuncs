@@ -26,6 +26,11 @@ class CppTypeProc {
 		throw "todo";
 	}
 	
+	public function gmlReadOut(gml:CppBuf, type:CppType, depth:Int, out:String) {
+		var val = gmlRead(gml, type, depth);
+		gml.addFormat("%|%s = %s;", out, val);
+	}
+	
 	/**
 	 * Should append GML code to write a value for use by C++ to `_buf`.
 	 * @param	gml    (code buffer)
@@ -75,12 +80,25 @@ class CppTypeProc {
 		return 8;
 	}
 	
+	static function hasDynSize_seeker(t:CppType) {
+		return t.proc.hasDynSize(t);
+	}
+	public function hasDynSize(type:CppType) {
+		return seekRec(type, hasDynSize_seeker);
+	}
+	
 	/**
-	 * Can return a snippet of code 
-	 * TODO: replace with a system that can += a variable instead
-	 */
-	public function getDynSize(type:CppType, val:String):String {
-		return null;
+		Can do `cpp.addFormat("%s += ...", result);` and return non-dynamic size for this type
+	**/
+	public function cppDynSize(cpp:CppBuf, type:CppType, prefix:String, val:String, result:String):Int {
+		return getSize(type);
+	}
+	
+	/**
+		Should iterate sub-types, run fn() on them, and return whether 
+	**/
+	public function seekRec(type:CppType, fn:(CppType) -> Bool):Bool {
+		return false;
 	}
 	
 	public function getGmlDocType(type:CppType):String {
@@ -94,11 +112,17 @@ class CppTypeProc {
 	
 	/** Does this use structs? (and might need a conditional block) */
 	public function usesStructs(type:CppType):Bool {
-		return false;
+		return seekRec(type, usesStructs_seeker);
 	}
+	static function usesStructs_seeker(t:CppType) return t.proc.usesStructs(t);
 	
 	/** Does this use GM<=8.1 logic? (and might need another conditional block) */
 	public function usesGmkSpec(type:CppType):Bool {
+		return seekRec(type, usesGmkSpec_seeker);
+	}
+	static function usesGmkSpec_seeker(t:CppType) return t.proc.usesGmkSpec(t);
+	
+	public function isOut() {
 		return false;
 	}
 	

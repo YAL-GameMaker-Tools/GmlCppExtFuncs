@@ -16,6 +16,11 @@ class CppStructField {
 		for (m in size) n *= m;
 		return n;
 	}
+	public function getQuantity() {
+		var n = 1;
+		for (m in size) n *= m;
+		return n;
+	}
 	public function new(type:CppType, name:String) {
 		this.type = type;
 		this.name = name;

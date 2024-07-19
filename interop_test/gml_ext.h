@@ -30,6 +30,11 @@ typedef HWND GAME_HWND;
 typedef int gml_asset_index_of;
 /// Wraps a C++ pointer for GML.
 template <typename T> using gml_ptr = T*;
+/// Passes a modified struct back to GML
+template <typename T> using gml_inout = T&;
+/// Modifies an array of values that GML passed in
+template <typename T> using gml_inout_vector = std::vector<T>&;
+
 /// Same as gml_ptr, but replaces the GML-side pointer by a nullptr after passing it to C++
 template <typename T> using gml_ptr_destroy = T*;
 /// Wraps any ID (or anything that casts to int64, really) for GML.

@@ -23,6 +23,11 @@ class CppTypeProcTuple extends CppTypeProc {
 			tupType.proc.gmlWrite(gml, tupType, z + 1, val);
 		}
 	}
+	
+	static inline function getPrefix(prefix:String, ind:Int) {
+		return prefix + "_t" + ind;
+	}
+	
 	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		cpp.addFormat("%|%s %s; %{", type.toCppType(), prefix);
 		var vb = new CppBuf();
@@ -31,7 +36,7 @@ class CppTypeProcTuple extends CppTypeProc {
 			cpp.addFormat("%|%s %s = %s;",
 				tupType.toCppType(),
 				tupVar,
-				tupType.proc.cppRead(cpp, tupType, prefix + "_" + i)
+				tupType.proc.cppRead(cpp, tupType, getPrefix(prefix, i))
 			);
 			if (i > 0) vb.add(", ");
 			vb.add(tupVar);
@@ -45,25 +50,36 @@ class CppTypeProcTuple extends CppTypeProc {
 		//cpp.addFormat('%|%{');
 		cpp.addFormat('%|auto& %s = %s;', v, val);
 		for (i => t in type.params) {
-			t.proc.cppWrite(cpp, t, prefix + "_t" + i, 'std::get<$i>($v)');
+			t.proc.cppWrite(cpp, t, getPrefix(prefix, i), 'std::get<$i>($v)');
 		}
 		//cpp.addFormat('%-}');
 	}
-	override function getDynSize(type:CppType, val:String):String {
-		var parts = [];
-		var hasDynSize = false;
-		for (i => t in type.params) {
-			var d = t.proc.getDynSize(t, 'std::get<$i>($val)');
-			parts.push(d);
-			if (d != null) hasDynSize = true;
-		}
-		if (!hasDynSize) return null;
-		for (i => sz in parts) if (sz == null) {
-			var t = type.params[i];
-			parts[i] = "" + t.proc.getSize(t);
-		}
-		return '(' + parts.join(' + ') + ')';
+	
+	override function getSize(type:CppType):Int {
+		var n = 0;
+		for (t in type.params) n += t.getSize();
+		return n;
 	}
+	override function hasDynSize(type:CppType):Bool {
+		for (t in type.params) {
+			if (t.hasDynSize()) return true;
+		}
+		return false;
+	}
+	override function cppDynSize(cpp:CppBuf, type:CppType, vp:String, val:String, result:String):Int {
+		var n = 0;
+		cpp.addFormat("%|auto& %s = %s;", vp, val);
+		for (i => t in type.params) {
+			n += t.cppDynSize(cpp, getPrefix(vp, i), 'std::get<$i>($vp)', result);
+		}
+		return n;
+	}
+	
+	override function seekRec(type:CppType, fn:(CppType) -> Bool):Bool {
+		for (t in type.params) if (fn(t)) return true;
+		return false;
+	}
+	
 	override public function usesStructs(type:CppType):Bool {
 		for (t in type.params) if (t.proc.usesStructs(t)) return true;
 		return false;

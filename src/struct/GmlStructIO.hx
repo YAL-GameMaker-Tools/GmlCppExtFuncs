@@ -17,9 +17,10 @@ class GmlStructIO {
 		}
 	}
 	
-	public static function readFields(struct:CppStruct, gml:CppBuf, z:Int, structVar:String) {
+	public static function readFields(struct:CppStruct, gml:CppBuf, z:Int, structVar:String, isOut:Bool) {
 		var mode = CppGen.config.storageMode;
 		var useArrays = mode == SmStruct || mode == SmArray;
+		var acc = isOut ? "@" : "";
 		
 		// this gets called recursively to handle reading fixed-size arrays like `type field[d1][d2]`
 		function proc(gml:CppBuf, type:CppType, tp:CppTypeProc, z:Int, size:Array<Int>, size_ind:Int) {
@@ -47,7 +48,7 @@ class GmlStructIO {
 			gml.addFormat('%|for (%vdb; %0 < %d; %0 += 1) %{', _ind, "0", _len);
 				var val = proc(gml, type, tp, z + 1, size, size_ind + 1);
 				if (useArrays) {
-					gml.addFormat("%s[%s] = %s;", _arr, _ind, val);
+					gml.addFormat("%s[%s%s] = %s;", _arr, acc, _ind, val);
 				} else {
 					gml.addFormat("ds_list_add(%s, %s", _arr, val);
 				}
@@ -63,7 +64,7 @@ class GmlStructIO {
 				case SmStruct:
 					gml.addFormat("%|%s.%s = %s;", structVar, fd.name, val);
 				case SmArray:
-					gml.addFormat("%|%s[%d] = %s; // %s", structVar, i, val, fd.name);
+					gml.addFormat("%|%s[%s%d] = %s; // %s", structVar, acc, i, val, fd.name);
 				case SmMap:
 					gml.addFormat('%|ds_map_add(%s, "%s", %s);', structVar, fd.name, val);
 				case SmList:
@@ -93,7 +94,7 @@ class GmlStructIO {
 			if (size_ind == size.length - 1 && type.name == "char") {
 				// same char[n] -> string conversion
 				var fn = CppGen.config.helperPrefix + "_write_chars";
-				gml.addFormat('%s(_buf, %s, %d)', fn, val, size[size_ind]);
+				gml.addFormat('%|%s(_buf, %s, %d)', fn, val, size[size_ind]);
 				return;
 			}
 			var _arr = '_arr_$z';

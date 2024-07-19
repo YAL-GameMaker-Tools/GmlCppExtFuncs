@@ -13,6 +13,18 @@ class CppBuf extends StringBuf {
 		for (_ in 0 ... indent) addChar("\t".code);
 	}
 	
+	public var isEmpty(get, never):Bool;
+	inline function get_isEmpty() return length == 0;
+	
+	public var hasText(get, never):Bool;
+	inline function get_hasText() return length != 0;
+	
+	public function fork(indentDelta:Int = 0) {
+		var b = new CppBuf();
+		b.indent = indent + indentDelta;
+		return b;
+	}
+	
 	public inline function addString(s:String) add(s);
 	public inline function addInt(i:Int) add(i);
 	public inline function addBuffer(b:StringBuf) add(b.toString());

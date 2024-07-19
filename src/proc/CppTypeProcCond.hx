@@ -27,8 +27,9 @@ class CppTypeProcCond {
 			} else gml.addFormat("%|/*/");
 		}
 		//
-		function proc(sm:GmlStorageMode, bm:GmlBoxMode, gmk = false) {
+		function proc(sm:GmlStorageMode, bm:GmlBoxMode, vm:GmlVectorMode, gmk = false) {
 			config.storageMode = sm;
+			config.vectorMode = vm;
 			config.boxMode = bm;
 			config.isGMK = gmk;
 			func();
@@ -39,14 +40,14 @@ class CppTypeProcCond {
 			if (gmkSpec) gml.addFormat("%|// GMS >= 1:");
 			
 			if (structModeVal) {
-				proc(SmStruct, BmStruct);
+				proc(SmStruct, BmStruct, VmArray);
 			} else {
-				proc(SmArray, BmArray);
+				proc(SmArray, BmArray, VmArray);
 			}
 			
 			if (gmkSpec) {
 				addElseGmk();
-				proc(structModeVal ? SmMap : SmList, gmkBox, true);
+				proc(structModeVal ? SmMap : SmList, gmkBox, VmList, true);
 				gml.addFormat("%|//*/");
 			}
 			return;
@@ -55,10 +56,10 @@ class CppTypeProcCond {
 		if (!useStructs()) {
 			// no structs, but don't get too excited
 			if (gmkSpec) gml.addFormat("%|// GMS >= 1:");
-			proc(SmArray, BmArray);
+			proc(SmArray, BmArray, VmArray);
 			if (gmkSpec) {
 				addElseGmk();
-				proc(SmList, gmkBox, true);
+				proc(SmList, gmkBox, VmList, true);
 				gml.addFormat("%|//*/");
 			}
 			return;
@@ -68,7 +69,7 @@ class CppTypeProcCond {
 		if (structModeCond) {
 			gml.addFormat("%|if (%s) %{", structMode);
 		}
-		proc(SmStruct, BmStruct);
+		proc(SmStruct, BmStruct, VmArray);
 		if (structModeCond) {
 			gml.addFormat("%-} else //*/");
 			gml.addFormat("%|%{");
@@ -84,21 +85,21 @@ class CppTypeProcCond {
 			gml.addFormat("%|/* GMS >= 1:");
 		}
 		
-		proc(SmArray, BmArray);
+		proc(SmArray, BmArray, VmArray);
 		
 		if (gmkSpec) {
 			addElseGmk();
 			if (structModeCond) {
 				// a condition to select which of two workarounds you'd prefer?
 				gml.addFormat("%|if (%s) %{", structMode);
-				proc(SmMap, gmkBox);
+				proc(SmMap, gmkBox, VmList);
 				gml.addFormat("%-} else %{");
-				proc(SmList, gmkBox);
+				proc(SmList, gmkBox, VmList);
 				gml.addFormat("%-}");
 			} else {
 				// if you're going to have to free it anyway, might as well
 				// make it something with readable keys, you know?
-				proc(SmMap, gmkBox);
+				proc(SmMap, gmkBox, VmList);
 			}
 			gml.addFormat("%|//*/");
 		}

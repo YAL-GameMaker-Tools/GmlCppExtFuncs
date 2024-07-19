@@ -66,8 +66,33 @@ class CppType {
 	}
 	var __proc:CppTypeProc = null;
 	
+	// conveniences:
 	public function getSize():Int {
 		return proc.getSize(this);
+	}
+	public function gmlRead(gml, depth) {
+		return proc.gmlRead(gml, this, depth);
+	}
+	public function gmlReadOut(gml, depth, out) {
+		return proc.gmlReadOut(gml, this, depth, out);
+	}
+	public function gmlWrite(gml, depth, val) {
+		proc.gmlWrite(gml, this, depth, val);
+	}
+	public function cppRead(cpp, prefix) {
+		return proc.cppRead(cpp, this, prefix);
+	}
+	public function cppWrite(cpp, prefix, val) {
+		proc.cppWrite(cpp, this, prefix, val);
+	}
+	public function cppDynSize(cpp, prefix, val, result) {
+		return proc.cppDynSize(cpp, this, prefix, val, result);
+	}
+	public function hasDynSize() {
+		return proc.hasDynSize(this);
+	}
+	public function seekRec(fn:(CppType) -> Bool) {
+		return proc.seekRec(this, fn);
 	}
 	
 	//{ unpack
@@ -75,7 +100,7 @@ class CppType {
 	/** If this is a vector<T>, returns T */
 	public function unpackVector():CppType {
 		return switch (name) {
-			case "vector", "tiny_array", "tiny_const_array": params[0];
+			case "vector", "tiny_array", "tiny_const_array", "gml_inout_vector": params[0];
 			default: null;
 		}
 	}

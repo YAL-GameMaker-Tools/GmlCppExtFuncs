@@ -328,6 +328,86 @@
                     "returnType": 2
                 },
                 {
+                    "id": "b4a4b9ff-7f71-a4b6-062c-3480b4424499",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_struct_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_struct_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "b4a4b9ff-f7f9-2cb6-dbf1-61d5e6e833e9",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_int_vector_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_int_vector_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "61dab917-60ed-7034-1fef-3033daa81b1f",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_int_vector_raw_post",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_int_vector_raw_post",
+                    "returnType": 2
+                },
+                {
+                    "id": "973c61b0-3698-5d27-fea6-689e6b70321d",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_struct_vector_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_struct_vector_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "9a486b45-c9a9-0d4a-1c5e-4f5230e0a34a",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_struct_vector_raw_post",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_struct_vector_raw_post",
+                    "returnType": 2
+                },
+                {
                     "id": "a5b5a8ee-3b35-e0a7-715b-16a29ebddd08",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -1037,6 +1117,51 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_thing_set_count",
+                    "returnType": 2
+                },
+                {
+                    "id": "eb701335-95b8-ade3-6f23-2b8f9c91824a",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_test_inout_struct",
+                    "help": "iq_test_inout_struct(q)",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_test_inout_struct",
+                    "returnType": 2
+                },
+                {
+                    "id": "c91e6733-f232-c782-7156-3e9d8fc7c0dd",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_test_inout_int_vector",
+                    "help": "iq_test_inout_int_vector(v:array<int>)",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_test_inout_int_vector",
+                    "returnType": 2
+                },
+                {
+                    "id": "a0c57d6e-d4ad-e737-a358-26f3ac97da32",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_test_inout_struct_vector",
+                    "help": "iq_test_inout_struct_vector(v:array<any>)",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_test_inout_struct_vector",
                     "returnType": 2
                 },
                 {

@@ -94,6 +94,26 @@
             1,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct_raw","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_struct_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_int_vector_raw","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_int_vector_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_int_vector_raw_post","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_int_vector_raw_post","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct_vector_raw","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_struct_vector_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct_vector_raw_post","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_struct_vector_raw_post","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_struct_vec_raw","argCount":2,"args":[
             1,
             2,
@@ -257,6 +277,15 @@
             2,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count","help":"iq_thing_set_count(thing, count:int)","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct","argCount":1,"args":[
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_struct","help":"iq_test_inout_struct(q)","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_int_vector","argCount":1,"args":[
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_int_vector","help":"iq_test_inout_int_vector(v:array<int>)","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct_vector","argCount":1,"args":[
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_struct_vector","help":"iq_test_inout_struct_vector(v:array<any>)","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_struct_vec","argCount":0,"args":[],"documentation":"","externalName":"iq_get_struct_vec","help":"iq_get_struct_vec()->array<any>","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_mixed","argCount":1,"args":[
             2,

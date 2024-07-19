@@ -86,8 +86,8 @@ class CppFunc {
 					gml.addFormat('%|var _arg_%s;', arg.name);
 				}
 				if (arg.value != null) {
-					gml.addFormat("%|if (argument_count >= %d) {%+", argi);
-					gml.addFormat('%bw;', "bool", "true");
+					gml.addFormat("%|if (argument_count >= %d) %{", argi);
+					gml.addFormat('%|%bw;', "bool", "true");
 				}
 				if (keepGmlArgVar) {
 					gml.addFormat('%|_arg_%s = %s;', arg.name, argGmlRef);
@@ -180,20 +180,42 @@ class CppFunc {
 		if (bufSize == 0) bufSize = 1;
 		
 		//
-		var dynSizeStore = config.cppVector.replace("$", name);
-		var dynSizeSnip:String = null;
+		var dynSizeBase = config.cppStore.replace("$1", name);
+		inline function dynSizeVar(name) {
+			return dynSizeBase.replace("$2", name);
+		}
+		var hasDynSize = false;
+		var dynSizeResult = dynSizeVar("return");
 		var dynSizePost = "";
 		if (retTypeProc != null && retGcType == null) {
-			dynSizeSnip = retTypeProc.getDynSize(retType, dynSizeStore);
-			if (dynSizeSnip != null) {
-				dynSizePost = config.cppPost.replace("$", name);
-				cpp.addFormat("static %s %s;%|", retCppType, dynSizeStore);
+			if (retType.hasDynSize()) {
+				hasDynSize = true;
+				cpp.addFormat("static %s %s;%|", retCppType, dynSizeResult);
 			}
+		}
+		var hasOutArgs = false;
+		for (arg in args) if (arg.isOut()) {
+			hasOutArgs = true;
+			if (arg.type.hasDynSize()) {
+				hasDynSize = true;
+				var atCpp;
+				switch (arg.type.name) {
+					case "gml_inout":
+						atCpp = arg.type.params[0].toCppType();
+					case "gml_inout_vector":
+						atCpp = "std::vector<" + arg.type.params[0].toCppType() + ">";
+					default: atCpp = arg.type.toCppType();
+				}
+				cpp.addFormat("static %s %s;%|", atCpp, dynSizeVar(arg.name));
+			}
+		}
+		if (hasDynSize) {
+			dynSizePost = config.cppPost.replace("$", name);
 		}
 		
 		//
 		var argPtr = "_in_ptr";
-		if (dynSizeSnip == null && hasReturn && retGcType == null) {
+		if (!hasDynSize && (hasReturn && retGcType == null || hasOutArgs)) {
 			argPtr = "_inout_ptr";
 		}
 		//
@@ -221,7 +243,6 @@ class CppFunc {
 		}
 		var hasBufArgs = false;
 		var argi = 0;
-		var cppArgNames = [];
 		for (i => arg in args) {
 			CppFuncArg.current = arg;
 			var argGcType = argGcTypes[i];
@@ -285,29 +306,65 @@ class CppFunc {
 		cppCall.addFormat(")");
 		
 		//
-		if (dynSizeSnip != null) {
-			cpp.addFormat("%|%s = %b;", dynSizeStore, cppCall);
-			cpp.addFormat("%|return (double)(%s);", dynSizeSnip);
+		inline function writeOutArgs(dyn) {
+			for (arg in args) if (arg.isOut()) {
+				arg.type.cppWrite(cpp, '_r_' + arg.name, dyn ? dynSizeVar(arg.name) : '_a_' + arg.name);
+			}
+		}
+		if (hasDynSize) {
+			if (hasReturn) {
+				cpp.addFormat("%|%s = %b;", dynSizeResult, cppCall);
+			} else cpp.addFormat("%|%b;", cppCall);
+			var dynSize = "_dyn_size";
+			var dsb = cpp.fork();
+			var fixedSize = 0;
+			for (arg in args) if (arg.isOut()) {
+				cpp.addFormat("%|%s = %s;", dynSizeVar(arg.name), '_a_' + arg.name);
+				if (arg.type.hasDynSize()) {
+					fixedSize += arg.type.cppDynSize(dsb, '_sz_' + arg.name, '_a_' + arg.name, dynSize);
+				}
+			}
+			if (hasReturn && retType.hasDynSize()) {
+				fixedSize += retType.cppDynSize(dsb, '_sz_return', dynSizeResult, dynSize);
+			}
+			cpp.addFormat("%|size_t %s = %d;", dynSize, fixedSize);
+			cpp.addBuffer(dsb);
+			cpp.addFormat("%|return (double)(%s);", dynSize);
 			cpp.addFormat("%-}%|");
+			//
 			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, dynSizePost);
 			cpp.addFormat("gml_ostream _out(_out_ptr);");
-			retTypeProc.cppWrite(cpp, retType, '_r', dynSizeStore);
+			writeOutArgs(true);
+			if (hasReturn) {
+				retTypeProc.cppWrite(cpp, retType, '_r', dynSizeResult);
+			}
 			cpp.addFormat("%|return 1;");
-		} else if (!hasReturn) {
-			cpp.addFormat("%|%b;", cppCall);
-			cpp.addFormat("%|return 1;");
-		} else if (retGcType != null) {
-			cpp.addFormat("%|return %b;", cppCall);
 		} else {
-			cpp.addFormat("%|%s _result = %b;", retCppType, cppCall);
-			cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
-			retTypeProc.cppWrite(cpp, retType, '_r', '_result');
-			cpp.addFormat("%|return 1;");
+			if (!hasReturn) {
+				cpp.addFormat("%|%b;", cppCall);
+				if (hasOutArgs) {
+					cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
+					writeOutArgs(false);
+				}
+				cpp.addFormat("%|return 1;");
+			} else if (retGcType != null) {
+				if (hasOutArgs) {
+					cpp.addFormat("%|%s _result = %b;", retCppType, cppCall);
+					cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
+					writeOutArgs(false);
+					cpp.addFormat("%|return _result;");
+				} else cpp.addFormat("%|return %b;", cppCall);
+			} else {
+				cpp.addFormat("%|%s _result = %b;", retCppType, cppCall);
+				cpp.addFormat("%|gml_ostream _out(%s);", argPtr);
+				writeOutArgs(false);
+				retTypeProc.cppWrite(cpp, retType, '_r', '_result');
+				cpp.addFormat("%|return 1;");
+			}
 		}
 		//
-		inline function printReturn(pre:Bool):Void {
+		inline function printReturn():Void {
 			structModeProc(function() {
-				if (pre) gml.addLine();
 				var rx = retTypeProc.gmlRead(gml, retType, 0);
 				if (gmlCleanup.length > 0) {
 					gml.addFormat("%|%vdp = %s;", "_result", rx);
@@ -347,7 +404,24 @@ class CppFunc {
 			}
 		}
 		//
-		if (dynSizeSnip != null) {
+		function readOutArgs() {
+			structModeProc(function() {
+				for (i => arg in args) if (arg.isOut()) {
+					arg.type.gmlReadOut(gml, 0, hasOptArgs ? 'argument[$i]' : 'argument$i');
+				}
+			}, function() {
+				for (arg in args) if (arg.isOut()) {
+					if (arg.type.proc.usesStructs(arg.type)) return true;
+				}
+				return false;
+			}, function() {
+				for (arg in args) if (arg.isOut()) {
+					if (arg.type.proc.usesGmkSpec(arg.type)) return true;
+				}
+				return false;
+			});
+		}
+		if (hasDynSize) {
 			gml.addFormat("%|%vdp = %b;", "__size__", gmlCall);
 			gml.addFormat("%|if (__size__ == 0) "); addDefaultRet();
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
@@ -360,11 +434,20 @@ class CppFunc {
 			
 			gml.addFormat("%|%s(buffer_get_address(_buf), __size__);", dynSizePost);
 			gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
-			printReturn(true);
+			readOutArgs();
+			if (hasReturn) printReturn();
 		} else if (!hasReturn) {
 			gml.addFormat("%|%b;", gmlCall);
+			if (hasOutArgs) {
+				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
+				readOutArgs();
+			}
 			gml.addBuffer(gmlCleanup);
 		} else if (retGcType != null) {
+			if (hasOutArgs) {
+				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
+				readOutArgs();
+			}
 			if (gmlCleanup.length > 0) {
 				gml.addFormat("%|%vdp = %b;", "_result", gmlCall);
 				gml.addBuffer(gmlCleanup);
@@ -377,8 +460,8 @@ class CppFunc {
 			if (hasBufArgs) {
 				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			}
-			gml.addLine();
-			printReturn(false);
+			readOutArgs();
+			printReturn();
 			gml.addFormat("%-} else "); addDefaultRet();
 		}
 		//

@@ -55,8 +55,12 @@ class CppTypeProcCustom extends CppTypeProc {
 		if (custom.size != null) return custom.size;
 		return super.getSize(type);
 	}
-	override function getDynSize(type:CppType, val:String):String {
-		return patch(null, custom.dynSize, null, val);
+	override function hasDynSize(type:CppType):Bool {
+		return custom.dynSize != null;
+	}
+	override function cppDynSize(cpp:CppBuf, type:CppType, prefix:String, val:String, result:String):Int {
+		cpp.addFormat("%|%s", patch(null, custom.dynSize, null, val));
+		return 0;
 	}
 	override function usesStructs(type:CppType):Bool {
 		return custom.usesStructs;

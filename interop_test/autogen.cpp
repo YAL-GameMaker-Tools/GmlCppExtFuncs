@@ -4,6 +4,11 @@
 // Struct forward declarations:
 // from test_gml_ptr.cpp:3:
 struct iq_thing;
+// from test_inout.cpp:3:
+struct iq_inoutish {
+	int a, b;
+	char text[32];
+};
 // from test_struct.cpp:3:
 struct _iq_get_struct_vec {
 	int ind;
@@ -79,7 +84,6 @@ dllx double iq_inc_opt_int_raw(void* _inout_ptr, double _inout_ptr_size) {
 	if (_r.has_value()) {
 		_out.write<bool>(true);
 		_out.write<int>(_r.value());
-		
 	} else _out.write<bool>(false);
 	return 1;
 }
@@ -94,15 +98,17 @@ dllx double iq_def_ret_int_raw(void* _inout_ptr, double _inout_ptr_size) {
 }
 
 extern const char* iq_def_ret_string();
-static const char* iq_def_ret_string_raw_vec;
+static const char* iq_def_ret_string_raw_store_return;
 dllx double iq_def_ret_string_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	iq_def_ret_string_raw_vec = iq_def_ret_string();
-	return (double)(1 + strlen(iq_def_ret_string_raw_vec));
+	iq_def_ret_string_raw_store_return = iq_def_ret_string();
+	size_t _dyn_size = 1;
+	_dyn_size += strlen(iq_def_ret_string_raw_store_return);
+	return (double)(_dyn_size);
 }
 dllx double iq_def_ret_string_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
-	_out.write_string(iq_def_ret_string_raw_vec);
+	_out.write_string(iq_def_ret_string_raw_store_return);
 	return 1;
 }
 
@@ -179,16 +185,112 @@ dllx double iq_thing_set_count_raw(void* _in_ptr, double _in_ptr_size) {
 	return 1;
 }
 
+extern void iq_test_inout_struct(gml_inout<iq_inoutish> q);
+dllx double iq_test_inout_struct_raw(void* _inout_ptr, double _inout_ptr_size) {
+	gml_istream _in(_inout_ptr);
+	iq_inoutish _a_q;
+	if (_in.read<bool>()) {
+		_a_q.a = _in.read<int>();
+		_a_q.b = _in.read<int>();
+		for (auto _a_q_i0 = 0u; _a_q_i0 < 32; _a_q_i0++) {
+			_a_q.text[_a_q_i0] = _in.read<char>();
+		}
+	} else _a_q = {};
+	gml_inout<iq_inoutish> _arg_q = _a_q;
+	iq_test_inout_struct(_arg_q);
+	gml_ostream _out(_inout_ptr);
+	auto& _r_q = _a_q;
+	_out.write<int>(_r_q.a);
+	_out.write<int>(_r_q.b);
+	for (auto _r_q_i0 = 0u; _r_q_i0 < 32; _r_q_i0++) {
+		_out.write<char>(_r_q.text[_r_q_i0]);
+	}
+	return 1;
+}
+
+extern void iq_test_inout_int_vector(gml_inout_vector<int> v);
+static std::vector<int> iq_test_inout_int_vector_raw_store_v;
+dllx double iq_test_inout_int_vector_raw(void* _in_ptr, double _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	auto _a_v_n = _in.read<uint32_t>();
+	std::vector<int> _a_v(_a_v_n);
+	for (auto _a_v_i = 0u; _a_v_i < _a_v_n; _a_v_i++) {
+		_a_v[_a_v_i] = _in.read<int>();
+	}
+	gml_inout_vector<int> _arg_v = _a_v;
+	iq_test_inout_int_vector(_arg_v);
+	iq_test_inout_int_vector_raw_store_v = _a_v;
+	size_t _dyn_size = 4;
+	auto& _sz_v = _a_v;
+	auto _sz_v_n = _sz_v.size();
+	_dyn_size += 4 * _sz_v_n;
+	return (double)(_dyn_size);
+}
+dllx double iq_test_inout_int_vector_raw_post(void* _out_ptr, double _out_ptr_size) {
+	gml_ostream _out(_out_ptr);
+	auto& _r_v = iq_test_inout_int_vector_raw_store_v;
+	auto _r_v_n = _r_v.size();
+	_out.write<uint32_t>((uint32_t)_r_v_n);
+	for (auto _r_v_i = 0u; _r_v_i < _r_v_n; _r_v_i++) {
+		_out.write<int>(_r_v[_r_v_i]);
+	}
+	return 1;
+}
+
+extern void iq_test_inout_struct_vector(gml_inout_vector<iq_inoutish> v);
+static std::vector<iq_inoutish> iq_test_inout_struct_vector_raw_store_v;
+dllx double iq_test_inout_struct_vector_raw(void* _in_ptr, double _in_ptr_size) {
+	gml_istream _in(_in_ptr);
+	auto _a_v_n = _in.read<uint32_t>();
+	std::vector<iq_inoutish> _a_v(_a_v_n);
+	for (auto _a_v_i = 0u; _a_v_i < _a_v_n; _a_v_i++) {
+		iq_inoutish _a_v_v;
+		_a_v_v.a = _in.read<int>();
+		_a_v_v.b = _in.read<int>();
+		for (auto _a_v_v_i0 = 0u; _a_v_v_i0 < 32; _a_v_v_i0++) {
+			_a_v_v.text[_a_v_v_i0] = _in.read<char>();
+		}
+		_a_v[_a_v_i] = _a_v_v;
+	}
+	gml_inout_vector<iq_inoutish> _arg_v = _a_v;
+	iq_test_inout_struct_vector(_arg_v);
+	iq_test_inout_struct_vector_raw_store_v = _a_v;
+	size_t _dyn_size = 4;
+	auto& _sz_v = _a_v;
+	auto _sz_v_n = _sz_v.size();
+	_dyn_size += 41 * _sz_v_n;
+	return (double)(_dyn_size);
+}
+dllx double iq_test_inout_struct_vector_raw_post(void* _out_ptr, double _out_ptr_size) {
+	gml_ostream _out(_out_ptr);
+	auto& _r_v = iq_test_inout_struct_vector_raw_store_v;
+	auto _r_v_n = _r_v.size();
+	_out.write<uint32_t>((uint32_t)_r_v_n);
+	for (auto _r_v_i = 0u; _r_v_i < _r_v_n; _r_v_i++) {
+		auto& _r_v_v = _r_v[_r_v_i];
+		_out.write<int>(_r_v_v.a);
+		_out.write<int>(_r_v_v.b);
+		for (auto _r_v_v_i0 = 0u; _r_v_v_i0 < 32; _r_v_v_i0++) {
+			_out.write<char>(_r_v_v.text[_r_v_v_i0]);
+		}
+	}
+	return 1;
+}
+
 extern std::vector<_iq_get_struct_vec> iq_get_struct_vec();
-static std::vector<_iq_get_struct_vec> iq_get_struct_vec_raw_vec;
+static std::vector<_iq_get_struct_vec> iq_get_struct_vec_raw_store_return;
 dllx double iq_get_struct_vec_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	iq_get_struct_vec_raw_vec = iq_get_struct_vec();
-	return (double)(4 + iq_get_struct_vec_raw_vec.size() * sizeof(_iq_get_struct_vec));
+	iq_get_struct_vec_raw_store_return = iq_get_struct_vec();
+	size_t _dyn_size = 4;
+	auto& _sz_return = iq_get_struct_vec_raw_store_return;
+	auto _sz_return_n = _sz_return.size();
+	_dyn_size += 8 * _sz_return_n;
+	return (double)(_dyn_size);
 }
 dllx double iq_get_struct_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
-	auto& _r = iq_get_struct_vec_raw_vec;
+	auto& _r = iq_get_struct_vec_raw_store_return;
 	auto _r_n = _r.size();
 	_out.write<uint32_t>((uint32_t)_r_n);
 	for (auto _r_i = 0u; _r_i < _r_n; _r_i++) {
@@ -202,7 +304,7 @@ dllx double iq_get_struct_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 }
 
 extern mixed iq_mixed(mixed q);
-static mixed iq_mixed_raw_vec;
+static mixed iq_mixed_raw_store_return;
 dllx double iq_mixed_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
 	mixed _a_q;
@@ -220,12 +322,15 @@ dllx double iq_mixed_raw(void* _in_ptr, double _in_ptr_size) {
 		_a_q.sub[_a_q_i0] = _a_q_f_sub;
 	}
 	mixed _arg_q = _a_q;
-	iq_mixed_raw_vec = iq_mixed(_arg_q);
-	return (double)((4 + 1 + strlen(iq_mixed_raw_vec.str) + 9 + 16));
+	iq_mixed_raw_store_return = iq_mixed(_arg_q);
+	size_t _dyn_size = 30;
+	auto& _sz_return = iq_mixed_raw_store_return;
+	_dyn_size += strlen(_sz_return.str);
+	return (double)(_dyn_size);
 }
 dllx double iq_mixed_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
-	auto& _r = iq_mixed_raw_vec;
+	auto& _r = iq_mixed_raw_store_return;
 	_out.write<int>(_r.num);
 	_out.write_string(_r.str);
 	for (auto _r_i0 = 0u; _r_i0 < 3; _r_i0++) {
@@ -307,15 +412,19 @@ dllx double iq_get_int64_pair_vec_sum_raw(void* _inout_ptr, double _inout_ptr_si
 }
 
 extern std::vector<int64_t> iq_get_vec();
-static std::vector<int64_t> iq_get_vec_raw_vec;
+static std::vector<int64_t> iq_get_vec_raw_store_return;
 dllx double iq_get_vec_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	iq_get_vec_raw_vec = iq_get_vec();
-	return (double)(4 + iq_get_vec_raw_vec.size() * sizeof(int64_t));
+	iq_get_vec_raw_store_return = iq_get_vec();
+	size_t _dyn_size = 4;
+	auto& _sz_return = iq_get_vec_raw_store_return;
+	auto _sz_return_n = _sz_return.size();
+	_dyn_size += 8 * _sz_return_n;
+	return (double)(_dyn_size);
 }
 dllx double iq_get_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
-	auto& _r = iq_get_vec_raw_vec;
+	auto& _r = iq_get_vec_raw_store_return;
 	auto _r_n = _r.size();
 	_out.write<uint32_t>((uint32_t)_r_n);
 	for (auto _r_i = 0u; _r_i < _r_n; _r_i++) {
@@ -325,16 +434,24 @@ dllx double iq_get_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 }
 
 extern std::optional<std::vector<int64_t>> iq_get_opt_vec(bool ret);
-static std::optional<std::vector<int64_t>> iq_get_opt_vec_raw_vec;
+static std::optional<std::vector<int64_t>> iq_get_opt_vec_raw_store_return;
 dllx double iq_get_opt_vec_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
 	bool _arg_ret = _in.read<bool>();
-	iq_get_opt_vec_raw_vec = iq_get_opt_vec(_arg_ret);
-	return (double)(iq_get_opt_vec_raw_vec.has_value() ? 1 + (4 + iq_get_opt_vec_raw_vec.value().size() * sizeof(int64_t)) : 1);
+	iq_get_opt_vec_raw_store_return = iq_get_opt_vec(_arg_ret);
+	size_t _dyn_size = 1;
+	auto& _sz_return = iq_get_opt_vec_raw_store_return;
+	if (_sz_return.has_value()) {
+		auto& _sz_return_v = iq_get_opt_vec_raw_store_return.value();
+		auto _sz_return_v_n = _sz_return_v.size();
+		_dyn_size += 8 * _sz_return_v_n;
+		_dyn_size += 4;
+	}
+	return (double)(_dyn_size);
 }
 dllx double iq_get_opt_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 	gml_ostream _out(_out_ptr);
-	auto& _r = iq_get_opt_vec_raw_vec;
+	auto& _r = iq_get_opt_vec_raw_store_return;
 	if (_r.has_value()) {
 		_out.write<bool>(true);
 		auto& _r_v = _r.value();
@@ -343,7 +460,6 @@ dllx double iq_get_opt_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 		for (auto _r_v_i = 0u; _r_v_i < _r_v_n; _r_v_i++) {
 			_out.write<int64_t>(_r_v[_r_v_i]);
 		}
-		
 	} else _out.write<bool>(false);
 	return 1;
 }

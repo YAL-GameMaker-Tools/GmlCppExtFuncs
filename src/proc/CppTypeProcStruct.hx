@@ -21,12 +21,12 @@ class CppTypeProcStruct extends CppTypeProc {
 		var structVar = "_struct_" + z;
 		gml.addFormat("%|%vdp = ", structVar);
 		GmlStructIO.createTail(struct, gml);
-		GmlStructIO.readFields(struct, gml, z, structVar);
+		GmlStructIO.readFields(struct, gml, z, structVar, false);
 		return structVar;
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var structVar = "_struct_" + z;
-		gml.addFormat("%|%vdp = %s", structVar, val);
+		gml.addFormat("%|%vdp = %s;", structVar, val);
 		GmlStructIO.writeFields(struct, gml, z, structVar);
 	}
 	//
@@ -45,20 +45,29 @@ class CppTypeProcStruct extends CppTypeProc {
 		for (fd in struct.fields) size += fd.getSize();
 		return size;
 	}
-	override function getDynSize(type:CppType, val:String):String {
-		var parts = new Vector(struct.fields.length);
-		var hasDynSize = false;
-		for (i => fd in struct.fields) {
-			var t = fd.type;
-			var dynSize = t.proc.getDynSize(t, '$val.${fd.name}');
-			parts[i] = dynSize;
-			if (dynSize != null) hasDynSize = true;
+	override function cppDynSize(cpp:CppBuf, type:CppType, prefix:String, val:String, result:String):Int {
+		var fixed = 0;
+		var tmp = cpp.fork();
+		for (fd in struct.fields) {
+			// TODO: what if we have a `dynSizeType x[32]`
+			fixed += fd.type.proc.cppDynSize(tmp, fd.type,
+				prefix + '_f_' + fd.name,
+				prefix + "." + fd.name,
+				result
+			) * fd.getQuantity();
 		}
-		if (!hasDynSize) return null;
-		for (i => fd in struct.fields) if (parts[i] == null) {
-			parts[i] = "" + fd.getSize();
+		if (tmp.hasText) {
+			cpp.addFormat("%|auto& %s = %s;", prefix, val);
+			cpp.addBuffer(tmp);
 		}
-		return '(' + parts.join(' + ') + ')';
+		return fixed;
+	}
+	
+	override function seekRec(type:CppType, fn:CppType -> Bool):Bool {
+		for (fd in struct.fields) {
+			if (fn(fd.type)) return true;
+		}
+		return false;
 	}
 	override public function usesStructs(type:CppType):Bool {
 		return true;

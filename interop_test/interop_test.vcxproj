@@ -202,6 +202,7 @@
     <ClCompile Include="test_buffer.cpp" />
     <ClCompile Include="test_gml_id.cpp" />
     <ClCompile Include="test_gml_ptr.cpp" />
+    <ClCompile Include="test_inout.cpp" />
     <ClCompile Include="test_struct.cpp" />
     <ClCompile Include="test_tuple.cpp" />
     <ClCompile Include="test_vector.cpp" />

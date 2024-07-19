@@ -53,9 +53,9 @@ class GmkGen {
 			});
 			if (found) {
 				addGMKI();
-				cppBuf.addFormat("%s double %s(double _size) {", ep, fnPrepare);
-				cppBuf.addFormat("%+%s.prepare((int)_size);", argBuffer);
-				cppBuf.addFormat("%|return 1;");
+				cppBuf.addFormat("%s double %s(double _size) %{", ep, fnPrepare);
+					cppBuf.addFormat("%|%s.prepare((int)_size);", argBuffer);
+					cppBuf.addFormat("%|return 1;");
 				cppBuf.addFormat("%-}%|");
 			}
 		}
@@ -70,9 +70,9 @@ class GmkGen {
 			});
 			if (found) {
 				addGMKI();
-				cppBuf.addFormat("%s double %s() {", ep, fnRewind);
-				cppBuf.addFormat("%+%s.rewind();", argBuffer);
-				cppBuf.addFormat("%|return 1;");
+				cppBuf.addFormat("%s double %s() %{", ep, fnRewind);
+					cppBuf.addFormat("%|%s.rewind();", argBuffer);
+					cppBuf.addFormat("%|return 1;");
 				cppBuf.addFormat("%-}%|");
 			}
 		};

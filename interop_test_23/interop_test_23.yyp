@@ -17,6 +17,7 @@
     {"id":{"name":"scr_test_basics","path":"scripts/scr_test_basics/scr_test_basics.yy",},"order":1,},
     {"id":{"name":"scr_test_gml_id","path":"scripts/scr_test_gml_id/scr_test_gml_id.yy",},"order":7,},
     {"id":{"name":"is_equal","path":"scripts/is_equal/is_equal.yy",},"order":2,},
+    {"id":{"name":"scr_test_inout","path":"scripts/scr_test_inout/scr_test_inout.yy",},"order":9,},
     {"id":{"name":"interop_test_23","path":"scripts/interop_test_23/interop_test_23.yy",},"order":1,},
     {"id":{"name":"scr_test_tuple","path":"scripts/scr_test_tuple/scr_test_tuple.yy",},"order":4,},
     {"id":{"name":"scr_test_gml_ptr","path":"scripts/scr_test_gml_ptr/scr_test_gml_ptr.yy",},"order":6,},

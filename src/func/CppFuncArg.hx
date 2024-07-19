@@ -15,4 +15,7 @@ class CppFuncArg {
 		this.type = type;
 		this.name = name;
 	}
+	public function isOut() {
+		return type.proc.isOut();
+	}
 }

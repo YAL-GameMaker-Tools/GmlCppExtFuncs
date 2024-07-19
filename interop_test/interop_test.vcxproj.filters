@@ -74,6 +74,9 @@
     <ClCompile Include="test_gml_id.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="test_inout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="interop_test.rc">
