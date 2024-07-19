@@ -1,4 +1,8 @@
 function scr_test_inout() {
+    var box = [3];
+    iq_test_inout_box(box);
+    assert(box[0], 4);
+    //
     if (iq_use_structs) {
         var one = {
             a: 1, b: 3,

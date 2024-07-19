@@ -328,6 +328,22 @@
                     "returnType": 2
                 },
                 {
+                    "id": "3c2c3177-0806-d33e-240e-e95d64bd11c1",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_test_inout_box_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_test_inout_box_raw",
+                    "returnType": 2
+                },
+                {
                     "id": "b4a4b9ff-7f71-a4b6-062c-3480b4424499",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -1117,6 +1133,21 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_thing_set_count",
+                    "returnType": 2
+                },
+                {
+                    "id": "995231e8-e2cf-256b-ea23-812811b3a03d",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 1,
+                    "args": [
+                        2
+                    ],
+                    "externalName": "iq_test_inout_box",
+                    "help": "iq_test_inout_box(q)",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_test_inout_box",
                     "returnType": 2
                 },
                 {

@@ -4,7 +4,7 @@
 // Struct forward declarations:
 // from test_gml_ptr.cpp:3:
 struct iq_thing;
-// from test_inout.cpp:3:
+// from test_inout.cpp:6:
 struct iq_inoutish {
 	int a, b;
 	char text[32];
@@ -182,6 +182,20 @@ dllx double iq_thing_set_count_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();;
 	int _arg_count = _in.read<int>();
 	iq_thing_set_count(_arg_thing, _arg_count);
+	return 1;
+}
+
+extern void iq_test_inout_box(gml_inout<int> q);
+dllx double iq_test_inout_box_raw(void* _inout_ptr, double _inout_ptr_size) {
+	gml_istream _in(_inout_ptr);
+	int _a_q;
+	if (_in.read<bool>()) {
+		_a_q = _in.read<int>();
+	} else _a_q = {};
+	gml_inout<int> _arg_q = _a_q;
+	iq_test_inout_box(_arg_q);
+	gml_ostream _out(_inout_ptr);
+	_out.write<int>(_a_q);
 	return 1;
 }
 

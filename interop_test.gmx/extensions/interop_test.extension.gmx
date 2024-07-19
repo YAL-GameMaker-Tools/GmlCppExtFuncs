@@ -264,6 +264,18 @@
           </args>
         </function>
         <function>
+          <name>iq_test_inout_box_raw</name>
+          <externalName>iq_test_inout_box_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>2</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
           <name>iq_test_inout_struct_raw</name>
           <externalName>iq_test_inout_struct_raw</externalName>
           <kind>11</kind>
@@ -814,6 +826,17 @@
           <argCount>2</argCount>
           <args>
             <arg>2</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_test_inout_box</name>
+          <externalName>iq_test_inout_box</externalName>
+          <kind>2</kind>
+          <help>iq_test_inout_box(q)</help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
             <arg>2</arg>
           </args>
         </function>

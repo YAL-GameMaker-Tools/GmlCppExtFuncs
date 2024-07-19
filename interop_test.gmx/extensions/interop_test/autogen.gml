@@ -252,6 +252,20 @@ if (iq_use_structs) {
 }
 iq_thing_set_count_raw(buffer_get_address(_buf), 12);
 
+#define iq_test_inout_box
+/// iq_test_inout_box(q)
+var _buf = itr_test_prepare_buffer(8);
+var _box_0 = argument0;
+if (array_length_1d(_box_0)) {
+    buffer_write(_buf, buffer_bool, true);
+    buffer_write(_buf, buffer_s32, _box_0[0]);
+} else buffer_write(_buf, buffer_bool, false);
+iq_test_inout_box_raw(buffer_get_address(_buf), 8);
+buffer_seek(_buf, buffer_seek_start, 0);
+var _box_0;
+_box_0 = buffer_read(_buf, buffer_s32);
+argument0[@0] = _box_0;
+
 #define iq_test_inout_struct
 /// iq_test_inout_struct(q)
 var _buf = itr_test_prepare_buffer(8);
@@ -267,7 +281,7 @@ if (iq_use_structs) {
 } else //*/
 {
     var _struct_0 = argument0;
-    if (array_length(_struct_0) != 0) {
+    if (array_length_1d(_struct_0) != 0) {
         buffer_write(_buf, buffer_bool, true);
         buffer_write(_buf, buffer_s32, _struct_0[0]); // a
         buffer_write(_buf, buffer_s32, _struct_0[1]); // b
@@ -293,11 +307,22 @@ if (iq_use_structs) {
 #define iq_test_inout_int_vector
 /// iq_test_inout_int_vector(v:array<int>)
 var _buf = itr_test_prepare_buffer(8);
-var _arr_0 = argument0;
-var _len_0 = array_length_1d(_arr_0);
-buffer_write(_buf, buffer_u32, _len_0);
-for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
-    buffer_write(_buf, buffer_s32, _arr_0[_ind_0]);
+/* GMS >= 2.3:
+if (iq_use_structs) {
+    var _arr_0 = argument0;
+    var _len_0 = array_length_1d(_arr_0);
+    buffer_write(_buf, buffer_u32, _len_0);
+    for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
+        buffer_write(_buf, buffer_s32, _arr_0[_ind_0]);
+    }
+} else //*/
+{
+    var _arr_0 = argument0;
+    var _len_0 = array_length_1d(_arr_0);
+    buffer_write(_buf, buffer_u32, _len_0);
+    for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
+        buffer_write(_buf, buffer_s32, _arr_0[_ind_0]);
+    }
 }
 var __size__ = iq_test_inout_int_vector_raw(buffer_get_address(_buf), 8);
 if (__size__ == 0) return undefined;
@@ -309,14 +334,25 @@ buffer_poke(_buf, __size__ - 1, buffer_u8, 0);
 //*/
 iq_test_inout_int_vector_raw_post(buffer_get_address(_buf), __size__);
 buffer_seek(_buf, buffer_seek_start, 0);
-var _arr_0 = argument0;
-var _len_0 = buffer_read(_buf, buffer_u32);
-var _ind_0 = array_length_1d(_arr_0);
-if (_arr_0 >= _len_0) {
-    while (--_ind_0 >= _len_0) _arr_0[_ind_0] = undefined;
-} else _arr_0[@_len_0 - 1] = 0;
-for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
-    _arr_0[@_ind_0] = buffer_read(_buf, buffer_s32);
+/* GMS >= 2.3:
+if (iq_use_structs) {
+    var _arr_0 = argument0;
+    var _len_0 = buffer_read(_buf, buffer_u32);
+    if (array_length(_arr_0) != _len_0) array_resize(_arr_0, _len_0);
+    for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
+        _arr_0[@_ind_0] = buffer_read(_buf, buffer_s32);
+    }
+} else //*/
+{
+    var _arr_0 = argument0;
+    var _len_0 = buffer_read(_buf, buffer_u32);
+    var _ind_0 = array_length_1d(_arr_0);
+    if (_ind_0 >= _len_0) {
+        while (--_ind_0 >= _len_0) _arr_0[_ind_0] = undefined;
+    } else _arr_0[@_len_0 - 1] = 0;
+    for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {
+        _arr_0[@_ind_0] = buffer_read(_buf, buffer_s32);
+    }
 }
 
 #define iq_test_inout_struct_vector
@@ -381,7 +417,7 @@ if (iq_use_structs) {
     var _arr_0 = argument0;
     var _len_0 = buffer_read(_buf, buffer_u32);
     var _ind_0 = array_length_1d(_arr_0);
-    if (_arr_0 >= _len_0) {
+    if (_ind_0 >= _len_0) {
         while (--_ind_0 >= _len_0) _arr_0[_ind_0] = undefined;
     } else _arr_0[@_len_0 - 1] = 0;
     for (var _ind_0 = 0; _ind_0 < _len_0; _ind_0 += 1) {

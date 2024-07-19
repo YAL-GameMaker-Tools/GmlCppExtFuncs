@@ -94,6 +94,10 @@
             1,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_box_raw","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_box_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct_raw","argCount":2,"args":[
             1,
             2,
@@ -277,6 +281,9 @@
             2,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count","help":"iq_thing_set_count(thing, count:int)","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_box","argCount":1,"args":[
+            2,
+          ],"documentation":"","externalName":"iq_test_inout_box","help":"iq_test_inout_box(q)","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_struct","argCount":1,"args":[
             2,
           ],"documentation":"","externalName":"iq_test_inout_struct","help":"iq_test_inout_struct(q)","hidden":false,"kind":2,"returnType":2,},

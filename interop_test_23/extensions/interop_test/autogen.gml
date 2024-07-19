@@ -252,6 +252,20 @@ if (iq_use_structs) {
 }
 iq_thing_set_count_raw(buffer_get_address(_buf), 12);
 
+#define iq_test_inout_box
+/// iq_test_inout_box(q)
+var _buf = itr_test_prepare_buffer(8);
+var _box_0 = argument0;
+if (array_length_1d(_box_0)) {
+	buffer_write(_buf, buffer_bool, true);
+	buffer_write(_buf, buffer_s32, _box_0[0]);
+} else buffer_write(_buf, buffer_bool, false);
+iq_test_inout_box_raw(buffer_get_address(_buf), 8);
+buffer_seek(_buf, buffer_seek_start, 0);
+var _box_0;
+_box_0 = buffer_read(_buf, buffer_s32);
+argument0[@0] = _box_0;
+
 #define iq_test_inout_struct
 /// iq_test_inout_struct(q)
 var _buf = itr_test_prepare_buffer(8);
@@ -267,7 +281,7 @@ if (iq_use_structs) {
 } else //*/
 {
 	var _struct_0 = argument0;
-	if (array_length(_struct_0) != 0) {
+	if (array_length_1d(_struct_0) != 0) {
 		buffer_write(_buf, buffer_bool, true);
 		buffer_write(_buf, buffer_s32, _struct_0[0]); // a
 		buffer_write(_buf, buffer_s32, _struct_0[1]); // b

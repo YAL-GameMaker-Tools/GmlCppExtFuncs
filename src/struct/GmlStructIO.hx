@@ -73,15 +73,6 @@ class GmlStructIO {
 		}
 	}
 	
-	public static function isEmpty(struct:CppStruct, gml:CppBuf, vp:String) {
-		switch (CppGen.config.storageMode) {
-			case SmStruct: gml.addFormat('variable_struct_names_count(%s) == 0', vp);
-			case SmArray: gml.addFormat('array_length(%s) == 0', vp);
-			case SmMap: gml.addFormat('ds_map_empty(%s)', vp);
-			case SmList: gml.addFormat('ds_list_empty(%s)', vp);
-		}
-	}
-	
 	public static function writeFields(struct:CppStruct, gml:CppBuf, z:Int, structVar:String) {
 		var mode = CppGen.config.storageMode;
 		var useArrays = mode == SmStruct || mode == SmArray;

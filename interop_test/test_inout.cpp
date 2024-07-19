@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+dllg void iq_test_inout_box(gml_inout<int> q) {
+	q += 1;
+}
 struct iq_inoutish {
 	int a, b;
 	char text[32];
