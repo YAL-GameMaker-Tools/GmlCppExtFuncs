@@ -18,6 +18,11 @@ class CppStruct {
 	public var proc:CppTypeProcStruct;
 	/** C++ implementation */
 	public var impl:String;
+	/**
+		Whether the struct body can/should be copied for forward declaration
+		(read: it was defined in a source file instead of a header)
+	**/
+	public var shouldForwardDeclare:Bool = true;
 	public function new(name:String) {
 		this.name = name;
 		proc = new CppTypeProcStruct(this);
@@ -32,7 +37,7 @@ class CppStruct {
 			if (fdName == "") break;
 			q.skipSpaces();
 			if (q.peek() == "(".code) break; // retType funcName()
-			var fd = new struct.CppStructField(fdType, fdName);
+			var fd = new CppStructField(fdType, fdName);
 			while (q.skipIfEqu("[".code)) {
 				q.skipSpaces();
 				var n = Std.parseInt(q.readIdent());
@@ -74,11 +79,12 @@ class CppStruct {
 		}
 	}
 	
-	public static function read(q:tools.CppReader) {
+	public static function read(q:tools.CppReader, shouldForwardDeclare) {
 		var structStart = q.pos - "struct".length;
 		q.skipSpaces();
 		var structName = q.readIdent();
 		var struct = new CppStruct(structName);
+		struct.shouldForwardDeclare = shouldForwardDeclare;
 		struct.origin = q.name + ":" + q.getRow(structStart);
 		@:privateAccess CppTypeHelper.map[structName] = struct.proc;
 		list.push(struct);

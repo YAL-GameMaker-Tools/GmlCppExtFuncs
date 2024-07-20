@@ -1,4 +1,5 @@
 package ;
+import proc.CppTypeProcEnum;
 import proc.CppTypeProcCustom;
 import func.CppFunc;
 import haxe.io.Path;
@@ -16,7 +17,7 @@ using StringTools;
  * @author YellowAfterlife
  */
 class CppGenParser {
-	public static function procFile(path:String, cpp:String, indexStructs:Bool) {
+	public static function procFile(path:String, cpp:String, isSourceFile:Bool) {
 		var config = CppGen.config;
 		var kwMacro = config.functionTag;
 		var kwMacroM = config.functionTagM;
@@ -117,9 +118,18 @@ class CppGenParser {
 							//trace(path, q.getRow(q.pos), name, type, type.name, type.ptrCount);
 							CppType.typedefs[name] = type;
 						}
-					} else if (indexStructs && w == "struct") {
-						struct.CppStruct.read(q);
-					} else if (w == kwMacro || w == kwMacroM) {
+					} else if (w == "struct") {
+						struct.CppStruct.read(q, isSourceFile);
+					} else if (w == "enum") {
+						q.skipSpaces();
+						var name = q.readIdent();
+						if (name == "class") {
+							q.skipSpaces();
+							name = q.readIdent();
+						}
+						@:privateAccess CppTypeHelper.map[name] = new CppTypeProcEnum(name);
+					}
+					else if (w == kwMacro || w == kwMacroM) {
 						var fn = func.CppFuncReader.read(q);
 						if (fn != null) {
 							if (w == kwMacroM) fn.isMangled = true;

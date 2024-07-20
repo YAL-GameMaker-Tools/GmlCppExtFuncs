@@ -34,16 +34,24 @@ class CppTypeProcCond {
 			config.isGMK = gmk;
 			func();
 		}
+		inline function procGMS23() {
+			proc(SmStruct, BmStruct, VmArray);
+		}
+		inline function procGMS1() {
+			if (config.preferDS) {
+				proc(SmMap, BmArray, VmList);
+			} else {
+				proc(SmArray, BmArray, VmArray);
+			}
+		}
 		
 		if (structModeVal != null) {
 			// e.g. forced array mode for GMS 2.3
 			if (gmkSpec) gml.addFormat("%|// GMS >= 1:");
 			
 			if (structModeVal) {
-				proc(SmStruct, BmStruct, VmArray);
-			} else {
-				proc(SmArray, BmArray, VmArray);
-			}
+				procGMS23();
+			} else procGMS1();
 			
 			if (gmkSpec) {
 				addElseGmk();
@@ -56,7 +64,7 @@ class CppTypeProcCond {
 		if (!useStructs()) {
 			// no structs, but don't get too excited
 			if (gmkSpec) gml.addFormat("%|// GMS >= 1:");
-			proc(SmArray, BmArray, VmArray);
+			procGMS1();
 			if (gmkSpec) {
 				addElseGmk();
 				proc(SmList, gmkBox, VmList, true);
@@ -69,7 +77,9 @@ class CppTypeProcCond {
 		if (structModeCond) {
 			gml.addFormat("%|if (%s) %{", structMode);
 		}
-		proc(SmStruct, BmStruct, VmArray);
+		
+		procGMS23();
+		
 		if (structModeCond) {
 			gml.addFormat("%-} else //*/");
 			gml.addFormat("%|%{");
@@ -85,7 +95,7 @@ class CppTypeProcCond {
 			gml.addFormat("%|/* GMS >= 1:");
 		}
 		
-		proc(SmArray, BmArray, VmArray);
+		procGMS1();
 		
 		if (gmkSpec) {
 			addElseGmk();

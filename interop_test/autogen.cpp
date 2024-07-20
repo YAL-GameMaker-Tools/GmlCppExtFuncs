@@ -1,30 +1,6 @@
 #include "gml_ext.h"
 #include "gml_extm.h"
 #include "interop_test.h"
-// Struct forward declarations:
-// from test_gml_ptr.cpp:3:
-struct iq_thing;
-// from test_inout.cpp:6:
-struct iq_inoutish {
-	int a, b;
-	char text[32];
-};
-// from test_struct.cpp:3:
-struct _iq_get_struct_vec {
-	int ind;
-	char name[4];
-};
-// from test_struct.cpp:17:
-struct mixed_sub {
-	int a, b;
-};
-// from test_struct.cpp:20:
-struct mixed {
-	int num;
-	const char* str;
-	uint8_t grid[3][3];
-	mixed_sub sub[2];
-};
 #if 0
 
 extern void iq_never();

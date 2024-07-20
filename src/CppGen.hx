@@ -76,7 +76,7 @@ class CppGen {
 		
 		if (CppStruct.list.length > 0) {
 			var prefix = false;
-			for (struct in CppStruct.list) {
+			for (struct in CppStruct.list) if (struct.shouldForwardDeclare) {
 				var byval = CppType.useMap[struct.name];
 				if (byval == null) continue;
 				if (!prefix) {
@@ -154,6 +154,9 @@ class CppGen {
 				case "--append": config.append.push(args[i + 1]); 2;
 				case "--include": config.includes.push(args[i + 1]); 2;
 				case "--struct": config.structMode = args[i + 1]; 2;
+				//
+				case "--prefer-ds": config.preferDS = true; 1;
+				//
 				case "--gml": outGmlPath = args[i + 1]; 2;
 				case "--cpp": outCppPath = args[i + 1]; 2;
 				case "--wasm": config.useWASM = true; 1;
@@ -172,7 +175,9 @@ class CppGen {
 			Sys.stdin().readLine();
 			return;
 		}
-		for (full in args) procArg(full, true);
+		for (full in args) {
+			procArg(full, true);
+		}
 		finish();
 		#else
 		var h = new haxe.Http("test.cpp?v=" + Date.now().getTime());

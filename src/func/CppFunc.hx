@@ -190,7 +190,6 @@ class CppFunc {
 		if (retTypeProc != null && retGcType == null) {
 			if (retType.hasDynSize()) {
 				hasDynSize = true;
-				cpp.addFormat("static %s %s;%|", retCppType, dynSizeResult);
 			}
 		}
 		var hasOutArgs = false;
@@ -210,6 +209,7 @@ class CppFunc {
 			}
 		}
 		if (hasDynSize) {
+			if (retTypeProc != null) cpp.addFormat("static %s %s;%|", retCppType, dynSizeResult);
 			dynSizePost = config.cppPost.replace("$", name);
 		}
 		
