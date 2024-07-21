@@ -256,6 +256,12 @@ class CppType {
 		return __toCppType_cache;
 	}
 	
+	public function toCppType_mutable() {
+		var t = toCppType();
+		if (t.startsWith("const ")) return t.substring("const ".length);
+		return t;
+	}
+	
 	private var __toCppMacroType_cache:String;
 	public function toCppMacroType(nested:Bool = false) {
 		if (__toCppMacroType_cache != null) return __toCppMacroType_cache;

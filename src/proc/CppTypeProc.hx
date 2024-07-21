@@ -53,7 +53,7 @@ class CppTypeProc {
 	 * @return	C++ code to use as a final value
 	 */
 	public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
-		var ts = type.toCppType();
+		var ts = type.toCppType_mutable();
 		return '_in.read<$ts>()';
 	}
 	

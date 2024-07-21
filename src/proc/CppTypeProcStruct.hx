@@ -31,7 +31,7 @@ class CppTypeProcStruct extends CppTypeProc {
 	}
 	//
 	override function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
-		cpp.addFormat('%|%s %s;', type.toCppType(), prefix);
+		cpp.addFormat('%|%s %s;', type.toCppType_mutable(), prefix);
 		CppStructIO.readFields(struct, cpp, prefix);
 		return prefix;
 	}

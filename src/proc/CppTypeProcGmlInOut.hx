@@ -50,7 +50,7 @@ class CppTypeProcGmlInOut extends CppTypeProc {
 	}
 	override function cppRead(cpp:CppBuf, type:CppType, vp:String):String {
 		var p = unpack(type);
-		cpp.addFormat("%|%s %s;", p.type.toCppType(), vp);
+		cpp.addFormat("%|%s %s;", p.type.toCppType_mutable(), vp);
 		cpp.addFormat("%|if (_in.read<bool>()) %{");
 		if (p.sp != null) {
 			CppStructIO.readFields(p.sp.struct, cpp, vp);
