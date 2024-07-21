@@ -122,8 +122,15 @@ class CppTypeProcVector extends CppTypeProc {
 		if (itemSize > 0) cpp.addFormat('%|%s += %d * %s;', result, itemSize, vp_len);
 		return 4;
 	}
+	override function usesStructs(type:CppType):Bool {
+		if (CppGen.config.preferDS) return true;
+		return super.usesStructs(type);
+	}
 	override function usesGmkSpec(type:CppType):Bool {
 		return true;
+	}
+	override function isList(type:CppType):Bool {
+		return CppGen.config.vectorMode == VmList;
 	}
 }
 class CppTypeProcTinyArray extends CppTypeProcVector {

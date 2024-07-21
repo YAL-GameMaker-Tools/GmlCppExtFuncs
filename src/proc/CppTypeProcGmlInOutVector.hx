@@ -148,4 +148,7 @@ class CppTypeProcGmlInOutVector extends CppTypeProcVector {
 	override function isOut():Bool {
 		return true;
 	}
+	override function isList(type:CppType):Bool {
+		return CppGen.config.vectorMode == VmList;
+	}
 }

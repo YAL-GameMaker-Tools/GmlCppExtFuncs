@@ -48,9 +48,14 @@ class GmlStructIO {
 			gml.addFormat('%|for (%vdb; %0 < %d; %0 += 1) %{', _ind, "0", _len);
 				var val = proc(gml, type, tp, z + 1, size, size_ind + 1);
 				if (useArrays) {
-					gml.addFormat("%s[%s%s] = %s;", _arr, acc, _ind, val);
+					gml.addFormat("%|%s[%s%s] = %s;", _arr, acc, _ind, val);
 				} else {
-					gml.addFormat("ds_list_add(%s, %s", _arr, val);
+					gml.addFormat("%|ds_list_add(%s, %s", _arr, val);
+					if (type.proc.isMap(type)) {
+						gml.addFormat("%|ds_list_mark_as_map(%s, %s);", _arr, _ind);
+					} else if (type.proc.isMap(type)) {
+						gml.addFormat("%|ds_list_mark_as_list(%s, %s);", _arr, _ind);
+					}
 				}
 			gml.addFormat("%-}");
 			
@@ -66,7 +71,13 @@ class GmlStructIO {
 				case SmArray:
 					gml.addFormat("%|%s[%s%d] = %s; // %s", structVar, acc, i, val, fd.name);
 				case SmMap:
-					gml.addFormat('%|ds_map_add(%s, "%s", %s);', structVar, fd.name, val);
+					if (tp.isMap(fd.type)) {
+						gml.addFormat('%|ds_map_add_map(%s, "%s", %s);', structVar, fd.name, val);
+					} else if (tp.isList(fd.type)) {
+						gml.addFormat('%|ds_map_add_list(%s, "%s", %s);', structVar, fd.name, val);
+					} else {
+						gml.addFormat('%|ds_map_add(%s, "%s", %s);', structVar, fd.name, val);
+					}
 				case SmList:
 					gml.addFormat('%|ds_list_add(%s, %s); // %s', structVar, val, fd.name);
 			}

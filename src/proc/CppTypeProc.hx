@@ -135,4 +135,10 @@ class CppTypeProc {
 	public function keepGmlArgVar(type:CppType):Bool {
 		return false;
 	}
+	public function isMap(type:CppType) {
+		return false;
+	}
+	public function isList(type:CppType) {
+		return false;
+	}
 }

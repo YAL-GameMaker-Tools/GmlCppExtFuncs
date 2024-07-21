@@ -88,4 +88,7 @@ class CppTypeProcTuple extends CppTypeProc {
 		for (t in type.params) if (t.proc.usesGmkSpec(t)) return true;
 		return false;
 	}
+	override function isList(type:CppType):Bool {
+		return CppGen.config.isGMK;
+	}
 }

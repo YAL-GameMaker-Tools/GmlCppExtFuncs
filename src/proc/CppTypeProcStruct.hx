@@ -75,4 +75,10 @@ class CppTypeProcStruct extends CppTypeProc {
 	override public function usesGmkSpec(type:CppType):Bool {
 		return true;
 	}
+	override function isMap(type:CppType):Bool {
+		return CppGen.config.storageMode == SmMap;
+	}
+	override function isList(type:CppType):Bool {
+		return CppGen.config.storageMode == SmList;
+	}
 }
