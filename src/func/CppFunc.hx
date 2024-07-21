@@ -197,6 +197,11 @@ class CppFunc {
 			hasOutArgs = true;
 			if (arg.type.hasDynSize()) {
 				hasDynSize = true;
+			}
+		}
+		if (hasDynSize) {
+			if (retTypeProc != null) cpp.addFormat("static %s %s;%|", retCppType, dynSizeResult);
+			for (arg in args) if (arg.isOut()) {
 				var atCpp;
 				switch (arg.type.name) {
 					case "gml_inout":
@@ -207,9 +212,6 @@ class CppFunc {
 				}
 				cpp.addFormat("static %s %s;%|", atCpp, dynSizeVar(arg.name));
 			}
-		}
-		if (hasDynSize) {
-			if (retTypeProc != null) cpp.addFormat("static %s %s;%|", retCppType, dynSizeResult);
 			dynSizePost = config.cppPost.replace("$", name);
 		}
 		

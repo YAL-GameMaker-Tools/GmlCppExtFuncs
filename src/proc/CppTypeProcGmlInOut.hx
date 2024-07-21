@@ -63,27 +63,41 @@ class CppTypeProcGmlInOut extends CppTypeProc {
 	override function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String) {
 		unpack(type).type.cppWrite(cpp, prefix, val);
 	}
+	override function getSize(type:CppType):Int {
+		var p = unpack(type);
+		return 1 + p.type.getSize();
+	}
 	override function cppDynSize(cpp:CppBuf, type:CppType, prefix:String, val:String, result:String):Int {
 		var p = unpack(type);
 		return 1 + p.proc.cppDynSize(cpp, p.type, prefix, val, result);
 	}
 	override function gmlReadOut(gml:CppBuf, type:CppType, depth:Int, out:String) {
 		var p = unpack(type);
-		var vp = (p.sp != null ? "_struct_" : "_box_") + depth;
 		if (p.sp != null) {
+			var vp = "_struct_" + depth;
 			gml.addFormat("%|%vdp = %s;", vp, out);
+			switch (CppGen.config.storageMode) {
+				case SmStruct, SmArray: {}; // OK!
+				case SmMap: gml.addFormat("%|ds_map_clear(%s);", vp);
+				case SmList: gml.addFormat("%|ds_list_clear(%s);", vp);
+			}
 			GmlStructIO.readFields(p.sp.struct, gml, depth, vp, true);
 		} else {
-			gml.addFormat("%|var %s;", vp);
+			var vp = "_box_" + depth;
+			var vp_val = "_val_" + depth;
+			gml.addFormat("%|%vdp = %s;", vp, out);
+			gml.addFormat("%|var %s;", vp_val);
 			p.type.gmlReadOut(gml, depth + 1, vp);
 			var isGMK = CppGen.config.isGMK;
 			if (isGMK) {
 				gml.addFormat("%|if (ds_list_empty(%s)) %{", vp);
-				gml.addFormat("%|ds_list_add(%s, %s);", out, vp);
+					gml.addFormat("%|ds_list_add(%s, %s);", vp, vp_val);
 				gml.addFormat("%-} else %{");
-				gml.addFormat("%|ds_list_replace(%s, 0, %s);", out, vp);
+					gml.addFormat("%|ds_list_replace(%s, 0, %s);", vp, vp_val);
 				gml.addFormat("%-}");
-			} else gml.addFormat("%|%s[@0] = %s;", out, vp);
+			} else {
+				gml.addFormat("%|%s[@0] = %s;", vp, vp_val);
+			}
 		}
 	}
 	override function isOut():Bool {

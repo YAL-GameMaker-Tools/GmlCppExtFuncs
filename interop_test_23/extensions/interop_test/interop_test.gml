@@ -40,6 +40,8 @@ var _tmp = global.__itr_test_string_buffer;
 if (_tmp == undefined) {
     _tmp = buffer_create(_len + 1, buffer_grow, 1);
     global.__itr_test_string_buffer = _tmp;
+} else if (buffer_get_size(_tmp) <= _len) {
+    buffer_resize(_tmp, _len + 1);
 }
 buffer_seek(_tmp, buffer_seek_start, 0);
 buffer_write(_tmp, buffer_text, _str);
