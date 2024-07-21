@@ -29,7 +29,9 @@ class CppTypeProcCustom extends CppTypeProc {
 		return patch(gml, custom.gmlRead, depth);
 	}
 	override function gmlWrite(gml:CppBuf, type:CppType, depth:Int, val:String) {
-		gml.addFormat("%|%s", patch(gml, custom.gmlWrite, depth, val));
+		if (custom.gmlWrite != null) {
+			gml.addFormat("%|%s", patch(gml, custom.gmlWrite, depth, val));
+		}
 	}
 	override function gmlCleanup(gml:CppBuf, type:CppType, depth:Int, val:String) {
 		if (custom.gmlCleanup == null) return;

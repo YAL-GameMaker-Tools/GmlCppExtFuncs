@@ -25,9 +25,15 @@ class CppBuf extends StringBuf {
 		return b;
 	}
 	
-	public inline function addString(s:String) add(s);
+	public function addString(s:String) {
+		if (s == null) throw "null string!";
+		add(s);
+	}
 	public inline function addInt(i:Int) add(i);
-	public inline function addBuffer(b:StringBuf) add(b.toString());
+	public function addBuffer(b:StringBuf) {
+		if (b == null) throw "null buffer!";
+		add(b.toString());
+	}
 	
 	static var addFormat_map:Map<String, CppBufFormatPart> = (function() {
 		inline function simple(fn:CppBufFormatFunc) {
