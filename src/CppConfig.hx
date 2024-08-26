@@ -19,13 +19,22 @@ class CppConfig {
 	public var functionTag = "dllg";
 	public var functionTagM = "dllgm";
 	//
+	
+	/** Controls how vectors are represented on GML side */
 	public var vectorMode:GmlVectorMode = GmlVectorMode.VmArray;
+	
+	/** Controls how structs are represented on GML side */
 	public var storageMode:GmlStorageMode = GmlStorageMode.SmStruct;
+	
+	/** Controls how gml_id/gml_ptr are represented on GML side */
 	public var boxMode:GmlBoxMode = GmlBoxMode.BmStruct;
+	
+	/** Whether currently generating code for GM8.1 */
 	public var isGMK = false;
-	/**
-		Prefer ds_map/ds_list over arrays for GM:S/GMS2.2
-	**/
+	
+	public var gmlWindowHandle = "window_handle()";
+	
+	/** Prefer ds_map/ds_list over arrays for GM:S/GMS2.2 */
 	public var preferDS = false;
 	//
 	public var structMode = "0";
@@ -43,6 +52,37 @@ class CppConfig {
 		
 	}
 	
+	public function handleArgs(args:Array<String>){
+		var i = 0;
+		while (i < args.length) {
+			var remove = switch (args[i]) {
+				case "--prefix": helperPrefix = args[i + 1]; 2;
+				case "--function-tag": functionTag = args[i + 1]; 2;
+				case "--function-tagm": functionTagM = args[i + 1]; 2;
+				case "--export-tag": exportPrefix = args[i + 1]; 2;
+				case "--export-tagm": exportPrefixM = args[i + 1]; 2;
+				case "--prepend": prepend.push(args[i + 1]); 2;
+				case "--append": append.push(args[i + 1]); 2;
+				case "--include": includes.push(args[i + 1]); 2;
+				//
+				case "--struct": structMode = args[i + 1]; 2;
+				case "--prefer-ds": preferDS = true; 1;
+				case "--window-handle": gmlWindowHandle = args[i + 1]; 2;
+				//
+				case "--gml": CppGen.outGmlPath = args[i + 1]; 2;
+				case "--cpp": CppGen.outCppPath = args[i + 1]; 2;
+				case "--wasm": useWASM = true; 1;
+				case "--gmk": CppGen.outGmkPath = args[i + 1]; 2;
+				#if sys
+				case "--index": CppGen.procArg(args[i + 1], false); 2;
+				#end
+				default: 0;
+			}
+			if (remove > 0) {
+				args.splice(i, remove);
+			} else i += 1;
+		}
+	}
 }
 enum GmlStorageMode {
 	/** GMS 2.3.x and GM2022+ */

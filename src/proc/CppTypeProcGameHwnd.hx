@@ -7,10 +7,11 @@ import tools.CppBuf;
  */
 class CppTypeProcGameHwnd extends CppTypeProc {
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
+		var x = CppGen.config.gmlWindowHandle;
 		if (CppGen.config.isGMK) {
-			gml.addFormat('%|%bw;', 'ptr', 'window_handle()');
+			gml.addFormat('%|%bw;', 'ptr', x);
 		} else {
-			gml.addFormat('%|%bw;', 'u64', 'int64(window_handle())');
+			gml.addFormat('%|%bw;', 'u64', 'int64($x)');
 		}
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
