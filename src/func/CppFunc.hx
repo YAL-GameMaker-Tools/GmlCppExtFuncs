@@ -1,5 +1,6 @@
 package func ;
 import proc.CppTypeProc;
+import proc.CppTypeProcOptional;
 using StringTools;
 import tools.CppBuf;
 
@@ -335,6 +336,10 @@ class CppFunc {
 			cpp.addFormat("%-}%|");
 			//
 			cpp.addFormat("%s double %s(void* _out_ptr, double _out_ptr_size) {%+", config.exportPrefix, dynSizePost);
+			if (hasGMK) {
+				cpp.addFormat("auto _gmkb = %s.data();%|", tools.GmkGen.argBuffer);
+				cpp.addFormat("if (_gmkb) _out_ptr = _gmkb;%|");
+			}
 			cpp.addFormat("gml_ostream _out(_out_ptr);");
 			writeOutArgs(true);
 			if (hasReturn) {
@@ -381,18 +386,49 @@ class CppFunc {
 		}
 		//
 		var _retDefault:Array<String>;
-		if (CppGen.outGmkPath != null && defValue == null) {
-			_retDefault = [
-				'// GMS >= 1:',
-				'return undefined;',
-				'/*/',
-				'return chr(0);',
-				'//*/',
-			];
+		if (defValue != null) {
+			_retDefault = ['return $defValue;'];
+		}
+		else if (!hasReturn) {
+			_retDefault = ['exit'];
+		}
+		else if (CppGen.outGmkPath != null) {
+			var v23 = CppTypeProcOptional.getDefValue(retType, true, false);
+			var v14 = CppTypeProcOptional.getDefValue(retType, false, false);
+			var v8 = CppTypeProcOptional.getDefValue(retType, false, true);
+			if (v23 == v14 && v14 == v8) {
+				_retDefault = ['return $v23;'];
+			} else if (v23 == v14) {
+				_retDefault = [
+					'// GMS >= 1:',
+					'return $v14;',
+					'/*/',
+					'return $v8;',
+					'//*/',
+				];
+			} else if (v14 == v8) {
+				_retDefault = [
+					'// GMS >= 2.3:',
+					'return $v23;',
+					'/*/',
+					'return $v14;',
+					'//*/',
+				];
+			} else {
+				_retDefault = [
+					'// GMS >= 2.3:',
+					'return $v23;',
+					'//*/',
+					'// GMS >= 1 && GMS < 2.3:',
+					'return $v14;',
+					'//*/',
+					'// GMS < 1:',
+					'return $v8;',
+					'//*/',
+				];
+			}
 		} else {
-			_retDefault = [
-				'return ' + (defValue ?? "undefined") + ';'
-			];
+			_retDefault = ['return undefined;'];
 		}
 		inline function addDefaultRet() {
 			if (_retDefault.length != 1) {
@@ -430,7 +466,10 @@ class CppFunc {
 			
 			gml.addFormat("%|// GMS >= 2.3:");
 			gml.addFormat("%|buffer_set_used_size(_buf, __size__);");
-			gml.addFormat("%|/*/");
+			if (CppGen.hasGmkPath) {
+				gml.addFormat("%|//*/");
+				gml.addFormat("%|// GMS >= 1 && GMS < 2.3:");
+			} else gml.addFormat("%|/*/");
 			gml.addFormat("%|buffer_poke(_buf, __size__ - 1, buffer_u8, 0);");
 			gml.addFormat("%|//*/");
 			

@@ -25,6 +25,7 @@ class CppTypeHelper {
 		var f32 = simple("buffer_f32", "number", 4);
 		var f64 = simple("buffer_f64", "number", 8);
 		var str = new CppTypeProcString();
+		var intPtr = new CppTypeProcSimpleIntPtr();
 		var gmlPtr = new CppTypeProcGmlPointer(false);
 		var gmlID = new CppTypeProcGmlPointer(true);
 		
@@ -48,6 +49,8 @@ class CppTypeHelper {
 			"uint64" => u64, "uint64_t" => u64,
 			// floating-point:
 			"float" => f32, "double" => f64,
+			// pointerish:
+			"intptr_t" => intPtr, "uintptr_t" => intPtr,
 			// special cases:
 			"char*" => str,
 			"gml_ptr" => gmlPtr,

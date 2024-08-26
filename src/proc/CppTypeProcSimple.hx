@@ -40,3 +40,23 @@ class CppTypeProcSimpleChar extends CppTypeProcSimple {
 		return super.getGmlDocType(type);
 	}
 }
+class CppTypeProcSimpleIntPtr extends CppTypeProcSimple {
+	public function new(){
+		super("buffer_u64", "int", 8);
+	}
+	override public function gmlRead(gml:CppBuf, type:CppType, depth:Int):String {
+		if (CppGen.config.isGMK) {
+			return 'buffer_read(_buf, buffer_s32)';
+		} else return "ptr(" + super.gmlRead(gml, type, depth) + ")";
+	}
+	override public function gmlWrite(gml:CppBuf, type:CppType, depth:Int, val:String):Void {
+		if (CppGen.config.isGMK) {
+			gml.addFormat('%|%bw;', "s32", val);
+		} else {
+			super.gmlWrite(gml, type, depth, val);
+		}
+	}
+	override public function usesGmkSpec(type:CppType):Bool {
+		return true;
+	}
+}

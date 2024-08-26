@@ -41,8 +41,8 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 			case BmArray:
 				gml.addFormat("%|if (!is_array(%s)", _box);
 				gml.addFormat(" || %s[0] != global.__ptrt_%s)", _box, _typename);
-			case BmList:
-				gml.addFormat('%|if (ds_list_find_value(%s, 0) != "%s")', _box, _typename);
+			case BmGrid:
+				gml.addFormat('%|if (ds_grid_get(%s, 0, 0) != "%s")', _box, _typename);
 		}
 		gml.addFormat(' { show_error("Expected a %s, got " + string(%s), true); exit }', _typename, _box);
 		
@@ -51,15 +51,14 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		var check = true;
 		switch (mode) {
 			case BmStruct:
-				gml.addString(_box);
-				gml.addString(isID ? ".__id__" : ".__ptr__;");
+				gml.addFormat("%s.%s;", _box, isID ? "__id__" : "__ptr__");
 				gml.addFormat('%|if (%s == %s) ', _ptr, isID ? "0" : "pointer_null");
 			case BmArray:
 				gml.addString(_box);
 				gml.addString("[1];");
 				gml.addFormat('%|if (%s == 0) ', isID ? _ptr : 'int64($_ptr)');
-			case BmList:
-				gml.addFormat("ds_list_find_value(%s, 1);", _box);
+			case BmGrid:
+				gml.addFormat("ds_grid_get(%s, 1, 0);", _box);
 				check = false;
 				//gml.addFormat('%|if (%s == 0) ', _ptr);
 		}
@@ -75,8 +74,8 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 				case BmArray:
 					gml.addFormat("%|%s[@1]", _box);
 					gml.addFormat(" = %s;", isID ? "0" : "ptr(0)");
-				case BmList:
-					gml.addFormat("%|ds_list_destroy(%s);", _box);
+				case BmGrid:
+					gml.addFormat("%|ds_grid_destroy(%s);", _box);
 			}
 		}
 		if (isGMK) {
@@ -105,12 +104,12 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 					gml.addFormat("array_create(2);");
 					gml.addFormat("%|%s[0] = global.__ptrt_%s;", _box, _typename);
 					gml.addFormat("%|%s[1] = %s;", _box, _ptrv);
-				case BmList:
-					gml.addString("ds_list_create();");
-					gml.addFormat('%|ds_list_add(%s, "%s");', _box, _typename);
-					gml.addFormat('%|ds_list_add(%s, %s);', _box, _ptr);
+				case BmGrid:
+					gml.addString("ds_grid_create(2, 1);");
+					gml.addFormat('%|ds_grid_set(%s, 0, 0, "%s");', _box, _typename);
+					gml.addFormat('%|ds_grid_set(%s, 1, 0, %s);', _box, _ptr);
 			}
-		gml.addFormat("%-} else %s = %s;", _box, boxMode == BmList ? '-1' : 'undefined');
+		gml.addFormat("%-} else %s = %s;", _box, boxMode == BmGrid ? '-1' : 'undefined');
 		return _box;
 	}
 	override public function usesStructs(type:CppType):Bool {

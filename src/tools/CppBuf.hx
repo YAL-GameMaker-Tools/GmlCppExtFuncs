@@ -44,7 +44,7 @@ class CppBuf extends StringBuf {
 		}
 		inline function addVarDeclPre(b:CppBuf, name:Any) {
 			b.addFormat("var %s", name);
-			if (CppGen.hasGmkPath) {
+			if (CppGen.config.isGMK) {
 				b.addFormat("; %s", name);
 			}
 		}

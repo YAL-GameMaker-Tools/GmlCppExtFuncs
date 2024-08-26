@@ -1,4 +1,5 @@
 package proc;
+import proc.CppTypeProcTuple;
 import tools.CppBuf;
 
 /**
@@ -10,12 +11,48 @@ class CppTypeProcOptional extends CppTypeProc {
 		return type.params[0];
 	}
 	
+	public static inline var zeroString = "(0)";
+	static function getDefValue_1(type:CppType, gmk:Bool){
+		var tp = type.proc;
+		var ds = CppGen.config.preferDS;
+		if (tp is CppTypeProcOptional) {
+			return getDefValue_1(unpack(type), gmk);
+		}
+		if ((tp is CppTypeProcStruct) || (tp is CppTypeProcVector)) {
+			return gmk || ds ? "-1" : null;
+		}
+		if (tp is CppTypeProcGmlPointer) return gmk ? "-1" : null;
+		if (tp is CppTypeProcString) return gmk ? zeroString : null;
+		if (tp is CppTypeProcSimple) return gmk ? '""' : null;
+		return gmk ? "chr(0)" : null;
+	}
+	public static function getDefValue(type:CppType, ?struct:Bool, ?gmk:Bool) {
+		if (struct == null) struct = CppGen.config.boxMode == BmStruct;
+		
+		if (gmk == null) gmk = CppGen.config.isGMK;
+		if (struct) return "undefined";
+		
+		var v = getDefValue_1(type, gmk);
+		if (v == null) v = "undefined";
+		
+		return v;
+	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var v = '_val_$z';
+		var f = '_flag_$z';
+		var t = unpack(type);
+		var u = getDefValue(t);
 		gml.addFormat("%|%vdp = %s;", v, val);
-		gml.addFormat('%|%bw;', 'bool', v + ' != undefined');
-		gml.addFormat("%|if (%s != undefined) %{", v);
-			var t = unpack(type);
+		gml.addFormat("%|%vdp = ", f);
+		if (u == '""') {
+			gml.addFormat("is_real(%s);", v);
+		} else if (u == "0") {
+			gml.addFormat("is_string(%s);", v);
+		} else {
+			gml.addFormat("%s != %s;", v, u);
+		}
+		gml.addFormat('%|%bw;', 'bool', f);
+		gml.addFormat("%|if (%s) %{", f);
 			t.proc.gmlWrite(gml, t, z + 1, v);
 		gml.addFormat("%-}");
 	}
@@ -25,8 +62,9 @@ class CppTypeProcOptional extends CppTypeProc {
 		gml.addFormat("%|if (buffer_read(_buf, buffer_bool)) %{");
 			var t = unpack(type);
 			var val = t.proc.gmlRead(gml, t, z + 1);
-			gml.addFormat("%s = %s;", v, val);
-		gml.addFormat("%-} else %s = undefined;%|", v);
+			gml.addFormat("%|%s = %s;", v, val);
+		var u = getDefValue(type);
+		gml.addFormat("%-} else %s = %s;", v, u);
 		return v;
 	}
 	

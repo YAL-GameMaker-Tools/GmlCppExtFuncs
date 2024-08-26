@@ -18,10 +18,9 @@ class CppTypeProcCond {
 		var structModeVal = config.structModeVal;
 		var structModeCond = structMode != "auto";
 		var gmkSpec = CppGen.hasGmkPath && useGmkSpec();
-		var gmkBox = GmlBoxMode.BmList;
-		var safeGmk = false;
-		inline function addElseGmk() {
-			if (safeGmk) {
+		var gmkBox = GmlBoxMode.BmGrid;
+		inline function addElseGmk(elseif:Bool) {
+			if (elseif) {
 				gml.addFormat("%|//*/");
 				gml.addFormat("%|/* GMS < 1:");
 			} else gml.addFormat("%|/*/");
@@ -54,7 +53,7 @@ class CppTypeProcCond {
 			} else procGMS1();
 			
 			if (gmkSpec) {
-				addElseGmk();
+				addElseGmk(false);
 				proc(structModeVal ? SmMap : SmList, gmkBox, VmList, true);
 				gml.addFormat("%|//*/");
 			}
@@ -66,7 +65,7 @@ class CppTypeProcCond {
 			if (gmkSpec) gml.addFormat("%|// GMS >= 1:");
 			procGMS1();
 			if (gmkSpec) {
-				addElseGmk();
+				addElseGmk(false);
 				proc(SmList, gmkBox, VmList, true);
 				gml.addFormat("%|//*/");
 			}
@@ -92,26 +91,25 @@ class CppTypeProcCond {
 		} else {
 			// >=2.3 / >=1 / gmk
 			gml.addFormat("%|//*/");
-			gml.addFormat("%|/* GMS >= 1:");
+			gml.addFormat("%|/* GMS >= 1 && GMS < 2.3:");
 		}
 		
 		procGMS1();
 		
 		if (gmkSpec) {
-			addElseGmk();
+			addElseGmk(true);
 			if (structModeCond) {
 				// a condition to select which of two workarounds you'd prefer?
 				gml.addFormat("%|if (%s) %{", structMode);
-				proc(SmMap, gmkBox, VmList);
+				proc(SmMap, gmkBox, VmList, true);
 				gml.addFormat("%-} else %{");
-				proc(SmList, gmkBox, VmList);
+				proc(SmList, gmkBox, VmList, true);
 				gml.addFormat("%-}");
 			} else {
 				// if you're going to have to free it anyway, might as well
 				// make it something with readable keys, you know?
-				proc(SmMap, gmkBox, VmList);
+				proc(SmMap, gmkBox, VmList, true);
 			}
-			gml.addFormat("%|//*/");
 		}
 		
 		if (structModeCond) {

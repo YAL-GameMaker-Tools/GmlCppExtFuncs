@@ -106,5 +106,5 @@ enum GmlBoxMode {
 	/** GM:S to GMS 2.2.x */
 	BmArray;
 	/** GM8.1 */
-	BmList;
+	BmGrid;
 }
