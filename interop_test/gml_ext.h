@@ -102,3 +102,58 @@ public:
 		write<char>(0);
 	}
 };
+
+class gmk_buffer {
+	uint8_t* buf = 0;
+	int pos = 0;
+	int len = 0;
+public:
+	gmk_buffer() {}
+	uint8_t* prepare(int size) {
+		if (len < size) {
+			auto nb = (uint8_t*)realloc(buf, size);
+			if (nb == nullptr) {
+				show_error("Failed to reallocate %u bytes in gmk_buffer::prepare", size);
+				return nullptr;
+			}
+			len = size;
+			buf = nb;
+		}
+		pos = 0;
+		return buf;
+	}
+	void init() {
+		buf = 0;
+		pos = 0;
+		len = 0;
+	}
+	void rewind() { pos = 0; }
+	inline uint8_t* data() { return buf; }
+	//
+	template<class T> void write(T val) {
+		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be write");
+		int next = pos + sizeof(T);
+		if (next > len) {
+			auto nl = len;
+			while (nl < next) nl *= 2;
+			auto nb = (uint8_t*)realloc(buf, nl);
+			if (nb == nullptr) {
+				show_error("Failed to reallocate %u bytes in gmk_buffer::write", nl);
+				return;
+			}
+			len = nl;
+			buf = nb;
+		}
+		memcpy(buf + pos, &val, sizeof(T));
+		pos = next;
+	}
+	template<class T> T read() {
+		static_assert(std::is_trivially_copyable_v<T>, "T must be trivially copyable to be read");
+		int next = pos + sizeof(T);
+		T result{};
+		if (next > len) return result;
+		memcpy(&result, buf + pos, sizeof(T));
+		pos = next;
+		return result;
+	}
+};
