@@ -20,7 +20,7 @@ class CppTypeProcCustom extends CppTypeProc {
 			if (rxReturn.match(expr)) {
 				expr = rxReturn.matched(1);
 			}
-			for (line in lines) buf.addFormat("%s%|", line);
+			for (line in lines) buf.addFormat("%|%s", line);
 			return expr;
 		} else return snip;
 	}
