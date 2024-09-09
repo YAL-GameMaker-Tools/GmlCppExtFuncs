@@ -70,7 +70,7 @@ class CppTypeProcOptional extends CppTypeProc {
 	
 	override public function cppRead(cpp:CppBuf, type:CppType, vp:String):String {
 		cpp.addFormat("%|%s %s;", type.toCppType(), vp);
-		cpp.addFormat("if (_in.read<bool>()) %{");
+		cpp.addFormat("%|if (_in.read<bool>()) %{");
 			var ot = unpack(type);
 			var val = ot.proc.cppRead(cpp, ot, vp + '_v');
 			cpp.addFormat("%|%s = %s;", vp, val);

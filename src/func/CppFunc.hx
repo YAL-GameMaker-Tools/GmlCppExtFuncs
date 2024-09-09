@@ -22,6 +22,7 @@ class CppFunc {
 	 * since functions from unloaded binaries simply return 0 or "".
 	 */
 	public var defValue:String = null;
+	public var gmlHeader:String = null;
 	public var metaComment:String = null;
 	public var condition:String = "";
 	public var isMangled:Bool = false;
@@ -171,6 +172,10 @@ class CppFunc {
 		
 		// documentation line:
 		printGmlDoc(gml, hasReturn, retTypeProc);
+		
+		if (gmlHeader != null) {
+			gml.addFormat("%s%|", gmlHeader);
+		}
 		
 		// print extern function signature:
 		var bufSize = printExtern(cpp, retCppType, true, argGcTypes);

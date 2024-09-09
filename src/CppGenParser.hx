@@ -27,13 +27,18 @@ class CppGenParser {
 		var q = new CppReader(cpp, Path.withoutDirectory(path));
 		var fnCond = "";
 		var defValue = null;
+		var gmlHeader = null;
 		while (q.loop) {
 			var c = q.read();
 			switch (c) {
 				case '"'.code, "'".code: q.skipCString(c);
 				case "/".code: {
+					var metaType = null;
+					var metaText = null;
+					var metaStart = 0;
+					var metaAfter = 0;
 					switch (q.peek()) {
-						case "/".code:
+						case "/".code: {
 							q.skip();
 							if (q.peek() == "/".code) q.skip();
 							q.skipLineSpaces();
@@ -42,25 +47,12 @@ class CppGenParser {
 								&& q.peekAt(kwMacroLen + 1) == ":".code
 							) { // `// @dllg meta:`
 								q.skip(2 + kwMacroLen);
-								var meta = q.readIdent();
-								switch (meta.toLowerCase()) {
-									case "docname":
-										q.skipLineSpaces();
-										var cppName = q.readLineNonSpace();
-										q.skipLineSpaces();
-										var docName = q.readLineNonSpace();
-										CppType.docNames[cppName] = docName;
-									case "cond":
-										q.skipLineSpaces();
-										fnCond = q.readLine().trim();
-									case "defvalue":
-										q.skipLineSpaces();
-										defValue = q.readLine().trim();
-									default:
-										CppGen.warn("Unknown documentation tag "
-											+ q.peeknAt(1, kwMacroLen) + ":" + meta);
-								}
+								metaType = q.readIdent();
+								metaStart = q.pos;
+								metaText = q.readLine();
+								metaAfter = q.pos;
 							} else q.skipUntil("\n".code);
+						}; // `//`
 						case "*".code: {
 							q.skip();
 							if (q.peek() == "*".code && q.peekAt(1) != "/".code) q.skip();
@@ -70,27 +62,37 @@ class CppGenParser {
 								&& q.peekAt(kwMacroLen + 1) == ":".code
 							) { // `/* @dllg:meta ... */
 								q.skip(2 + kwMacroLen);
-								var meta = q.readIdent();
+								metaType = q.readIdent();
 								q.skipLineSpaces();
-								var start = q.pos;
+								metaStart = q.pos;
 								var end = q.skipUntilStr("*/") ? q.pos - 2 : q.pos;
+								metaAfter = q.pos;
 								
-								var block = q.substring(start, end);
-								block = block.replace("\r", "");
-								while (block.endsWith("*")) {
-									block = block.substr(0, block.length - 1);
+								metaText = q.substring(metaStart, end);
+								metaText = metaText.replace("\r", "");
+								while (metaText.endsWith("*")) {
+									metaText = metaText.substr(0, metaText.length - 1);
 								}
-								block = block.trim();
-								
-								if (meta == "type") {
-									CppTypeProcCustom.parse(block);
-								} else {
-									CppGen.warn("Unknown documentation tag "
-										+ meta
-									);
-								}
+								metaText = metaText.trim();
 							} else q.skipUntilStr("*/");
-						}
+						} // `/*`
+					} // switch peek
+					if (metaType != null) switch (metaType.toLowerCase()) {
+						case "docname":
+							q.pos = metaStart;
+							q.skipLineSpaces();
+							var cppName = q.readLineNonSpace();
+							q.skipLineSpaces();
+							var docName = q.readLineNonSpace();
+							CppType.docNames[cppName] = docName;
+							q.pos = metaAfter;
+						case "cond": fnCond = metaText.trim();
+						case "defvalue": defValue = metaText.trim();
+						case "gmlheader": gmlHeader = metaText.trim();
+						case "type": CppTypeProcCustom.parse(metaText);
+						default:
+							CppGen.warn("Unknown documentation tag "
+								+ q.peeknAt(1, kwMacroLen) + ":" + metaType);
 					}
 				}
 				case "#".code: {
@@ -137,6 +139,10 @@ class CppGenParser {
 							if (defValue != null) {
 								fn.defValue = defValue;
 								defValue = null;
+							}
+							if (gmlHeader != null) {
+								fn.gmlHeader = gmlHeader;
+								gmlHeader = null;
 							}
 						}
 					}

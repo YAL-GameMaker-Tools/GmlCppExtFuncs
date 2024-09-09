@@ -20,7 +20,7 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 	}
 	override public function cppRead(cpp:CppBuf, type:CppType, prefix:String):String {
 		var t = type.toCppType();
-		return '($t)_in.read<int64_t>();';
+		return '($t)_in.read<int64_t>()';
 	}
 	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		var t = type.toCppType();
