@@ -223,7 +223,7 @@ class CppType {
 			case "void", "bool",
 				"char", "int8_t", "uint8_t", "byte",
 				"short", "int16_t", "uint16_t",
-				"int", "int32_t", "uint32_t",
+				"int", "int32_t", "uint32_t", "long",
 				"float", "double"
 			: "double";
 			default: null;

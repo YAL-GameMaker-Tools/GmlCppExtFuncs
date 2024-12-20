@@ -43,6 +43,7 @@ class CppTypeHelper {
 			"int" => s32, "unsigned int" => u32,
 			"int32" => s32, "int32_t" => s32,
 			"uint32" => u32, "uint32_t" => u32,
+			"long" => s32, "unsigned long" => u32,
 			// 8-byte:
 			"long long" => s64,
 			"int64" => s64, "int64_t" => s64,
