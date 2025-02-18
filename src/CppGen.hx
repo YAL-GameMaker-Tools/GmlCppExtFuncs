@@ -1,4 +1,5 @@
 package ;
+import misc.GmlConstructor;
 import tools.GmkGen;
 import func.CppFunc;
 import func.CppFuncMangled;
@@ -21,6 +22,7 @@ class CppGen {
 	
 	public static var outCppPath:String = null;
 	public static var outGmlPath:String = null;
+	public static var outGmlExtrasPath:String = null;
 	public static var outGmkPath:String = null;
 	public static var hasGmkPath(get, never):Bool;
 	static function get_hasGmkPath(){
@@ -113,6 +115,16 @@ class CppGen {
 		}
 		writeIfNotSame(outGmlPath, gmlCode);
 		writeIfNotSame(outCppPath, cppCode);
+		//
+		var extras = new CppBuf();
+		GmlConstructor.print(extras);
+		if (extras.length == 0) {
+			// OK!
+		} else if (outGmlExtrasPath == null) {
+			CppGen.warn('Constructors are used but no --gml-extras path is set');
+		} else {
+			writeIfNotSame(outGmlExtrasPath, extras.toString());
+		}
 	}
 	#if sys
 	public static function procArg(full:String, indexStructs:Bool) {

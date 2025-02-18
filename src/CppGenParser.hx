@@ -28,6 +28,8 @@ class CppGenParser {
 		var fnCond = "";
 		var defValue = null;
 		var gmlHeader = null;
+		var gmlConstrutor = null;
+		var gmlMethod = null;
 		while (q.loop) {
 			var c = q.read();
 			switch (c) {
@@ -90,6 +92,11 @@ class CppGenParser {
 						case "defvalue": defValue = metaText.trim();
 						case "gmlheader": gmlHeader = metaText.trim();
 						case "type": CppTypeProcCustom.parse(metaText);
+						case "method": gmlMethod = metaText.trim();
+						case "constructor": {
+							gmlConstrutor = metaText.trim();
+							if (gmlConstrutor == "") gmlConstrutor = null;
+						}
 						default:
 							CppGen.warn("Unknown documentation tag "
 								+ q.peeknAt(1, kwMacroLen) + ":" + metaType);
@@ -121,7 +128,7 @@ class CppGenParser {
 							CppType.typedefs[name] = type;
 						}
 					} else if (w == "struct") {
-						struct.CppStruct.read(q, isSourceFile);
+						CppStruct.read(q, isSourceFile);
 					} else if (w == "enum") {
 						q.skipSpaces();
 						var name = q.readIdent();
@@ -143,6 +150,22 @@ class CppGenParser {
 							if (gmlHeader != null) {
 								fn.gmlHeader = gmlHeader;
 								gmlHeader = null;
+							}
+							if (gmlMethod != null) {
+								var rx = ~/^(\w+)?([:.])(\w+)$/;
+								if (!rx.match(gmlMethod)) {
+									CppGen.warn('"$gmlMethod" does not follow the '
+										+ 'Constructor:method / Constructor.staticMethod format');
+								} else if (rx.matched(1) == null && gmlConstrutor == null) {
+									CppGen.warn('"$gmlMethod" does specify a constructor');
+								} else {
+									var ctrName = rx.matched(1);
+									if (ctrName == null) ctrName = gmlConstrutor;
+									fn.gmlConstructor = ctrName;
+									fn.gmlMethod = rx.matched(3);
+									fn.gmlIsStatic = rx.matched(2) == ".";
+								}
+								gmlMethod = null;
 							}
 						}
 					}

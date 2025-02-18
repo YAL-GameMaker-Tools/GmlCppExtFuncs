@@ -70,6 +70,7 @@ class CppConfig {
 				case "--window-handle": gmlWindowHandle = args[i + 1]; 2;
 				//
 				case "--gml": CppGen.outGmlPath = args[i + 1]; 2;
+				case "--gml-extras": CppGen.outGmlExtrasPath = args[i + 1]; 2;
 				case "--cpp": CppGen.outCppPath = args[i + 1]; 2;
 				case "--wasm": useWASM = true; 1;
 				case "--gmk": CppGen.outGmkPath = args[i + 1]; 2;
