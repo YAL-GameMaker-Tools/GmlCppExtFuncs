@@ -48,41 +48,220 @@ class CppConfig {
 		}
 	}
 	
+	//
+	public var argList:Array<CppConfigHelpItem> = [];
+	public var argMap:Map<String, CppConfigArgBase> = new Map();
+	function addArgImpl(arg:CppConfigArgBase) {
+		argList.push(arg);
+		argMap[arg.name] = arg;
+		return arg;
+	}
+	inline function addArgSection(name) {
+		argList.push(new CppConfigHeader(name));
+	}
+	inline function addArg(name, func, help) {
+		return addArgImpl(new CppConfigArg(name, help, func));
+	}
+	inline function addArg1(name, func, help, ?param) {
+		return addArgImpl(new CppConfigArg1(name, help, func, param));
+	}
+	
 	public function new() {
+		addArg("--help", () -> showHelp(false), [
+			"Shows argument help"
+		]);
+		addArg("--help-md", () -> showHelp(true), [
+			"Shows argument help, in Markdown"
+		]);
 		
+		addArgSection("Inputs");
+		var pathArg = new CppConfigArgBase(null, [
+			"A relative or absolute path to a C/C++ file to scan.  ",
+			"You can specify multiple of these!  ",
+			"File name may contain `*` for simple wildcard matches (`test/lib_*.cpp`).",
+		]);
+		pathArg.params = ["<path>"];
+		argList.push(pathArg);
+		addArg1("--index", s -> CppGen.procArg(s, false), [
+			"Scans the file for typedefs/usings, but will not mirror structs from it.",
+		], "path");
+		
+		addArgSection("Outputs");
+		addArg1("--cpp", s -> CppGen.outCppPath = s, [
+			"A path to a file where auto-generated C++ functions will be.  ",
+			"Usually this is a file in your C++ project."
+		], "path");
+		addArg1("--gml", s -> CppGen.outGmlPath = s, [
+			"A path to a file where auto-generated GML functions will be.  ",
+			"Usually this is a file in your GM extension."
+		], "path");
+		addArg1("--gml-constructors", s -> CppGen.outGmlExtrasPath = s, [
+			"If you are using constructor+method comment tags,",
+			"this is where the generated GML constructor functions will reside."
+		], "path");
+		
+		addArgSection("Functions and tags");
+		addArg1("--prefix", s -> helperPrefix = s, [
+			'Sets the prefix for GML helper functions (default: $helperPrefix)'
+		], "snip");
+		addArg1("--function-tag", s -> functionTag = s, [
+			'Changes the macro-tag for unmangled functions (default: $functionTag)  ',
+			'The tool will only generate wrappers for functions prepended with this tag.',
+		], "tag");
+		addArg1("--function-tag-m", s -> functionTagM = s, [
+			'Changes the macro-tag for mangled/YYRunnerInterface functions (default: $functionTagM)'
+		], "tag");
+		addArg1("--export-tag", s -> exportPrefix = s, [
+			'Changes the tag/macro for generated unmangled functions (default: $exportPrefix)',
+		], "tag");
+		addArg1("--export-tag-m", s -> exportPrefixM = s, [
+			'Changes the tag/macro for generated mangled functions (default: $exportPrefixM)',
+		], "tag");
+		
+		addArgSection("C++ file");
+		addArg1("--prepend", s -> prepend.push(s), [
+			"Adds a line of code at the beginning of the auto-generated C++ file."
+		], "line");
+		addArg1("--append", s -> append.push(s), [
+			"Adds a line of code at the end of the auto-generated C++ file."
+		], "line");
+		addArg1("--include", s -> includes.push(s), [
+			'Adds an `#include "<path>"` to the auto-generated C++ file.'
+		], "path");
+		
+		addArgSection("Esoteric");
+		addArg1("--struct", s -> structMode = s, [
+			"Changes how C++ structs are converted to/from GML:",
+			"- 1: always uses GML structs for C++ structs",
+			"- 0: always uses arrays for C++ structs",
+			"- auto: generates GmxGen-specific wrapper, like:  ",
+			"  ```gml",
+			"  // GMS >= 2.3",
+			"  struct-based code",
+			"  /*/",
+			"  array-based code",
+			"  //*/",
+			"  ```",
+			"- Other values: uses the value as a condition, like:  ",
+			"  ```gml",
+			"  // GMS >= 2.3",
+			"  if (value) {",
+			"  	struct-based code",
+			"  } else //*/",
+			"  {",
+			"  	array-based code",
+			"  }",
+			"  ```",
+		]);
+		addArg("--prefer-ds", () -> preferDS = true, [
+			"Prefer ds_maps and ds_lists over arrays in GM versions without structs."
+		]);
+		addArg("--wasm", () -> useWASM = true, [
+			"Enables WebAssembly-specific tweaks to code generation."
+		]);
+		addArg1("--gmk", s -> CppGen.outGmkPath = s, [
+			"A path to a file where GM8.1 scripts will be.  ",
+			"These will follow 8.1 constraints (such as using lists instead of arrays)",
+			"and will generate additional code to make up for lacking API."
+		], "path");
+	}
+	public function showHelp(md) {
+		var lines = ["The following command-line arguments are supported:"];
+		for (arg in argList) if (arg.visible) {
+			arg.showHelp(lines, md);
+		}
+		#if sys
+		for (line in lines) Sys.println(line);
+		Sys.exit(0);
+		#else
+		for (line in lines) trace(line);
+		#end
 	}
 	
 	public function handleArgs(args:Array<String>){
 		var i = 0;
 		while (i < args.length) {
-			var remove = switch (args[i]) {
-				case "--prefix": helperPrefix = args[i + 1]; 2;
-				case "--function-tag": functionTag = args[i + 1]; 2;
-				case "--function-tagm": functionTagM = args[i + 1]; 2;
-				case "--export-tag": exportPrefix = args[i + 1]; 2;
-				case "--export-tagm": exportPrefixM = args[i + 1]; 2;
-				case "--prepend": prepend.push(args[i + 1]); 2;
-				case "--append": append.push(args[i + 1]); 2;
-				case "--include": includes.push(args[i + 1]); 2;
-				//
-				case "--struct": structMode = args[i + 1]; 2;
-				case "--prefer-ds": preferDS = true; 1;
-				case "--window-handle": gmlWindowHandle = args[i + 1]; 2;
-				//
-				case "--gml": CppGen.outGmlPath = args[i + 1]; 2;
-				case "--gml-extras": CppGen.outGmlExtrasPath = args[i + 1]; 2;
-				case "--cpp": CppGen.outCppPath = args[i + 1]; 2;
-				case "--wasm": useWASM = true; 1;
-				case "--gmk": CppGen.outGmkPath = args[i + 1]; 2;
-				#if sys
-				case "--index": CppGen.procArg(args[i + 1], false); 2;
-				#end
-				default: 0;
-			}
+			var handler = argMap[args[i]];
+			var remove:Int;
+			if (handler != null) {
+				remove = handler.apply(args, i);
+			} else remove = 0;
 			if (remove > 0) {
 				args.splice(i, remove);
 			} else i += 1;
 		}
+	}
+}
+class CppConfigHelpItem {
+	public var visible = true;
+	public function showHelp(out:Array<String>, md:Bool) {
+		//
+	}
+	function addNotes(out:Array<String>, notes:Array<String>, md) {
+		for (line in notes) {
+			var str = line;
+			if (!md && StringTools.endsWith(str, "  ")) {
+				str = str.substring(0, str.length - 2);
+			}
+			if (!md) str = "    " + str;
+			out.push(str);
+		}
+	}
+}
+class CppConfigHeader extends CppConfigHelpItem {
+	public var name:String;
+	public var extras:Array<String>;
+	public function new(name:String, ?extras) {
+		this.name = name;
+		this.extras = extras ?? [];
+	}
+	override function showHelp(out:Array<String>, md:Bool) {
+		if (md) out.push("");
+		out.push(md ? '# $name' : '$name:');
+		addNotes(out, extras, md);
+	}
+}
+class CppConfigArgBase extends CppConfigHelpItem {
+	public var name:String;
+	public var help:Array<String>;
+	public var params:Array<String> = [];
+	public function new(name, help) {
+		this.name = name;
+		this.help = help;
+	}
+	public function apply(args:Array<String>, at:Int):Int {
+		return 1;
+	}
+	override function showHelp(out:Array<String>, md:Bool) {
+		if (md) out.push("");
+		var vp = (name != null ? [name] : []).concat(params);
+		var vps = vp.join(" ");
+		if (md) vps = StringTools.htmlEscape(vps);
+		out.push((md ? "## " : "") + vps);
+		addNotes(out, help, md);
+	}
+}
+class CppConfigArg extends CppConfigArgBase {
+	public var func:()->Void;
+	public function new(name, help, fn) {
+		super(name, help);
+		func = fn;
+	}
+	override function apply(args:Array<String>, at:Int):Int {
+		func();
+		return 1;
+	}
+}
+class CppConfigArg1 extends CppConfigArgBase {
+	public var func:(arg:String)->Void;
+	public function new(name, help, fn, param) {
+		super(name, help);
+		params.push("<" + (param ?? "value") + ">");
+		func = fn;
+	}
+	override function apply(args:Array<String>, at:Int):Int {
+		func(args[at + 1]);
+		return 2;
 	}
 }
 enum GmlStorageMode {

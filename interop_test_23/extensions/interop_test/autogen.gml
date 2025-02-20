@@ -37,16 +37,17 @@ if (iq_add_int64_raw(buffer_get_address(_buf), 17)) {
 /// iq_inc_opt_int(i:int?)->int?
 var _buf = itr_test_prepare_buffer(5);
 var _val_0 = argument0;
-buffer_write(_buf, buffer_bool, _val_0 != undefined);
-if (_val_0 != undefined) {
+var _flag_0 = _val_0 != undefined;
+buffer_write(_buf, buffer_bool, _flag_0);
+if (_flag_0) {
 	buffer_write(_buf, buffer_s32, _val_0);
 }
 if (iq_inc_opt_int_raw(buffer_get_address(_buf), 5)) {
 	buffer_seek(_buf, buffer_seek_start, 0);
 	var _val_0;
-	if (buffer_read(_buf, buffer_bool)) {_val_0 = buffer_read(_buf, buffer_s32);
+	if (buffer_read(_buf, buffer_bool)) {
+		_val_0 = buffer_read(_buf, buffer_s32);
 	} else _val_0 = undefined;
-	
 	return _val_0;
 } else return undefined;
 
@@ -126,7 +127,7 @@ var _buf = itr_test_prepare_buffer(8);
 if (iq_use_structs) {
 	var _box_0 = argument0;
 	if (instanceof(_box_0) != "iq_id") { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
-	var _id_0 = _box_0.__id__
+	var _id_0 = _box_0.__id__;
 	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
 	buffer_write(_buf, buffer_u64, _id_0);
 } else //*/
@@ -146,7 +147,7 @@ var _buf = itr_test_prepare_buffer(8);
 if (iq_use_structs) {
 	var _box_0 = argument0;
 	if (instanceof(_box_0) != "iq_id") { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
-	var _id_0 = _box_0.__id__
+	var _id_0 = _box_0.__id__;
 	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
 	_box_0.__id__ = 0;
 	buffer_write(_buf, buffer_u64, _id_0);
@@ -254,21 +255,22 @@ iq_thing_set_count_raw(buffer_get_address(_buf), 12);
 
 #define iq_test_inout_box
 /// iq_test_inout_box(q)
-var _buf = itr_test_prepare_buffer(8);
+var _buf = itr_test_prepare_buffer(5);
 var _box_0 = argument0;
 if (array_length_1d(_box_0)) {
 	buffer_write(_buf, buffer_bool, true);
 	buffer_write(_buf, buffer_s32, _box_0[0]);
 } else buffer_write(_buf, buffer_bool, false);
-iq_test_inout_box_raw(buffer_get_address(_buf), 8);
+iq_test_inout_box_raw(buffer_get_address(_buf), 5);
 buffer_seek(_buf, buffer_seek_start, 0);
-var _box_0;
+var _box_0 = argument0;
+var _val_0;
 _box_0 = buffer_read(_buf, buffer_s32);
-argument0[@0] = _box_0;
+_box_0[@0] = _val_0;
 
 #define iq_test_inout_struct
 /// iq_test_inout_struct(q)
-var _buf = itr_test_prepare_buffer(8);
+var _buf = itr_test_prepare_buffer(41);
 // GMS >= 2.3:
 if (iq_use_structs) {
 	var _struct_0 = argument0;
@@ -288,7 +290,7 @@ if (iq_use_structs) {
 		itr_test_write_chars(_buf, _struct_0[2], 32) // text
 	} else buffer_write(_buf, buffer_bool, false);
 }
-iq_test_inout_struct_raw(buffer_get_address(_buf), 8);
+iq_test_inout_struct_raw(buffer_get_address(_buf), 41);
 buffer_seek(_buf, buffer_seek_start, 0);
 // GMS >= 2.3:
 if (iq_use_structs) {
@@ -325,7 +327,7 @@ if (iq_use_structs) {
 	}
 }
 var __size__ = iq_test_inout_int_vector_raw(buffer_get_address(_buf), 8);
-if (__size__ == 0) return undefined;
+if (__size__ == 0) exit
 if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);
 // GMS >= 2.3:
 buffer_set_used_size(_buf, __size__);
@@ -388,7 +390,7 @@ if (iq_use_structs) {
 	}
 }
 var __size__ = iq_test_inout_struct_vector_raw(buffer_get_address(_buf), 8);
-if (__size__ == 0) return undefined;
+if (__size__ == 0) exit
 if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);
 // GMS >= 2.3:
 buffer_set_used_size(_buf, __size__);
@@ -529,15 +531,18 @@ if (iq_use_structs) {
 	var _arr_1 = array_create(3);
 	for (var _ind_1 = 0; _ind_1 < 3; _ind_1 += 1) {
 		var _arr_2 = array_create(3);
-		for (var _ind_2 = 0; _ind_2 < 3; _ind_2 += 1) {_arr_2[_ind_2] = buffer_read(_buf, buffer_u8);
-		}_arr_1[_ind_1] = _arr_2;
+		for (var _ind_2 = 0; _ind_2 < 3; _ind_2 += 1) {
+			_arr_2[_ind_2] = buffer_read(_buf, buffer_u8);
+		}
+		_arr_1[_ind_1] = _arr_2;
 	}
 	_struct_0.grid = _arr_1;
 	var _arr_1 = array_create(2);
 	for (var _ind_1 = 0; _ind_1 < 2; _ind_1 += 1) {
 		var _struct_3 = {}; // mixed_sub
 		_struct_3.a = buffer_read(_buf, buffer_s32);
-		_struct_3.b = buffer_read(_buf, buffer_s32);_arr_1[_ind_1] = _struct_3;
+		_struct_3.b = buffer_read(_buf, buffer_s32);
+		_arr_1[_ind_1] = _struct_3;
 	}
 	_struct_0.sub = _arr_1;
 	return _struct_0;
@@ -549,15 +554,18 @@ if (iq_use_structs) {
 	var _arr_1 = array_create(3);
 	for (var _ind_1 = 0; _ind_1 < 3; _ind_1 += 1) {
 		var _arr_2 = array_create(3);
-		for (var _ind_2 = 0; _ind_2 < 3; _ind_2 += 1) {_arr_2[_ind_2] = buffer_read(_buf, buffer_u8);
-		}_arr_1[_ind_1] = _arr_2;
+		for (var _ind_2 = 0; _ind_2 < 3; _ind_2 += 1) {
+			_arr_2[_ind_2] = buffer_read(_buf, buffer_u8);
+		}
+		_arr_1[_ind_1] = _arr_2;
 	}
 	_struct_0[2] = _arr_1; // grid
 	var _arr_1 = array_create(2);
 	for (var _ind_1 = 0; _ind_1 < 2; _ind_1 += 1) {
 		var _struct_3 = array_create(2); // mixed_sub
 		_struct_3[0] = buffer_read(_buf, buffer_s32); // a
-		_struct_3[1] = buffer_read(_buf, buffer_s32); // b_arr_1[_ind_1] = _struct_3;
+		_struct_3[1] = buffer_read(_buf, buffer_s32); // b
+		_arr_1[_ind_1] = _struct_3;
 	}
 	_struct_0[3] = _arr_1; // sub
 	return _struct_0;
@@ -659,9 +667,9 @@ if (buffer_read(_buf, buffer_bool)) {
 	for (var _ind_1 = 0; _ind_1 < _len_1; _ind_1 += 1) {
 		_arr_1[_ind_1] = buffer_read(_buf, buffer_u64);
 	}
+	
 	_val_0 = _arr_1;
 } else _val_0 = undefined;
-
 return _val_0;
 
 #define iq_get_int64_vec_sum

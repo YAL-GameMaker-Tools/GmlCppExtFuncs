@@ -153,10 +153,24 @@ class CppGen {
 	static function main() {
 		#if sys
 		var args = Sys.args();
+		if (args.length == 0
+			|| args.length == 1 && (args[0] == "--help" || args[0] == "/?")
+		) {
+			config.showHelp(false);
+			return;
+		}
 		//Sys.println("cwd: " + Sys.getCwd());
 		config.handleArgs(args);
-		if (args.length == 0 || outGmlPath == null || outCppPath == null) {
-			Sys.println("Check README for arguments!");
+		var trouble = null;
+		if (args.length == 0) {
+			trouble = "No paths provided!";
+		} else if (outGmlPath == null) {
+			trouble = "No output GML path provided!";
+		} else if (outCppPath == null) {
+			trouble = "No output C++ path provided!";
+		}
+		if (trouble != null) {
+			Sys.println(trouble);
 			Sys.stdin().readLine();
 			return;
 		}

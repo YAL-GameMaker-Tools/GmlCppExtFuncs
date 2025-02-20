@@ -1,6 +1,30 @@
 #include "gml_ext.h"
 #include "gml_extm.h"
 #include "interop_test.h"
+// Struct forward declarations:
+// from test_gml_ptr.cpp:3:
+struct iq_thing;
+// from test_inout.cpp:6:
+struct iq_inoutish {
+	int a, b;
+	char text[32];
+};
+// from test_struct.cpp:3:
+struct _iq_get_struct_vec {
+	int ind;
+	char name[4];
+};
+// from test_struct.cpp:17:
+struct mixed_sub {
+	int a, b;
+};
+// from test_struct.cpp:20:
+struct mixed {
+	int num;
+	const char* str;
+	uint8_t grid[3][3];
+	mixed_sub sub[2];
+};
 #if 0
 
 extern void iq_never();
@@ -50,7 +74,8 @@ dllx double iq_add_int64_raw(void* _inout_ptr, double _inout_ptr_size) {
 extern std::optional<int> iq_inc_opt_int(std::optional<int> i);
 dllx double iq_inc_opt_int_raw(void* _inout_ptr, double _inout_ptr_size) {
 	gml_istream _in(_inout_ptr);
-	std::optional<int> _a_i;if (_in.read<bool>()) {
+	std::optional<int> _a_i;
+	if (_in.read<bool>()) {
 		_a_i = _in.read<int>();
 	} else _a_i = {};
 	std::optional<int> _arg_i = _a_i;
@@ -115,14 +140,14 @@ dllx double iq_id_create_raw(void* _inout_ptr, double _inout_ptr_size) {
 extern int iq_id_value(gml_id<iq_id> id);
 dllx double iq_id_value_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	gml_id<iq_id> _arg_id = (gml_id<iq_id>)_in.read<int64_t>();;
+	gml_id<iq_id> _arg_id = (gml_id<iq_id>)_in.read<int64_t>();
 	return iq_id_value(_arg_id);
 }
 
 extern void iq_id_destroy(gml_id_destroy<iq_id> id);
 dllx double iq_id_destroy_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	gml_id_destroy<iq_id> _arg_id = (gml_id_destroy<iq_id>)_in.read<int64_t>();;
+	gml_id_destroy<iq_id> _arg_id = (gml_id_destroy<iq_id>)_in.read<int64_t>();
 	iq_id_destroy(_arg_id);
 	return 1;
 }
@@ -140,7 +165,7 @@ dllx double iq_thing_create_raw(void* _inout_ptr, double _inout_ptr_size) {
 extern void iq_thing_destroy(gml_ptr_destroy<iq_thing> thing);
 dllx double iq_thing_destroy_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	gml_ptr_destroy<iq_thing> _arg_thing = (gml_ptr_destroy<iq_thing>)_in.read<int64_t>();;
+	gml_ptr_destroy<iq_thing> _arg_thing = (gml_ptr_destroy<iq_thing>)_in.read<int64_t>();
 	iq_thing_destroy(_arg_thing);
 	return 1;
 }
@@ -148,14 +173,14 @@ dllx double iq_thing_destroy_raw(void* _in_ptr, double _in_ptr_size) {
 extern int iq_thing_get_count(gml_ptr<iq_thing> thing);
 dllx double iq_thing_get_count_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();;
+	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();
 	return iq_thing_get_count(_arg_thing);
 }
 
 extern void iq_thing_set_count(gml_ptr<iq_thing> thing, int count);
 dllx double iq_thing_set_count_raw(void* _in_ptr, double _in_ptr_size) {
 	gml_istream _in(_in_ptr);
-	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();;
+	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();
 	int _arg_count = _in.read<int>();
 	iq_thing_set_count(_arg_thing, _arg_count);
 	return 1;
