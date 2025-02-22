@@ -37,7 +37,7 @@ class CppGen {
 		#if js
 		js.Browser.console.warn(text);
 		#else
-		Sys.println(text);
+		Sys.println("GmlCppExtFuncs: warning #: " + text);
 		#end
 	}
 	

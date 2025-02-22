@@ -1,4 +1,5 @@
 package ;
+import proc.CppTypeProcGmlPointer;
 import proc.CppTypeProc;
 import tools.CppReader;
 using StringTools;
@@ -214,11 +215,28 @@ class CppType {
 		return cppType;
 	}
 	
-	public function toGmlCppType():String {
-		if (ptrCount == 1) switch (name) {
-			case "char" if (isConst): return "const char*";
-			case "byte", "uint8_t": return (isConst ? "const " : "") + '$name*';
+	/** Outside of YYRI, you can only have pointers and 64-bit floats **/
+	public function toGmlCppType(isReturn:Bool):String {
+		if (isReturn) {
+			if (ptrCount == 1 && name == "char") {
+				return isConst ? "const char*" : "char*";
+			}
+		} else {
+			if (ptrCount > 0) {
+				return toCppType();
+			}
+			var tp = proc;
+			if (tp is CppTypeProcGmlPointer) {
+				var tpp:CppTypeProcGmlPointer = cast tp;
+				if (!tpp.isID) return params[0].toCppType() + "*";
+			}
 		}
+		/*if (ptrCount == 1) {
+			switch (name) {
+				case "char" if (isConst): return "const char*";
+				case "byte", "uint8_t": return (isConst ? "const " : "") + '$name*';
+			}
+		}*/
 		return switch (name) {
 			case "void", "bool",
 				"char", "int8_t", "uint8_t", "byte",

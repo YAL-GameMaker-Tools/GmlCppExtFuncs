@@ -25,11 +25,15 @@ class CppFunc {
 	 */
 	public var defValue:String = null;
 	public var gmlHeader:String = null;
+	/** A copy should be added to [Constructor] **/
 	public var gmlConstructor:String = null;
+	/** Method name for above **/
 	public var gmlMethod:String = null;
-	public var gmlIsStatic:Bool = false;
+	/** Whether this is a static method for constructor **/
+	public var gmlStatic:Bool = false;
 	public var metaComment:String = null;
 	public var condition:String = "";
+	/** Whether this is a YYRI function **/
 	public var isMangled:Bool = false;
 	
 	public function new(name:String) {
@@ -37,80 +41,11 @@ class CppFunc {
 		cppFuncName = name;
 	}
 	
-	function printGmlDoc(gml:CppBuf, hasReturn:Bool, retTypeProc:CppTypeProc, jsDoc:Bool) {
-		if (metaComment != null && metaComment.startsWith("(")) {
-			// function is preceded by `/// (...args)->`
-			gml.addFormat("%|/// %s%s%|", name, metaComment);
-			return;
-		}
-		if (!jsDoc) gml.addFormat("%|/// %s(", name);
-		var sep = false;
-		for (arg in args) {
-			if (!arg.type.proc.useGmlArgument()) continue;
-			if (jsDoc && !gmlIsStatic && !sep) {
-				// first arg is self
-				sep = true;
-				continue;
-			}
-			CppFuncArg.current = arg;
-			if (!jsDoc) {
-				if (sep) gml.add(", "); else sep = true;
-			}
-			//
-			var argValue = arg.value;
-			var isOpt = argValue == "{}";
-			//
-			if (jsDoc) {
-				gml.addFormat("/// @param");
-				if (arg.type != null) {
-					var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
-					gml.addFormat(" {%s}", docType);
-				}
-				gml.addFormat(" %s%s", argValue != null ? "?" : "", arg.name);
-				gml.addLine();
-			} else {
-				if (isOpt) {
-					gml.addString("?");
-					argValue = null;
-				}
-				gml.addFormat("%s", arg.name);
-				if (arg.type != null) {
-					var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
-					if (docType != null) gml.addFormat(":%s", docType);
-				}
-				if (argValue != null) gml.addFormat(" = %s", argValue);
-			}
-		}
-		if (jsDoc) {
-			if (hasReturn && retTypeProc != null) {
-				var docType = retTypeProc.getGmlDocTypeEx(retType);
-				if (docType != null) gml.addFormat("/// @returns {%s}%|", docType);
-			}
-		} else {
-			gml.add(")");
-			if (metaComment != null && metaComment.startsWith("->")) {
-				gml.addFormat("%s%|", metaComment);
-				return;
-			}
-			if (hasReturn && retTypeProc != null) {
-				gml.add("->");
-				var docType = retTypeProc.getGmlDocTypeEx(retType);
-				if (docType != null) gml.addString(docType);
-			}
-			if (metaComment != null) gml.addFormat(" %s", metaComment);
-			gml.addLine();
-		}
-	}
-	
-	function gcTypeUsesBuffer(argGcType) {
-		return argGcType == null || argGcType == "double";
-	}
-	
-	function printSelfWrite(gml:CppBuf, arg:CppFuncArg) {
+	function printSelfWrite(gml:CppBuf, arg:CppFuncArg, toBuf) {
 		var tp = arg.type.proc;
 		if (!(tp is CppTypeProcGmlPointer)) {
 			CppGen.warn("Methods should have a gml_pointer/gml_id argument in front");
-			return;
+			return null;
 		}
 		var gtp:CppTypeProcGmlPointer = cast tp;
 		//
@@ -123,25 +58,26 @@ class CppFunc {
 			CppGen.warn('Re-definition of cpp type for $gmlConstructor from ${ctr.cppType} to $typename');
 		}
 		//
-		gtp.gmlWriteSelf(gml, arg.type);
+		return gtp.gmlWriteSelf(gml, arg.type, toBuf);
 	}
-	function printGmlArgsWrite(gml:CppBuf, gmlCleanup:CppBuf, argGcTypes, hasOptArgs, isMethod) {
+	function printGmlArgsWrite(gml:CppBuf, gmlCleanup:CppBuf, hasOptArgs, isMethod) {
 		var argi = 0;
-		var wantSelf = isMethod && !gmlIsStatic;
+		var wantSelf = isMethod && !gmlStatic;
 		for (i => arg in args) {
-			var argGcType = argGcTypes[i];
 			var tp = arg.type.proc;
-			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
+			var argGmlRef = arg.gmlArgument;
 			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
+			arg.gmlUnpacked = null;
 			if (arg.type.proc.useGmlArgument()) {
 				if (wantSelf) {
 					wantSelf = false;
-					printSelfWrite(gml, arg);
+					var val = printSelfWrite(gml, arg, arg.putInBuffer);
+					if (!arg.putInBuffer) arg.gmlUnpacked = val;
 					continue;
 				}
 				argi += 1;
 			}
-			if (gcTypeUsesBuffer(argGcType)) {
+			if (arg.putInBuffer) {
 				if (keepGmlArgVar) {
 					gml.addFormat('%|var _arg_%s;', arg.name);
 				}
@@ -167,19 +103,20 @@ class CppFunc {
 					gml.addFormat("%bw;", "bool", "false");
 					if (keepGmlArgVar) gml.addFormat('%-}');
 				}
-			} else if (keepGmlArgVar) {
-				gml.addFormat('%vds = %s;', '_arg_' + arg.name, argGmlRef);
+			} else {
+				arg.gmlUnpacked = arg.type.proc.gmlUnpack(gml, arg.type, 0, argGmlRef);
+				if (keepGmlArgVar) {
+					gml.addFormat('%vds = %s;', '_arg_' + arg.name, argGmlRef);
+				}
 			}
 		}
 	}
 	
-	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool, argGcTypes):Int {
+	public function printExtern(cpp:CppBuf, retCppType:String, calcBufSize:Bool):Int {
 		if (retCppType == null) retCppType = retType.toCppType();
 		var bufSize = 0;
-		var ptrArgCount = 2;
 		if (generateFuncExtern) cpp.addFormat("extern %s %s(", retCppType, name);
 		for (i => arg in args) {
-			
 			if (generateFuncExtern) {
 				if (i > 0) cpp.addString(", ");
 				CppFuncArg.current = arg;
@@ -187,13 +124,7 @@ class CppFunc {
 			}
 			if (calcBufSize) {
 				if (arg.value != null) bufSize += 1;
-				
-				var argGcType = argGcTypes != null ? argGcTypes[i] : null;
-				if (!gcTypeUsesBuffer(argGcType) && ptrArgCount < 4) {
-					ptrArgCount += 1;
-				} else {
-					bufSize += arg.type.getSize();
-				}
+				if (arg.putInBuffer) bufSize += arg.type.getSize();
 			}
 		}
 		if (generateFuncExtern) cpp.addFormat(");%|");
@@ -209,13 +140,21 @@ class CppFunc {
 				GmlConstructor.map[gmlConstructor] = ctr;
 				GmlConstructor.list.push(ctr);
 			}
-			var buf = gmlIsStatic ? ctr.bufStatics : ctr.bufMethods;
+			var buf = gmlStatic ? ctr.bufStatics : ctr.bufMethods;
+			//
+			var config = CppGen.config;
+			var _structMode = config.structMode;
+			var _boxMode = config.boxMode;
+			config.structMode = "1";
+			config.boxMode = BmStruct;
 			printImpl(buf, new CppBuf(), true);
+			config.structMode = _structMode;
+			config.boxMode = _boxMode;
 		}
 	}
 	public function printImpl(gml:CppBuf, cpp:CppBuf, isMethod:Bool) {
 		var retType = this.retType;
-		var retGcType = defValue != null ? null : retType.toGmlCppType();
+		var retGcType = defValue != null ? null : retType.toGmlCppType(true);
 		var retCppType = retType.toCppType();
 		var hasReturn = retCppType != "void";
 		var retTypeProc = hasReturn ? retType.proc : null;
@@ -223,29 +162,99 @@ class CppFunc {
 		// GML start:
 		if (isMethod) {
 			gml.addFormat("%|%|");
-			if (gmlIsStatic) gml.addFormat("/// @static%|");
-			printGmlDoc(gml, hasReturn, retTypeProc, true);
+			if (gmlStatic) gml.addFormat("/// @static%|");
+			CppFuncGmlDoc.print(this, gml, hasReturn, retTypeProc, true);
 			gml.addFormat("static %s = function() {%+", gmlMethod);
 		} else {
 			gml.addFormat("#define %s", name);
-			printGmlDoc(gml, hasReturn, retTypeProc, false);
+			CppFuncGmlDoc.print(this, gml, hasReturn, retTypeProc, false);
 		}
 		
+		// figure out what goes in the buffer and what will be an actual argument:
 		var config = CppGen.config;
-		var argGcTypes = [];
-		var ptrArgCount = 2;
-		var hasOptArgs = false;
+		var needsBuffer = retGcType == null;
+		var numPointers = 0;
+		var numDoubles = 0;
+		var hasOptArgs = args.filter(arg -> arg.value != null).length > 0;
+		//
+		var nextArgIndex = 0;
+		for (i => arg in args) {
+			if (i == 0 && isMethod && !gmlStatic) {
+				var atp = arg.type.proc;
+				if (atp is CppTypeProcGmlPointer) {
+					var gtp:CppTypeProcGmlPointer = cast atp;
+					var ctr = GmlConstructor.map[gmlConstructor];
+					var typename = arg.type.params[0].name;
+					if (ctr.isID == null) {
+						ctr.isID = gtp.isID;
+						ctr.cppType = typename;
+					} else if (ctr.isID != gtp.isID || ctr.cppType != typename) {
+						CppGen.warn('Re-definition of cpp type for $gmlConstructor from ${ctr.cppType} to $typename');
+					}
+					arg.gmlArgument = "self." + (gtp.isID ? "__id__" : "__ptr__");
+					arg.isSelf = true;
+					continue;
+				} else {
+					CppGen.warn("Non-static methods should have a gml_pointer/gml_id argument in front");
+				}
+			}
+			arg.isSelf = false;
+			var i = nextArgIndex++;
+			arg.gmlArgument = hasOptArgs ? 'argument[$i]' : 'argument$i';
+		}
+		//
 		for (arg in args) {
 			CppFuncArg.current = arg;
-			if (arg.value != null) hasOptArgs = true;
-			var argGcType = arg.type.toGmlCppType();
-			if (!gcTypeUsesBuffer(argGcType)) {
-				if (ptrArgCount >= 4) {
-					argGcType = null;
-				} else ptrArgCount += 1;
+			
+			/*if (arg.type.proc is CppTypeProcGmlPointer && !arg.isSelf) {
+				arg.exportType = null;
+			} else */arg.exportType = arg.type.toGmlCppType(false);
+			arg.putInBuffer = arg.exportType == null;
+			if (arg.putInBuffer) {
+				needsBuffer = true;
+			} else if (arg.exportType == "double") {
+				numDoubles += 1;
+			} else {
+				numPointers += 1;
 			}
-			argGcTypes.push(argGcType);
 		}
+		//
+		var mixedArgs = numPointers > 0;
+		if (!needsBuffer) {
+			if (mixedArgs) {
+				// up to 4 arguments in mixed-type functions
+				if (numPointers + numDoubles > 4) needsBuffer = true;
+			} else {
+				// up to 16 arguments in double-only functions
+				if (numDoubles > 16) needsBuffer = true;
+			}
+		}
+		var exportedArgs = needsBuffer ? 2 : 0;
+		var maxArgs = mixedArgs ? 4 : 16;
+		var freePointers = maxArgs - exportedArgs;
+		if (freePointers > numPointers) freePointers = numPointers;
+		var freeDoubles = maxArgs - exportedArgs - numPointers;
+		for (arg in args) {
+			if (arg.exportType == null) continue;
+			if (arg.exportType == "double") {
+				if (freeDoubles > 0) {
+					freeDoubles -= 1;
+					arg.putInBuffer = false;
+				} else {
+					arg.putInBuffer = true;
+					arg.exportType = null;
+				}
+			} else {
+				if (freePointers > 0) {
+					freePointers -= 1;
+					arg.putInBuffer = false;
+				} else {
+					arg.putInBuffer = true;
+					arg.exportType = null;
+				}
+			}
+		}
+		
 		var gmlCleanup = new CppBuf();
 		
 		if (gmlHeader != null) {
@@ -253,7 +262,7 @@ class CppFunc {
 		}
 		
 		// print extern function signature:
-		var bufSize = printExtern(cpp, retCppType, true, argGcTypes);
+		var bufSize = printExtern(cpp, retCppType, true);
 		if (retGcType == null) {
 			var retSize = retType.getSize();
 			if (retSize > bufSize) bufSize = retSize;
@@ -305,33 +314,35 @@ class CppFunc {
 		var cppName = config.cppName.replace("$", name);
 		cpp.addFormat("%s ", config.exportPrefix);
 		cpp.addFormat("%s ", retGcType != null ? retGcType : "double");
-		cpp.addFormat("%s(void* %s, double %(s)_size", cppName, argPtr, argPtr);
+		cpp.addFormat("%s(", cppName);
+		if (needsBuffer) {
+			cpp.addFormat("void* %s, double %(s)_size", argPtr, argPtr);
+		}
+		var cppArgSep = needsBuffer;
 		//
 		var hasGMK = CppGen.outGmkPath != null;
 		var cppArgs = new CppBuf();
 		cppArgs.indent = cpp.indent + 1;
-		if (hasGMK) {
-			cppArgs.addFormat("auto _gmkb = %s.data();%|", tools.GmkGen.argBuffer);
-			cppArgs.addFormat("if (_gmkb) %s = _gmkb;%|", argPtr);
-		}
-		cppArgs.addFormat("gml_istream _in(%s);", argPtr);
+		if (needsBuffer) {
+			if (hasGMK) {
+				cppArgs.addFormat("auto _gmkb = %s.data();%|", tools.GmkGen.argBuffer);
+				cppArgs.addFormat("if (_gmkb) %s = _gmkb;%|", argPtr);
+			}
+			cppArgs.addFormat("gml_istream _in(%s);", argPtr);
+		} else cppArgs.addFormat("// no buffer!");
 		
-		var gmlCall = new CppBuf();
-		gmlCall.addFormat("%s(buffer_get_address(_buf), %d", cppName, bufSize);
-		
-		if (hasGMK) {
+		if (!needsBuffer) {
+			gml.addFormat("// no buffer!");
+		} else if (hasGMK) {
 			gml.addFormat("var _buf; _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		} else {
 			gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		}
 		var hasBufArgs = false;
-		var argi = 0;
 		for (i => arg in args) {
 			CppFuncArg.current = arg;
-			var argGcType = argGcTypes[i];
-			var argGmlRef = hasOptArgs ? 'argument[$argi]' : 'argument$argi';
-			if (arg.type.proc.useGmlArgument()) argi += 1;
-			if (gcTypeUsesBuffer(argGcType)) {
+			var argGmlRef = arg.gmlArgument;
+			if (arg.putInBuffer) {
 				hasBufArgs = true;
 				var tp = arg.type.proc;
 				var argVar = '_arg_' + arg.name;
@@ -350,11 +361,12 @@ class CppFunc {
 					cppArgs.addFormat("%|%s %s = %s;", argCppType, argVar, argExpr);
 				}
 			} else {
-				cpp.addFormat(", %s _arg_%s", argGcType, arg.name);
-				gmlCall.addFormat(", %s", argGmlRef);
+				if (cppArgSep) {
+					cpp.addString(", ");
+				} else cppArgSep = true;
+				cpp.addFormat("%s _arg_%s", arg.exportType, arg.name);
 			}
 		}
-		gmlCall.addFormat(")");
 		cpp.addFormat(") {%+");
 		cpp.addBuffer(cppArgs);
 		//
@@ -367,7 +379,7 @@ class CppFunc {
 		}
 		//
 		structModeProc(function() {
-			printGmlArgsWrite(gml, gmlCleanup, argGcTypes, hasOptArgs, isMethod);
+			printGmlArgsWrite(gml, gmlCleanup, hasOptArgs, isMethod);
 		}, function() {
 			for (arg in args) {
 				if (arg.type.proc.usesStructs(arg.type)) return true;
@@ -380,10 +392,25 @@ class CppFunc {
 			return false;
 		});
 		//
+		var gmlCall = new CppBuf();
+		gmlCall.addFormat("%s(", cppName);
+		if (needsBuffer) gmlCall.addFormat("buffer_get_address(_buf), %d", bufSize);
+		var gmlCallSep = needsBuffer;
+		for (arg in args) if (!arg.putInBuffer) {
+			if (gmlCallSep) {
+				gmlCall.addString(", ");
+			} else gmlCallSep = true;
+			gmlCall.addFormat("%s", arg.gmlUnpacked ?? arg.gmlArgument);
+		}
+		gmlCall.addFormat(")");
+		//
 		var cppCall = new CppBuf();
 		cppCall.addFormat("%s(", cppFuncName);
 		for (i => arg in args) {
 			if (i > 0) cppCall.addFormat(", ");
+			if (!arg.putInBuffer && arg.exportType == "double" && arg.type.name != "double") {
+				cppCall.addFormat("(%s)", arg.type.toCppType());
+			}
 			cppCall.addFormat("_arg_%s", arg.name);
 		}
 		cppCall.addFormat(")");
@@ -525,7 +552,7 @@ class CppFunc {
 		function readOutArgs() {
 			structModeProc(function() {
 				for (i => arg in args) if (arg.isOut()) {
-					arg.type.gmlReadOut(gml, 0, hasOptArgs ? 'argument[$i]' : 'argument$i');
+					arg.type.gmlReadOut(gml, 0, arg.gmlArgument);
 				}
 			}, function() {
 				for (arg in args) if (arg.isOut()) {

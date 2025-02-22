@@ -1,4 +1,5 @@
 package ;
+import misc.GmlConstructor;
 import proc.CppTypeProcEnum;
 import proc.CppTypeProcCustom;
 import func.CppFunc;
@@ -28,7 +29,7 @@ class CppGenParser {
 		var fnCond = "";
 		var defValue = null;
 		var gmlHeader = null;
-		var gmlConstrutor = null;
+		var gmlConstructor = null;
 		var gmlMethod = null;
 		while (q.loop) {
 			var c = q.read();
@@ -94,8 +95,22 @@ class CppGenParser {
 						case "type": CppTypeProcCustom.parse(metaText);
 						case "method": gmlMethod = metaText.trim();
 						case "constructor": {
-							gmlConstrutor = metaText.trim();
-							if (gmlConstrutor == "") gmlConstrutor = null;
+							metaText = metaText.trim();
+							static var rxFunc = ~/^function\s+(\w+).+?\bconstructor\b/;
+							var ln;
+							if (rxFunc.match(metaText)) {
+								gmlConstructor = rxFunc.matched(1);
+								GmlConstructor.find(gmlConstructor).setTemplate(metaText);
+							} else if ((ln = metaText.indexOf("\n")) != -1) {
+								gmlConstructor = metaText.substring(0, ln).rtrim();
+								var template = metaText.substring(ln + 1).ltrim();
+								GmlConstructor.find(gmlConstructor).setTemplate(template);
+							} else if (gmlConstructor == "function") {
+								CppGen.warn("Could not parse constructor meta: " + metaText);
+							} else {
+								gmlConstructor = metaText;
+							}
+							if (gmlConstructor == "") gmlConstructor = null;
 						}
 						default:
 							CppGen.warn("Unknown documentation tag "
@@ -156,14 +171,14 @@ class CppGenParser {
 								if (!rx.match(gmlMethod)) {
 									CppGen.warn('"$gmlMethod" does not follow the '
 										+ 'Constructor:method / Constructor.staticMethod format');
-								} else if (rx.matched(1) == null && gmlConstrutor == null) {
+								} else if (rx.matched(1) == null && gmlConstructor == null) {
 									CppGen.warn('"$gmlMethod" does specify a constructor');
 								} else {
 									var ctrName = rx.matched(1);
-									if (ctrName == null) ctrName = gmlConstrutor;
+									if (ctrName == null) ctrName = gmlConstructor;
 									fn.gmlConstructor = ctrName;
 									fn.gmlMethod = rx.matched(3);
-									fn.gmlIsStatic = rx.matched(2) == ".";
+									fn.gmlStatic = rx.matched(2) == ".";
 								}
 								gmlMethod = null;
 							}

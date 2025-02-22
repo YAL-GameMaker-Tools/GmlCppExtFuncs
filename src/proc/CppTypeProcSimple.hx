@@ -31,6 +31,7 @@ class CppTypeProcSimple extends CppTypeProc {
 		return size;
 	}
 	override public function getGmlDocType(type:CppType):String {
+		// TODO: JSDoc types
 		return docType;
 	}
 }

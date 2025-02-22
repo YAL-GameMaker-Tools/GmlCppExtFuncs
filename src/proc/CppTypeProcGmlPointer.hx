@@ -30,25 +30,31 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		var t = type.toCppType();
 		cpp.addFormat("%|_out.write<int64_t>((%s)%s);", isID ? "int64_t" : "intptr_t", val);
 	}
-	function gmlWritePtrCheck(gml:CppBuf, _ptr, _box, type, _typename) {
+	function gmlWrite_extractPtr(gml:CppBuf, _ptr, _box, type, _typename) {
 		gml.addFormat("%|%vdp = ", _ptr);
-		var check = true;
 		var mode = CppGen.config.boxMode;
 		switch (mode) {
 			case BmStruct:
 				gml.addFormat("%s.%s;", _box, isID ? "__id__" : "__ptr__");
-				gml.addFormat('%|if (%s == %s) ', _ptr, isID ? "0" : "pointer_null");
 			case BmArray:
 				gml.addString(_box);
 				gml.addString("[1];");
-				gml.addFormat('%|if (%s == 0) ', isID ? _ptr : 'int64($_ptr)');
 			case BmGrid:
 				gml.addFormat("ds_grid_get(%s, 1, 0);", _box);
+		}
+	}
+	function gmlWrite_checkPtr(gml:CppBuf, _ptr, _box, type, _typename) {
+		var mode = CppGen.config.boxMode;
+		var check = true;
+		switch (mode) {
+			case BmStruct:
+				gml.addFormat('%|if (%s == %s) ', _ptr, isID ? "0" : "pointer_null");
+			case BmArray:
+				gml.addFormat('%|if (%s == 0) ', isID ? _ptr : 'int64($_ptr)');
+			case BmGrid:
 				check = false;
-				//gml.addFormat('%|if (%s == 0) ', _ptr);
 		}
 		if (check) gml.addFormat('{ show_error("This %s is destroyed.", true); exit; }', _typename);
-		
 		// destroy if asked:
 		if (type.name == (isID ? "gml_id_destroy" : "gml_ptr_destroy")) {
 			switch (mode) {
@@ -64,7 +70,7 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 			}
 		}
 	}
-	function gmlWriteValue(gml:CppBuf, _ptr) {
+	function gmlWrite_value(gml:CppBuf, _ptr) {
 		if (CppGen.config.isGMK) {
 			gml.addFormat('%|%bw;', 'ptr', _ptr);
 		} else if (!isID) {
@@ -73,19 +79,20 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 			gml.addFormat('%|%bw;', 'u64', _ptr);
 		}
 	}
-	public function gmlWriteSelf(gml:CppBuf, type:CppType) {
-		var _ptr = isID ? '_id_self' : '_ptr_self';
+	public function gmlWriteSelf(gml:CppBuf, type:CppType, toBuf:Bool) {
 		var _typename = type.params[0].name;
-		gmlWritePtrCheck(gml, _ptr, "self", type, _typename);
-		gmlWriteValue(gml, _ptr);
+		if (toBuf) {
+			var _ptr = isID ? '_id_self' : '_ptr_self';
+			gmlWrite_extractPtr(gml, _ptr, "self", type, _typename);
+			gmlWrite_value(gml, _ptr);
+			return _ptr;
+		} else {
+			var _ptr = 'self.$ptrVar';
+			gmlWrite_checkPtr(gml, _ptr, "self", type, _typename);
+			return _ptr;
+		}
 	}
-	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
-		var _box = '_box_$z';
-		var _ptr = isID ? '_id_$z' : '_ptr_$z';
-		var _typename = type.params[0].name;
-		gml.addFormat("%|%vdp = %s;", _box, val);
-		
-		// make sure it's the right thing:
+	public function gmlWrite_typeCheck(gml:CppBuf, _box, _typename) {
 		var mode = CppGen.config.boxMode;
 		switch (mode) {
 			case BmStruct:
@@ -97,13 +104,22 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 				gml.addFormat('%|if (ds_grid_get(%s, 0, 0) != "%s")', _box, _typename);
 		}
 		gml.addFormat(' { show_error("Expected a %s, got " + string(%s), true); exit }', _typename, _box);
-		
-		// make sure it's not destroyed:
-		gmlWritePtrCheck(gml, _ptr, _box, type, _typename);
-		
-		//
-		gmlWriteValue(gml, _ptr);
 	}
+	override function gmlUnpack(gml:CppBuf, type:CppType, z:Int, val:String):String {
+		var _box = '_box_$z';
+		var _ptr = isID ? '_id_$z' : '_ptr_$z';
+		var _typename = type.params[0].name;
+		gml.addFormat("%|%vdp = %s;", _box, val);
+		gmlWrite_typeCheck(gml, _box, _typename);
+		gmlWrite_extractPtr(gml, _ptr, _box, type, _typename);
+		gmlWrite_checkPtr(gml, _ptr, _box, type, _typename);
+		return _ptr;
+	}
+	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
+		var _ptr = gmlUnpack(gml, type, z, val);
+		gmlWrite_value(gml, _ptr);
+	}
+	//
 	override public function gmlRead(gml:CppBuf, type:CppType, z:Int):String {
 		var boxMode = CppGen.config.boxMode;
 		var _ptr = isID ? '_id_$z' : '_ptr_$z';
@@ -112,21 +128,21 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		gml.addFormat("%|%vdp = buffer_read(_buf, buffer_u64);", _ptr);
 		gml.addFormat("%|var %s;", _box);
 		gml.addFormat("%|if (%s != %s) %{", _ptr,  "0");
-			var _ptrv = isID ? _ptr : 'ptr($_ptr)';
-			//
-			gml.addFormat("%|%s = ", _box);
-			switch (boxMode) {
-				case BmStruct:
-					gml.addFormat("new %s(%s);", _typename, _ptrv);
-				case BmArray:
-					gml.addFormat("array_create(2);");
-					gml.addFormat("%|%s[0] = global.__ptrt_%s;", _box, _typename);
-					gml.addFormat("%|%s[1] = %s;", _box, _ptrv);
-				case BmGrid:
-					gml.addString("ds_grid_create(2, 1);");
-					gml.addFormat('%|ds_grid_set(%s, 0, 0, "%s");', _box, _typename);
-					gml.addFormat('%|ds_grid_set(%s, 1, 0, %s);', _box, _ptr);
-			}
+		var _ptrv = isID ? _ptr : 'ptr($_ptr)';
+		//
+		gml.addFormat("%|%s = ", _box);
+		switch (boxMode) {
+			case BmStruct:
+				gml.addFormat("new %s(%s);", _typename, _ptrv);
+			case BmArray:
+				gml.addFormat("array_create(2);");
+				gml.addFormat("%|%s[0] = global.__ptrt_%s;", _box, _typename);
+				gml.addFormat("%|%s[1] = %s;", _box, _ptrv);
+			case BmGrid:
+				gml.addString("ds_grid_create(2, 1);");
+				gml.addFormat('%|ds_grid_set(%s, 0, 0, "%s");', _box, _typename);
+				gml.addFormat('%|ds_grid_set(%s, 1, 0, %s);', _box, _ptr);
+		}
 		gml.addFormat("%-} else %s = %s;", _box, boxMode == BmGrid ? '-1' : 'undefined');
 		return _box;
 	}

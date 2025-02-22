@@ -42,6 +42,14 @@ class CppTypeProc {
 		throw "todo";
 	}
 	
+	/**
+		If this is a struct/array with something that we're going to pass as-is,
+		this should unpack the value and return it.
+	**/
+	public function gmlUnpack(gml:CppBuf, type:CppType, depth:Int, val:String):String {
+		return val;
+	}
+	
 	public function gmlCleanup(gml:CppBuf, type:CppType, depth:Int, val:String):Void {
 		
 	}
@@ -126,9 +134,7 @@ class CppTypeProc {
 		return false;
 	}
 	
-	/**
-	 * Some things (such as GameHwnd) are passed to C++, but are not passed to the GML wrapper.
-	 */
+	/** Some things (such as GameHwnd) are passed to C++, but are not passed to the GML wrapper **/
 	public function useGmlArgument():Bool {
 		return true;
 	}
