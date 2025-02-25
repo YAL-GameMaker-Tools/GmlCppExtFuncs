@@ -5,11 +5,12 @@ import tools.CppBuf;
 	Converts raw C++ pointers to
 	struct: `Struct() { __ptr__: ptr }` (constructor with a pointer)
 	non-struct: `[meta, ptr]` (pointer-in-array)
-	GM8: `ds_list() [ meta, ptr ]`
+	GM8: `ds_grid() [ meta, ptr ]`
 	@author YellowAfterlife
 **/
 class CppTypeProcGmlPointer extends CppTypeProc {
 	public var isID:Bool;
+	
 	public var ptrVar(get, never):String;
 	inline function get_ptrVar() {
 		return isID ? "__id__" : "__ptr__";
@@ -19,6 +20,11 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 		super();
 		this.isID = isID;
 	}
+	
+	public function isDestroy(type:CppType) {
+		return type.name == (isID ? "gml_id_destroy" : "gml_ptr_destroy");
+	}
+	
 	override public function getSize(type:CppType):Int {
 		return 8;
 	}
@@ -29,6 +35,13 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 	override public function cppWrite(cpp:CppBuf, type:CppType, prefix:String, val:String):Void {
 		var t = type.toCppType();
 		cpp.addFormat("%|_out.write<int64_t>((%s)%s);", isID ? "int64_t" : "intptr_t", val);
+	}
+	function ptrOf(box:String) {
+		return switch (CppGen.config.boxMode) {
+			case BmStruct: '$box.$ptrVar';
+			case BmArray: '$box[1]';
+			case BmGrid: 'ds_grid_get($box, 1, 0)';
+		}
 	}
 	function gmlWrite_extractPtr(gml:CppBuf, _ptr, _box, type, _typename) {
 		gml.addFormat("%|%vdp = ", _ptr);
@@ -79,15 +92,24 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 			gml.addFormat('%|%bw;', 'u64', _ptr);
 		}
 	}
+	
 	public function gmlWriteSelf(gml:CppBuf, type:CppType, toBuf:Bool) {
 		var _typename = type.params[0].name;
+		var useLocalVars = isDestroy(type);
+		//
+		var _ptr:String;
+		if (useLocalVars) {
+			_ptr = isID ? '_id_self' : '_ptr_self';
+			gml.addFormat("%|%vdp = %s", _ptr, ptrOf("self"));
+		} else {
+			_ptr = ptrOf("self");
+		}
+		//
 		if (toBuf) {
-			var _ptr = isID ? '_id_self' : '_ptr_self';
-			gmlWrite_extractPtr(gml, _ptr, "self", type, _typename);
+			gmlWrite_checkPtr(gml, _ptr, "self", type, _typename);
 			gmlWrite_value(gml, _ptr);
 			return _ptr;
 		} else {
-			var _ptr = 'self.$ptrVar';
 			gmlWrite_checkPtr(gml, _ptr, "self", type, _typename);
 			return _ptr;
 		}
@@ -98,22 +120,32 @@ class CppTypeProcGmlPointer extends CppTypeProc {
 			case BmStruct:
 				gml.addFormat('%|if (instanceof(%s) != "%s")', _box, _typename);
 			case BmArray:
-				gml.addFormat("%|if (!is_array(%s)", _box);
-				gml.addFormat(" || %s[0] != global.__ptrt_%s)", _box, _typename);
+				gml.addFormat("%|if (");
+				//gml.addFormat("!is_array(%s) || ", _box);
+				gml.addFormat("%s[0] != global.__ptrt_%s)", _box, _typename);
 			case BmGrid:
 				gml.addFormat('%|if (ds_grid_get(%s, 0, 0) != "%s")', _box, _typename);
 		}
 		gml.addFormat(' { show_error("Expected a %s, got " + string(%s), true); exit }', _typename, _box);
 	}
 	override function gmlUnpack(gml:CppBuf, type:CppType, z:Int, val:String):String {
-		var _box = '_box_$z';
-		var _ptr = isID ? '_id_$z' : '_ptr_$z';
 		var _typename = type.params[0].name;
-		gml.addFormat("%|%vdp = %s;", _box, val);
-		gmlWrite_typeCheck(gml, _box, _typename);
-		gmlWrite_extractPtr(gml, _ptr, _box, type, _typename);
-		gmlWrite_checkPtr(gml, _ptr, _box, type, _typename);
-		return _ptr;
+		var vBox, vPtr;
+		var useLocalVars = isDestroy(type);
+		if (useLocalVars) {
+			vBox = '_box_$z';
+			gml.addFormat("%|%vdp = %s;", vBox, val);
+		} else vBox = val;
+		gmlWrite_typeCheck(gml, vBox, _typename);
+		//
+		if (useLocalVars) {
+			vPtr = isID ? '_id_$z' : '_ptr_$z';
+			gml.addFormat("%|%vdp = %s", vPtr, ptrOf(vBox));
+			gmlWrite_extractPtr(gml, vPtr, vBox, type, _typename);
+		} else vPtr = ptrOf(val);
+		gmlWrite_checkPtr(gml, vPtr, vBox, type, _typename);
+		//
+		return vPtr;
 	}
 	override public function gmlWrite(gml:CppBuf, type:CppType, z:Int, val:String):Void {
 		var _ptr = gmlUnpack(gml, type, z, val);

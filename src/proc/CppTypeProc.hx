@@ -117,6 +117,13 @@ class CppTypeProc {
 		if (t == null) t = CppType.docNames[type.docKeyFull];
 		return t != null ? t : getGmlDocType(type);
 	}
+	public function toGmlJSDocType(type:CppType):String {
+		var t = getGmlDocTypeEx(type);
+		return switch (t) {
+			case "int", "number": "real";
+			default: t;
+		}
+	}
 	
 	/** Does this use structs? (and might need a conditional block) */
 	public function usesStructs(type:CppType):Bool {
