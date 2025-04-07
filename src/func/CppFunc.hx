@@ -229,6 +229,7 @@ class CppFunc {
 				if (numDoubles > 16) needsBuffer = true;
 			}
 		}
+		if (needsBuffer) mixedArgs = true;
 		var exportedArgs = needsBuffer ? 2 : 0;
 		var maxArgs = mixedArgs ? 4 : 16;
 		var freePointers = maxArgs - exportedArgs;
