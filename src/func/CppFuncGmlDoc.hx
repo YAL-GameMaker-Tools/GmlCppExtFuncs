@@ -47,7 +47,7 @@ class CppFuncGmlDoc {
 					var docType = arg.type.proc.getGmlDocTypeEx(arg.type);
 					if (docType != null) gml.addFormat(":%s", docType);
 				}
-				if (argValue != null) gml.addFormat(" = %s", argValue);
+				if (argValue != null) gml.addFormat(" = %s", argValue.trim());
 			}
 		}
 		if (jsDoc) {
