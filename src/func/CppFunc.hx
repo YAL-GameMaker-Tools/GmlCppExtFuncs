@@ -17,6 +17,8 @@ class CppFunc {
 	public var cppFuncName:String;
 	public var generateFuncExtern:Bool = true;
 	public var args:Array<CppFuncArg> = [];
+	public var gmlCallArgsUseStruct:Bool = false;
+	public var gmlCallArgsUseGmkSpec:Bool = false;
 	public var retType:CppType;
 	/**
 	 * GML code for default return value if the native extension failed to load.
@@ -63,11 +65,11 @@ class CppFunc {
 	function printGmlArgsWrite(gml:CppBuf, gmlCleanup:CppBuf, hasOptArgs, isMethod) {
 		var argi = 0;
 		var wantSelf = isMethod && !gmlStatic;
+		var gmlVersion = CppGen.config.gmlVersion;
 		for (i => arg in args) {
 			var tp = arg.type.proc;
 			var argGmlRef = arg.gmlArgument;
 			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
-			arg.gmlUnpacked = null;
 			if (arg.type.proc.useGmlArgument()) {
 				if (wantSelf) {
 					wantSelf = false;
@@ -104,9 +106,13 @@ class CppFunc {
 					if (keepGmlArgVar) gml.addFormat('%-}');
 				}
 			} else {
-				arg.gmlUnpacked = arg.type.proc.gmlUnpack(gml, arg.type, 0, argGmlRef);
+				var val = arg.type.proc.gmlUnpack(gml, arg.type, 0, argGmlRef);
+				arg.gmlUnpackedPerVersion[gmlVersion] = val;
 				if (keepGmlArgVar) {
 					gml.addFormat('%vds = %s;', '_arg_' + arg.name, argGmlRef);
+				} else if (!wantSelf) {
+					if (!gmlCallArgsUseStruct && tp.usesStructs(arg.type))  gmlCallArgsUseStruct = true;
+					if (!gmlCallArgsUseGmkSpec && tp.usesGmkSpec(arg.type)) gmlCallArgsUseGmkSpec = true;
 				}
 			}
 		}
@@ -393,17 +399,28 @@ class CppFunc {
 			return false;
 		});
 		//
-		var gmlCall = new CppBuf();
-		gmlCall.addFormat("%s(", cppName);
-		if (needsBuffer) gmlCall.addFormat("buffer_get_address(_buf), %d", bufSize);
-		var gmlCallSep = needsBuffer;
-		for (arg in args) if (!arg.putInBuffer) {
-			if (gmlCallSep) {
-				gmlCall.addString(", ");
-			} else gmlCallSep = true;
-			gmlCall.addFormat("%s", arg.gmlUnpacked ?? arg.gmlArgument);
+		function printGmlCall() {
+			gml.addFormat("%s(", cppName);
+			if (needsBuffer) gml.addFormat("buffer_get_address(_buf), %d", bufSize);
+			var gmlCallSep = needsBuffer;
+			for (arg in args) if (!arg.putInBuffer) {
+				if (gmlCallSep) {
+					gml.addString(", ");
+				} else gmlCallSep = true;
+				gml.addFormat("%s", arg.gmlUnpackedPerVersion[config.gmlVersion]
+					?? arg.gmlUnpacked
+					?? arg.gmlArgument
+				);
+			}
+			gml.addFormat(")");
 		}
-		gmlCall.addFormat(")");
+		inline function printGmlCallOuter(fn:Void->Void) {
+			structModeProc(fn, function() {
+				return gmlCallArgsUseStruct;
+			}, function() {
+				return gmlCallArgsUseGmkSpec;
+			});
+		}
 		//
 		var cppCall = new CppBuf();
 		cppCall.addFormat("%s(", cppFuncName);
@@ -568,7 +585,11 @@ class CppFunc {
 			});
 		}
 		if (hasDynSize) {
-			gml.addFormat("%|%vdp = %b;", "__size__", gmlCall);
+			printGmlCallOuter(function() {
+				gml.addFormat("%|%vdp = ", "__size__");
+				printGmlCall();
+				gml.addFormat(";");
+			});
 			gml.addFormat("%|if (__size__ == 0) "); addDefaultRet();
 			gml.addFormat("%|if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);");
 			
@@ -586,7 +607,10 @@ class CppFunc {
 			readOutArgs();
 			if (hasReturn) printReturn();
 		} else if (!hasReturn) {
-			gml.addFormat("%|%b;", gmlCall);
+			printGmlCallOuter(function() {
+				gml.addFormat("%|");
+				printGmlCall();
+			});
 			if (hasOutArgs) {
 				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 				readOutArgs();
@@ -598,14 +622,26 @@ class CppFunc {
 				readOutArgs();
 			}
 			if (gmlCleanup.length > 0) {
-				gml.addFormat("%|%vdp = %b;", "_result", gmlCall);
+				printGmlCallOuter(function() {
+					gml.addFormat("%|%vdp = ", "__size__");
+					printGmlCall();
+					gml.addFormat(";");
+				});
 				gml.addBuffer(gmlCleanup);
 				gml.addFormat("%|return _result;");
 			} else {
-				gml.addFormat("%|return %b;", gmlCall);
+				printGmlCallOuter(function() {
+					gml.addFormat("%|return ");
+					printGmlCall();
+					gml.addFormat(";");
+				});
 			}
 		} else {
-			gml.addFormat("%|if (%b) %{", gmlCall);
+			printGmlCallOuter(function() {
+				gml.addFormat("%|if (");
+				printGmlCall();
+				gml.addFormat(") %{");
+			});
 			if (hasBufArgs) {
 				gml.addFormat("%|buffer_seek(_buf, buffer_seek_start, 0);");
 			}

@@ -29,6 +29,9 @@ class CppConfig {
 	/** Controls how gml_id/gml_ptr are represented on GML side */
 	public var boxMode:GmlBoxMode = GmlBoxMode.BmStruct;
 	
+	/** What we're currently generating for */
+	public var gmlVersion:Int = 0;
+	
 	/** Whether currently generating code for GM8.1 */
 	public var isGMK = false;
 	

@@ -17,6 +17,7 @@ class CppFuncArg {
 	public var isSelf = false;
 	public var gmlArgument:String = null;
 	public var gmlUnpacked:String = null;
+	public var gmlUnpackedPerVersion:Map<Int, String> = new Map();
 	public static var current:CppFuncArg = null;
 	public function new(index:Int, type:CppType, name:String) {
 		this.index = index;
