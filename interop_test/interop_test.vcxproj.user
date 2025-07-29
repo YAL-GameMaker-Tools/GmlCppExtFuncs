@@ -3,4 +3,14 @@
   <PropertyGroup>
     <NXTargetName>Default</NXTargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <NintendoTargetName>Default</NintendoTargetName>
+    <NXTargetSerialNumber>$(NintendoTargetSerialNumber)</NXTargetSerialNumber>
+    <NXTargetName>$(NintendoTargetName)</NXTargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <NintendoTargetName>Default</NintendoTargetName>
+    <NXTargetSerialNumber>$(NintendoTargetSerialNumber)</NXTargetSerialNumber>
+    <NXTargetName>$(NintendoTargetName)</NXTargetName>
+  </PropertyGroup>
 </Project>

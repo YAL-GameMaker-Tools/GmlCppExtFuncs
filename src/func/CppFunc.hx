@@ -63,29 +63,28 @@ class CppFunc {
 		return gtp.gmlWriteSelf(gml, arg.type, toBuf);
 	}
 	function printGmlArgsWrite(gml:CppBuf, gmlCleanup:CppBuf, hasOptArgs, isMethod) {
-		var argi = 0;
 		var wantSelf = isMethod && !gmlStatic;
 		var gmlVersion = CppGen.config.gmlVersion;
-		for (i => arg in args) {
+		for (arg in args) {
 			var tp = arg.type.proc;
 			var argGmlRef = arg.gmlArgument;
 			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
-			if (arg.type.proc.useGmlArgument()) {
-				if (wantSelf) {
-					wantSelf = false;
-					var val = printSelfWrite(gml, arg, arg.putInBuffer);
-					if (!arg.putInBuffer) arg.gmlUnpacked = val;
-					continue;
-				}
-				argi += 1;
+			if (arg.isSelf) {
+				var val = printSelfWrite(gml, arg, arg.putInBuffer);
+				if (!arg.putInBuffer) arg.gmlUnpacked = val;
+				continue;
 			}
 			if (arg.putInBuffer) {
 				if (keepGmlArgVar) {
 					gml.addFormat('%|var _arg_%s;', arg.name);
 				}
 				if (arg.value != null) {
-					gml.addFormat("%|if (argument_count >= %d) %{", argi);
-					gml.addFormat('%|%bw;', "bool", "true");
+					if (arg.gmlArgumentIndex == -1) {
+						CppGen.warn('Argument ${arg.name} in $name is optional but does not have a GML argument');
+					} else {
+						gml.addFormat("%|if (argument_count >= %d) %{", arg.gmlArgumentIndex + 1);
+						gml.addFormat('%|%bw;', "bool", "true");
+					}
 				}
 				if (keepGmlArgVar) {
 					gml.addFormat('%|_arg_%s = %s;', arg.name, argGmlRef);
@@ -185,8 +184,9 @@ class CppFunc {
 		//
 		var nextArgIndex = 0;
 		for (i => arg in args) {
+			var atp = arg.type.proc;
 			if (i == 0 && isMethod && !gmlStatic) {
-				var atp = arg.type.proc;
+				// is this `self`?
 				if (atp is CppTypeProcGmlPointer) {
 					var gtp:CppTypeProcGmlPointer = cast atp;
 					var ctr = GmlConstructor.map[gmlConstructor];
@@ -205,8 +205,14 @@ class CppFunc {
 				}
 			}
 			arg.isSelf = false;
-			var i = nextArgIndex++;
-			arg.gmlArgument = hasOptArgs ? 'argument[$i]' : 'argument$i';
+			if (atp.useGmlArgument()) {
+				arg.gmlArgumentIndex = nextArgIndex;
+				var ai = nextArgIndex++;
+				arg.gmlArgument = hasOptArgs ? 'argument[$ai]' : 'argument$ai';
+			} else {
+				arg.gmlArgumentIndex = -1;
+				arg.gmlArgument = null;
+			}
 		}
 		//
 		for (arg in args) {
@@ -346,7 +352,7 @@ class CppFunc {
 			gml.addFormat("var _buf = %(s)_prepare_buffer(%d);", CppGen.config.helperPrefix, bufSize);
 		}
 		var hasBufArgs = false;
-		for (i => arg in args) {
+		for (arg in args) {
 			CppFuncArg.current = arg;
 			var argGmlRef = arg.gmlArgument;
 			if (arg.putInBuffer) {
@@ -569,7 +575,7 @@ class CppFunc {
 		//
 		function readOutArgs() {
 			structModeProc(function() {
-				for (i => arg in args) if (arg.isOut()) {
+				for (arg in args) if (arg.isOut()) {
 					arg.type.gmlReadOut(gml, 0, arg.gmlArgument);
 				}
 			}, function() {

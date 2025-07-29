@@ -9,6 +9,7 @@ function scr_test(_use_structs) {
     scr_test_gml_id();
     scr_test_struct();
     scr_test_inout();
+    scr_test_hwnd();
     
     trace(sfmt("Test OK! (use_structs=%)",_use_structs));
 }

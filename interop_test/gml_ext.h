@@ -21,7 +21,8 @@
 #define dllm /* */
 #endif
 
-#ifdef _WINDEF_
+#ifdef _WINDOWS
+#include <windows.h>
 /// auto-generates a window_handle() on GML side
 typedef HWND GAME_HWND;
 #endif
@@ -113,7 +114,8 @@ public:
 		if (len < size) {
 			auto nb = (uint8_t*)realloc(buf, size);
 			if (nb == nullptr) {
-				show_error("Failed to reallocate %u bytes in gmk_buffer::prepare", size);
+				printf("Failed to reallocate %u bytes in gmk_buffer::prepare\n", size);
+				fflush(stdout);
 				return nullptr;
 			}
 			len = size;
@@ -138,7 +140,8 @@ public:
 			while (nl < next) nl *= 2;
 			auto nb = (uint8_t*)realloc(buf, nl);
 			if (nb == nullptr) {
-				show_error("Failed to reallocate %u bytes in gmk_buffer::write", nl);
+				printf("Failed to reallocate %u bytes in gmk_buffer::write", nl);
+				fflush(stdout);
 				return;
 			}
 			len = nl;

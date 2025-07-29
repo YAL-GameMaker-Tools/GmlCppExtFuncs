@@ -51,11 +51,8 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>2</arg>
-          </args>
+          <argCount>0</argCount>
+          <args/>
         </function>
         <function>
           <name>iq_get_int_raw</name>
@@ -63,11 +60,8 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>2</arg>
-          </args>
+          <argCount>0</argCount>
+          <args/>
         </function>
         <function>
           <name>iq_get_int64_raw</name>
@@ -87,11 +81,8 @@
           <kind>11</kind>
           <help></help>
           <returnType>1</returnType>
-          <argCount>2</argCount>
-          <args>
-            <arg>1</arg>
-            <arg>2</arg>
-          </args>
+          <argCount>0</argCount>
+          <args/>
         </function>
         <function>
           <name>iq_add_int64_raw</name>
@@ -162,7 +153,7 @@
           <argCount>4</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
+            <arg>1</arg>
             <arg>1</arg>
             <arg>1</arg>
           </args>
@@ -221,9 +212,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
+          <argCount>3</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
             <arg>2</arg>
           </args>
         </function>
@@ -233,15 +225,25 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
+          <argCount>1</argCount>
           <args>
             <arg>1</arg>
-            <arg>2</arg>
           </args>
         </function>
         <function>
           <name>iq_thing_get_count_raw</name>
           <externalName>iq_thing_get_count_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>1</argCount>
+          <args>
+            <arg>1</arg>
+          </args>
+        </function>
+        <function>
+          <name>iq_thing_set_count_raw</name>
+          <externalName>iq_thing_set_count_raw</externalName>
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
@@ -252,8 +254,8 @@
           </args>
         </function>
         <function>
-          <name>iq_thing_set_count_raw</name>
-          <externalName>iq_thing_set_count_raw</externalName>
+          <name>iq_get_hwnd_raw</name>
+          <externalName>iq_get_hwnd_raw</externalName>
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
@@ -461,9 +463,10 @@
           <kind>11</kind>
           <help></help>
           <returnType>2</returnType>
-          <argCount>2</argCount>
+          <argCount>3</argCount>
           <args>
             <arg>1</arg>
+            <arg>2</arg>
             <arg>2</arg>
           </args>
         </function>
@@ -828,6 +831,15 @@
             <arg>2</arg>
             <arg>2</arg>
           </args>
+        </function>
+        <function>
+          <name>iq_get_hwnd</name>
+          <externalName>iq_get_hwnd</externalName>
+          <kind>2</kind>
+          <help>iq_get_hwnd()-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>0</argCount>
+          <args/>
         </function>
         <function>
           <name>iq_test_inout_box</name>

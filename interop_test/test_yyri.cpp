@@ -2,8 +2,6 @@
 #include "gml_ext.h"
 #include "gml_extm.h"
 
-#define trace(...) { printf("[interop_test:%d] ", __LINE__); printf(__VA_ARGS__); printf("\n"); fflush(stdout); }
-
 static YYRunnerInterface g_YYRunnerInterface{};
 YYRunnerInterface* g_pYYRunnerInterface;
 dllm void YYExtensionInitialise(const struct YYRunnerInterface* _struct, size_t _size) {

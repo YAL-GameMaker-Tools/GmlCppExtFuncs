@@ -1,12 +1,12 @@
 #define iq_never
 /// iq_never()
-var _buf = itr_test_prepare_buffer(1);
-iq_never_raw(buffer_get_address(_buf), 1);
+// no buffer!
+iq_never_raw()
 
 #define iq_get_int
 /// iq_get_int()->int
-var _buf = itr_test_prepare_buffer(1);
-return iq_get_int_raw(buffer_get_address(_buf), 1);
+// no buffer!
+return iq_get_int_raw();
 
 #define iq_get_int64
 /// iq_get_int64()->int
@@ -17,8 +17,8 @@ if (iq_get_int64_raw(buffer_get_address(_buf), 8)) {
 
 #define iq_get_string
 /// iq_get_string()->string
-var _buf = itr_test_prepare_buffer(1);
-return iq_get_string_raw(buffer_get_address(_buf), 1);
+// no buffer!
+return iq_get_string_raw();
 
 #define iq_add_int64
 /// iq_add_int64(a:int, b:int = 0)->int
@@ -75,10 +75,8 @@ return buffer_read(_buf, buffer_string);
 
 #define iq_add_strlens
 /// iq_add_strlens(a:string, b:string, c:string, d:string)->int
-var _buf = itr_test_prepare_buffer(16);
-buffer_write(_buf, buffer_string, argument2);
-buffer_write(_buf, buffer_string, argument3);
-return iq_add_strlens_raw(buffer_get_address(_buf), 16, argument0, argument1);
+// no buffer!
+return iq_add_strlens_raw(argument0, argument1, argument2, argument3);
 
 #define iq_get_buffer_sum
 /// iq_get_buffer_sum(buf:buffer)->int
@@ -125,18 +123,14 @@ if (iq_id_create_raw(buffer_get_address(_buf), 8)) {
 var _buf = itr_test_prepare_buffer(8);
 // GMS >= 2.3:
 if (iq_use_structs) {
-	var _box_0 = argument0;
-	if (instanceof(_box_0) != "iq_id") { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
-	var _id_0 = _box_0.__id__;
-	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, _id_0);
+	if (instanceof(argument0) != "iq_id") { show_error("Expected a iq_id, got " + string(argument0), true); exit }
+	if (argument0.__id__ == 0) { show_error("This iq_id is destroyed.", true); exit; }
+	buffer_write(_buf, buffer_u64, argument0.__id__);
 } else //*/
 {
-	var _box_0 = argument0;
-	if (!is_array(_box_0) || _box_0[0] != global.__ptrt_iq_id) { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
-	var _id_0 = _box_0[1];
-	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, _id_0);
+	if (argument0[0] != global.__ptrt_iq_id) { show_error("Expected a iq_id, got " + string(argument0), true); exit }
+	if (argument0[1] == 0) { show_error("This iq_id is destroyed.", true); exit; }
+	buffer_write(_buf, buffer_u64, argument0[1]);
 }
 return iq_id_value_raw(buffer_get_address(_buf), 8);
 
@@ -147,6 +141,7 @@ var _buf = itr_test_prepare_buffer(8);
 if (iq_use_structs) {
 	var _box_0 = argument0;
 	if (instanceof(_box_0) != "iq_id") { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
+	var _id_0 = _box_0.__id__
 	var _id_0 = _box_0.__id__;
 	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
 	_box_0.__id__ = 0;
@@ -154,20 +149,19 @@ if (iq_use_structs) {
 } else //*/
 {
 	var _box_0 = argument0;
-	if (!is_array(_box_0) || _box_0[0] != global.__ptrt_iq_id) { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
+	if (_box_0[0] != global.__ptrt_iq_id) { show_error("Expected a iq_id, got " + string(_box_0), true); exit }
+	var _id_0 = _box_0[1]
 	var _id_0 = _box_0[1];
 	if (_id_0 == 0) { show_error("This iq_id is destroyed.", true); exit; }
 	_box_0[@1] = 0;
 	buffer_write(_buf, buffer_u64, _id_0);
 }
-iq_id_destroy_raw(buffer_get_address(_buf), 8);
+iq_id_destroy_raw(buffer_get_address(_buf), 8)
 
 #define iq_thing_create
 /// iq_thing_create(count:int)->
 var _buf = itr_test_prepare_buffer(8);
-buffer_write(_buf, buffer_s32, argument0);
-if (iq_thing_create_raw(buffer_get_address(_buf), 8)) {
-	buffer_seek(_buf, buffer_seek_start, 0);
+if (iq_thing_create_raw(buffer_get_address(_buf), 8, argument0)) {
 	// GMS >= 2.3:
 	if (iq_use_structs) {
 		var _ptr_0 = buffer_read(_buf, buffer_u64);
@@ -191,67 +185,80 @@ if (iq_thing_create_raw(buffer_get_address(_buf), 8)) {
 
 #define iq_thing_destroy
 /// iq_thing_destroy(thing)
-var _buf = itr_test_prepare_buffer(8);
+// no buffer!
 // GMS >= 2.3:
 if (iq_use_structs) {
 	var _box_0 = argument0;
 	if (instanceof(_box_0) != "iq_thing") { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
+	var _ptr_0 = _box_0.__ptr__
 	var _ptr_0 = _box_0.__ptr__;
 	if (_ptr_0 == pointer_null) { show_error("This iq_thing is destroyed.", true); exit; }
 	_box_0.__ptr__ = pointer_null;
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
 } else //*/
 {
 	var _box_0 = argument0;
-	if (!is_array(_box_0) || _box_0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
+	if (_box_0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
+	var _ptr_0 = _box_0[1]
 	var _ptr_0 = _box_0[1];
 	if (int64(_ptr_0) == 0) { show_error("This iq_thing is destroyed.", true); exit; }
 	_box_0[@1] = ptr(0);
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
 }
-iq_thing_destroy_raw(buffer_get_address(_buf), 8);
+// GMS >= 2.3:
+if (iq_use_structs) {
+	iq_thing_destroy_raw(_ptr_0)
+} else //*/
+{
+	iq_thing_destroy_raw(_ptr_0)
+}
 
 #define iq_thing_get_count
 /// iq_thing_get_count(thing)->int
-var _buf = itr_test_prepare_buffer(8);
+// no buffer!
 // GMS >= 2.3:
 if (iq_use_structs) {
-	var _box_0 = argument0;
-	if (instanceof(_box_0) != "iq_thing") { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
-	var _ptr_0 = _box_0.__ptr__;
-	if (_ptr_0 == pointer_null) { show_error("This iq_thing is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
+	if (instanceof(argument0) != "iq_thing") { show_error("Expected a iq_thing, got " + string(argument0), true); exit }
+	if (argument0.__ptr__ == pointer_null) { show_error("This iq_thing is destroyed.", true); exit; }
 } else //*/
 {
-	var _box_0 = argument0;
-	if (!is_array(_box_0) || _box_0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
-	var _ptr_0 = _box_0[1];
-	if (int64(_ptr_0) == 0) { show_error("This iq_thing is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
+	if (argument0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(argument0), true); exit }
+	if (int64(argument0[1]) == 0) { show_error("This iq_thing is destroyed.", true); exit; }
 }
-return iq_thing_get_count_raw(buffer_get_address(_buf), 8);
+// GMS >= 2.3:
+if (iq_use_structs) {
+	return iq_thing_get_count_raw(argument0.__ptr__);
+} else //*/
+{
+	return iq_thing_get_count_raw(argument0[1]);
+}
 
 #define iq_thing_set_count
 /// iq_thing_set_count(thing, count:int)
-var _buf = itr_test_prepare_buffer(12);
+// no buffer!
 // GMS >= 2.3:
 if (iq_use_structs) {
-	var _box_0 = argument0;
-	if (instanceof(_box_0) != "iq_thing") { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
-	var _ptr_0 = _box_0.__ptr__;
-	if (_ptr_0 == pointer_null) { show_error("This iq_thing is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
-	buffer_write(_buf, buffer_s32, argument1);
+	if (instanceof(argument0) != "iq_thing") { show_error("Expected a iq_thing, got " + string(argument0), true); exit }
+	if (argument0.__ptr__ == pointer_null) { show_error("This iq_thing is destroyed.", true); exit; }
 } else //*/
 {
-	var _box_0 = argument0;
-	if (!is_array(_box_0) || _box_0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(_box_0), true); exit }
-	var _ptr_0 = _box_0[1];
-	if (int64(_ptr_0) == 0) { show_error("This iq_thing is destroyed.", true); exit; }
-	buffer_write(_buf, buffer_u64, int64(_ptr_0));
-	buffer_write(_buf, buffer_s32, argument1);
+	if (argument0[0] != global.__ptrt_iq_thing) { show_error("Expected a iq_thing, got " + string(argument0), true); exit }
+	if (int64(argument0[1]) == 0) { show_error("This iq_thing is destroyed.", true); exit; }
 }
-iq_thing_set_count_raw(buffer_get_address(_buf), 12);
+// GMS >= 2.3:
+if (iq_use_structs) {
+	iq_thing_set_count_raw(argument0.__ptr__, argument1)
+} else //*/
+{
+	iq_thing_set_count_raw(argument0[1], argument1)
+}
+
+#define iq_get_hwnd
+/// iq_get_hwnd()->int
+var _buf = itr_test_prepare_buffer(8);
+buffer_write(_buf, buffer_u64, int64(window_handle()));
+if (iq_get_hwnd_raw(buffer_get_address(_buf), 8)) {
+	buffer_seek(_buf, buffer_seek_start, 0);
+	return buffer_read(_buf, buffer_u64);
+} else return undefined;
 
 #define iq_test_inout_box
 /// iq_test_inout_box(q)
@@ -261,11 +268,11 @@ if (array_length_1d(_box_0)) {
 	buffer_write(_buf, buffer_bool, true);
 	buffer_write(_buf, buffer_s32, _box_0[0]);
 } else buffer_write(_buf, buffer_bool, false);
-iq_test_inout_box_raw(buffer_get_address(_buf), 5);
+iq_test_inout_box_raw(buffer_get_address(_buf), 5)
 buffer_seek(_buf, buffer_seek_start, 0);
 var _box_0 = argument0;
 var _val_0;
-_box_0 = buffer_read(_buf, buffer_s32);
+_val_0 = buffer_read(_buf, buffer_s32);
 _box_0[@0] = _val_0;
 
 #define iq_test_inout_struct
@@ -290,7 +297,7 @@ if (iq_use_structs) {
 		itr_test_write_chars(_buf, _struct_0[2], 32) // text
 	} else buffer_write(_buf, buffer_bool, false);
 }
-iq_test_inout_struct_raw(buffer_get_address(_buf), 41);
+iq_test_inout_struct_raw(buffer_get_address(_buf), 41)
 buffer_seek(_buf, buffer_seek_start, 0);
 // GMS >= 2.3:
 if (iq_use_structs) {
@@ -649,8 +656,7 @@ return _arr_0;
 #define iq_get_opt_vec
 /// iq_get_opt_vec(ret:bool)->array<int>?
 var _buf = itr_test_prepare_buffer(9);
-buffer_write(_buf, buffer_bool, argument0);
-var __size__ = iq_get_opt_vec_raw(buffer_get_address(_buf), 9);
+var __size__ = iq_get_opt_vec_raw(buffer_get_address(_buf), 9, argument0);
 if (__size__ == 0) return undefined;
 if (buffer_get_size(_buf) < __size__) buffer_resize(_buf, __size__);
 // GMS >= 2.3:

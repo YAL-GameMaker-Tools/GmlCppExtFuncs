@@ -13,6 +13,7 @@
     {"id":{"name":"scr_test_vector","path":"scripts/scr_test_vector/scr_test_vector.yy",},"order":3,},
     {"id":{"name":"scr_test","path":"scripts/scr_test/scr_test.yy",},"order":0,},
     {"id":{"name":"assert","path":"scripts/assert/assert.yy",},"order":3,},
+    {"id":{"name":"scr_test_hwnd","path":"scripts/scr_test_hwnd/scr_test_hwnd.yy",},"order":10,},
     {"id":{"name":"sfmt","path":"scripts/sfmt/sfmt.yy",},"order":1,},
     {"id":{"name":"scr_test_basics","path":"scripts/scr_test_basics/scr_test_basics.yy",},"order":1,},
     {"id":{"name":"scr_test_gml_id","path":"scripts/scr_test_gml_id/scr_test_gml_id.yy",},"order":7,},

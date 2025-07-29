@@ -87,7 +87,7 @@ class CppTypeProcGmlInOut extends CppTypeProc {
 			var vp_val = "_val_" + depth;
 			gml.addFormat("%|%vdp = %s;", vp, out);
 			gml.addFormat("%|var %s;", vp_val);
-			p.type.gmlReadOut(gml, depth + 1, vp);
+			p.type.gmlReadOut(gml, depth + 1, vp_val);
 			var isGMK = CppGen.config.isGMK;
 			if (isGMK) {
 				gml.addFormat("%|if (ds_list_empty(%s)) %{", vp);

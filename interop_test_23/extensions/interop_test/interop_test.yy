@@ -20,22 +20,13 @@
   "installdir": "",
   "files": [
     {"resourceType":"GMExtensionFile","resourceVersion":"1.0","name":"","constants":[],"copyToTargets":9223372036854775807,"filename":"interop_test.dll","final":"","functions":[
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_never_raw","argCount":2,"args":[
-            1,
-            2,
-          ],"documentation":"","externalName":"iq_never_raw","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_int_raw","argCount":2,"args":[
-            1,
-            2,
-          ],"documentation":"","externalName":"iq_get_int_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_never_raw","argCount":0,"args":[],"documentation":"","externalName":"iq_never_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_int_raw","argCount":0,"args":[],"documentation":"","externalName":"iq_get_int_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_int64_raw","argCount":2,"args":[
             1,
             2,
           ],"documentation":"","externalName":"iq_get_int64_raw","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_string_raw","argCount":2,"args":[
-            1,
-            2,
-          ],"documentation":"","externalName":"iq_get_string_raw","help":"","hidden":true,"kind":11,"returnType":1,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_string_raw","argCount":0,"args":[],"documentation":"","externalName":"iq_get_string_raw","help":"","hidden":true,"kind":11,"returnType":1,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_add_int64_raw","argCount":2,"args":[
             1,
             2,
@@ -58,7 +49,7 @@
           ],"documentation":"","externalName":"iq_def_ret_string_raw_post","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_add_strlens_raw","argCount":4,"args":[
             1,
-            2,
+            1,
             1,
             1,
           ],"documentation":"","externalName":"iq_add_strlens_raw","help":"","hidden":true,"kind":11,"returnType":2,},
@@ -78,22 +69,25 @@
             1,
             2,
           ],"documentation":"","externalName":"iq_id_destroy_raw","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_create_raw","argCount":2,"args":[
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_create_raw","argCount":3,"args":[
             1,
+            2,
             2,
           ],"documentation":"","externalName":"iq_thing_create_raw","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_destroy_raw","argCount":2,"args":[
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_destroy_raw","argCount":1,"args":[
             1,
-            2,
           ],"documentation":"","externalName":"iq_thing_destroy_raw","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_get_count_raw","argCount":2,"args":[
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_get_count_raw","argCount":1,"args":[
             1,
-            2,
           ],"documentation":"","externalName":"iq_thing_get_count_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_thing_set_count_raw","argCount":2,"args":[
             1,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_hwnd_raw","argCount":2,"args":[
+            1,
+            2,
+          ],"documentation":"","externalName":"iq_get_hwnd_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_box_raw","argCount":2,"args":[
             1,
             2,
@@ -158,8 +152,9 @@
             1,
             2,
           ],"documentation":"","externalName":"iq_get_vec_raw_post","help":"","hidden":true,"kind":11,"returnType":2,},
-        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_opt_vec_raw","argCount":2,"args":[
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_opt_vec_raw","argCount":3,"args":[
             1,
+            2,
             2,
           ],"documentation":"","externalName":"iq_get_opt_vec_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_opt_vec_raw_post","argCount":2,"args":[
@@ -281,6 +276,7 @@
             2,
             2,
           ],"documentation":"","externalName":"iq_thing_set_count","help":"iq_thing_set_count(thing, count:int)","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_hwnd","argCount":0,"args":[],"documentation":"","externalName":"iq_get_hwnd","help":"iq_get_hwnd()->int","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_test_inout_box","argCount":1,"args":[
             2,
           ],"documentation":"","externalName":"iq_test_inout_box","help":"iq_test_inout_box(q)","hidden":false,"kind":2,"returnType":2,},

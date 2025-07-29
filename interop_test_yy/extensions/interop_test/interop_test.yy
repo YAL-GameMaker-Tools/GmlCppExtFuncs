@@ -41,10 +41,9 @@
                     "id": "d2c2df99-e6e8-3dd0-bd97-70c4f78e558f",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 0,
                     "args": [
-                        1,
-                        2
+                        
                     ],
                     "externalName": "iq_never_raw",
                     "help": "",
@@ -57,10 +56,9 @@
                     "id": "69796422-a2ac-796b-9fb5-ad19299fdd04",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 0,
                     "args": [
-                        1,
-                        2
+                        
                     ],
                     "externalName": "iq_get_int_raw",
                     "help": "",
@@ -89,10 +87,9 @@
                     "id": "d32df829-acb3-7f06-68c2-2c5baa65e656",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 0,
                     "args": [
-                        1,
-                        2
+                        
                     ],
                     "externalName": "iq_get_string_raw",
                     "help": "",
@@ -188,7 +185,7 @@
                     "argCount": 4,
                     "args": [
                         1,
-                        2,
+                        1,
                         1,
                         1
                     ],
@@ -267,9 +264,10 @@
                     "id": "c3d3ce88-e6e8-3dc1-8ea4-52e6dd35cc1e",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 3,
                     "args": [
                         1,
+                        2,
                         2
                     ],
                     "externalName": "iq_thing_create_raw",
@@ -283,10 +281,9 @@
                     "id": "7c0764ac-f79a-612b-e876-856e6d0c5fb5",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 1,
                     "args": [
-                        1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_destroy_raw",
                     "help": "",
@@ -299,10 +296,9 @@
                     "id": "c21e25f4-7a36-91e3-d40b-b521b84fafc9",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 1,
                     "args": [
-                        1,
-                        2
+                        1
                     ],
                     "externalName": "iq_thing_get_count_raw",
                     "help": "",
@@ -325,6 +321,22 @@
                     "hidden": true,
                     "kind": 11,
                     "name": "iq_thing_set_count_raw",
+                    "returnType": 2
+                },
+                {
+                    "id": "4b5b4600-6e60-b549-9fb5-43f7c2caaa76",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 2,
+                    "args": [
+                        1,
+                        2
+                    ],
+                    "externalName": "iq_get_hwnd_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_get_hwnd_raw",
                     "returnType": 2
                 },
                 {
@@ -587,9 +599,10 @@
                     "id": "f0e0fdbb-4c42-97f2-8ea4-cb7f4e9f558d",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
-                    "argCount": 2,
+                    "argCount": 3,
                     "args": [
                         1,
+                        2,
                         2
                     ],
                     "externalName": "iq_get_opt_vec_raw",
@@ -1133,6 +1146,21 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_thing_set_count",
+                    "returnType": 2
+                },
+                {
+                    "id": "fb7013db-1e03-f8b5-0898-f5608c5e7d79",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 0,
+                    "args": [
+                        
+                    ],
+                    "externalName": "iq_get_hwnd",
+                    "help": "iq_get_hwnd()->int",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_get_hwnd",
                     "returnType": 2
                 },
                 {

@@ -28,8 +28,8 @@ struct mixed {
 #if 0
 
 extern void iq_never();
-dllx double iq_never_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
+dllx double iq_never_raw() {
+	// no buffer!
 	iq_never();
 	return 1;
 }
@@ -37,8 +37,8 @@ dllx double iq_never_raw(void* _in_ptr, double _in_ptr_size) {
 #endif // 0
 
 extern int iq_get_int();
-dllx double iq_get_int_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
+dllx double iq_get_int_raw() {
+	// no buffer!
 	return iq_get_int();
 }
 
@@ -52,8 +52,8 @@ dllx double iq_get_int64_raw(void* _inout_ptr, double _inout_ptr_size) {
 }
 
 extern const char* iq_get_string();
-dllx const char* iq_get_string_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
+dllx const char* iq_get_string_raw() {
+	// no buffer!
 	return iq_get_string();
 }
 
@@ -114,10 +114,8 @@ dllx double iq_def_ret_string_raw_post(void* _out_ptr, double _out_ptr_size) {
 }
 
 extern int iq_add_strlens(const char* a, const char* b, const char* c, const char* d);
-dllx double iq_add_strlens_raw(void* _in_ptr, double _in_ptr_size, const char* _arg_a, const char* _arg_b) {
-	gml_istream _in(_in_ptr);
-	const char* _arg_c = _in.read_string();
-	const char* _arg_d = _in.read_string();
+dllx double iq_add_strlens_raw(const char* _arg_a, const char* _arg_b, const char* _arg_c, const char* _arg_d) {
+	// no buffer!
 	return iq_add_strlens(_arg_a, _arg_b, _arg_c, _arg_d);
 }
 
@@ -153,36 +151,41 @@ dllx double iq_id_destroy_raw(void* _in_ptr, double _in_ptr_size) {
 }
 
 extern gml_ptr<iq_thing> iq_thing_create(int count);
-dllx double iq_thing_create_raw(void* _inout_ptr, double _inout_ptr_size) {
+dllx double iq_thing_create_raw(void* _inout_ptr, double _inout_ptr_size, double _arg_count) {
 	gml_istream _in(_inout_ptr);
-	int _arg_count = _in.read<int>();
-	gml_ptr<iq_thing> _result = iq_thing_create(_arg_count);
+	gml_ptr<iq_thing> _result = iq_thing_create((int)_arg_count);
 	gml_ostream _out(_inout_ptr);
 	_out.write<int64_t>((intptr_t)_result);
 	return 1;
 }
 
 extern void iq_thing_destroy(gml_ptr_destroy<iq_thing> thing);
-dllx double iq_thing_destroy_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
-	gml_ptr_destroy<iq_thing> _arg_thing = (gml_ptr_destroy<iq_thing>)_in.read<int64_t>();
+dllx double iq_thing_destroy_raw(iq_thing* _arg_thing) {
+	// no buffer!
 	iq_thing_destroy(_arg_thing);
 	return 1;
 }
 
 extern int iq_thing_get_count(gml_ptr<iq_thing> thing);
-dllx double iq_thing_get_count_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
-	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();
+dllx double iq_thing_get_count_raw(iq_thing* _arg_thing) {
+	// no buffer!
 	return iq_thing_get_count(_arg_thing);
 }
 
 extern void iq_thing_set_count(gml_ptr<iq_thing> thing, int count);
-dllx double iq_thing_set_count_raw(void* _in_ptr, double _in_ptr_size) {
-	gml_istream _in(_in_ptr);
-	gml_ptr<iq_thing> _arg_thing = (gml_ptr<iq_thing>)_in.read<int64_t>();
-	int _arg_count = _in.read<int>();
-	iq_thing_set_count(_arg_thing, _arg_count);
+dllx double iq_thing_set_count_raw(iq_thing* _arg_thing, double _arg_count) {
+	// no buffer!
+	iq_thing_set_count(_arg_thing, (int)_arg_count);
+	return 1;
+}
+
+extern int64_t iq_get_hwnd(GAME_HWND hwnd);
+dllx double iq_get_hwnd_raw(void* _inout_ptr, double _inout_ptr_size) {
+	gml_istream _in(_inout_ptr);
+	GAME_HWND _arg_hwnd = (GAME_HWND)_in.read<uint64_t>();
+	int64_t _result = iq_get_hwnd(_arg_hwnd);
+	gml_ostream _out(_inout_ptr);
+	_out.write<int64_t>(_result);
 	return 1;
 }
 
@@ -450,10 +453,9 @@ dllx double iq_get_vec_raw_post(void* _out_ptr, double _out_ptr_size) {
 
 extern std::optional<std::vector<int64_t>> iq_get_opt_vec(bool ret);
 static std::optional<std::vector<int64_t>> iq_get_opt_vec_raw_store_return;
-dllx double iq_get_opt_vec_raw(void* _in_ptr, double _in_ptr_size) {
+dllx double iq_get_opt_vec_raw(void* _in_ptr, double _in_ptr_size, double _arg_ret) {
 	gml_istream _in(_in_ptr);
-	bool _arg_ret = _in.read<bool>();
-	iq_get_opt_vec_raw_store_return = iq_get_opt_vec(_arg_ret);
+	iq_get_opt_vec_raw_store_return = iq_get_opt_vec((bool)_arg_ret);
 	size_t _dyn_size = 1;
 	auto& _sz_return = iq_get_opt_vec_raw_store_return;
 	if (_sz_return.has_value()) {
