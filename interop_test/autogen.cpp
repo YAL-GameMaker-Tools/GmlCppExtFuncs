@@ -126,6 +126,13 @@ dllx double iq_get_buffer_sum_raw(void* _in_ptr, double _in_ptr_size) {
 	return iq_get_buffer_sum(_arg_buf);
 }
 
+extern int iq_get_buffer_rest(gml_buffer buf, int start);
+dllx double iq_get_buffer_rest_raw(void* _in_ptr, double _in_ptr_size, double _arg_start) {
+	gml_istream _in(_in_ptr);
+	gml_buffer _arg_buf = _in.read_gml_buffer();
+	return iq_get_buffer_rest(_arg_buf, (int)_arg_start);
+}
+
 extern gml_id<iq_id> iq_id_create();
 dllx double iq_id_create_raw(void* _inout_ptr, double _inout_ptr_size) {
 	gml_istream _in(_inout_ptr);

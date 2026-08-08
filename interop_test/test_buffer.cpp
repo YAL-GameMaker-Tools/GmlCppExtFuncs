@@ -9,3 +9,8 @@ dllg int iq_get_buffer_sum(gml_buffer buf) {
 	}
 	return sum;
 }
+
+dllg int iq_get_buffer_rest(gml_buffer buf, int start = -1) {
+	if (start < 0) start = buf.tell();
+	return buf.size() - start;
+}

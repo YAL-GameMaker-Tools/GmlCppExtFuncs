@@ -93,6 +93,25 @@ if (buffer_exists(_val_0)) {
 }
 return iq_get_buffer_sum_raw(buffer_get_address(_buf), 16);
 
+#define iq_get_buffer_rest
+/// iq_get_buffer_rest(buf:buffer, start:int = -1)->int
+var _buf = itr_test_prepare_buffer(17);
+var _val_0 = argument[0];
+if (buffer_exists(_val_0)) {
+    buffer_write(_buf, buffer_u64, int64(buffer_get_address(_val_0)));
+    buffer_write(_buf, buffer_s32, buffer_get_size(_val_0));
+    buffer_write(_buf, buffer_s32, buffer_tell(_val_0));
+} else {
+    buffer_write(_buf, buffer_u64, 0);
+    buffer_write(_buf, buffer_s32, 0);
+    buffer_write(_buf, buffer_s32, 0);
+}
+var _arg_start;
+if (argument_count >= 2) {
+    _arg_start = argument[1];
+} else _arg_start = -1;
+return iq_get_buffer_rest_raw(buffer_get_address(_buf), 17, _arg_start);
+
 #define iq_id_create
 /// iq_id_create()->
 var _buf = itr_test_prepare_buffer(8);

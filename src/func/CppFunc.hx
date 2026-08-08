@@ -69,14 +69,16 @@ class CppFunc {
 			var tp = arg.type.proc;
 			var argGmlRef = arg.gmlArgument;
 			var keepGmlArgVar = tp.keepGmlArgVar(arg.type);
+			arg.gmlUnpacked = null;
 			if (arg.isSelf) {
 				var val = printSelfWrite(gml, arg, arg.putInBuffer);
 				if (!arg.putInBuffer) arg.gmlUnpacked = val;
 				continue;
 			}
+			var argName = '_arg_' + arg.name;
 			if (arg.putInBuffer) {
 				if (keepGmlArgVar) {
-					gml.addFormat('%|var _arg_%s;', arg.name);
+					gml.addFormat('%|var %s;', argName);
 				}
 				if (arg.value != null) {
 					if (arg.gmlArgumentIndex == -1) {
@@ -105,11 +107,21 @@ class CppFunc {
 					if (keepGmlArgVar) gml.addFormat('%-}');
 				}
 			} else {
+				// if it's an optional argument, we want a variable for it!
+				var optArg = (arg.value != null);
+				if (optArg) {
+					gml.addFormat('%|var %s;', argName);
+					gml.addFormat("%|if (argument_count >= %d) %{", arg.gmlArgumentIndex + 1);
+				}
 				var val = arg.type.proc.gmlUnpack(gml, arg.type, 0, argGmlRef);
-				arg.gmlUnpackedPerVersion[gmlVersion] = val;
-				if (keepGmlArgVar) {
-					gml.addFormat('%vds = %s;', '_arg_' + arg.name, argGmlRef);
-				} else if (!wantSelf) {
+				if (optArg) {
+					gml.addFormat("%|%s = %s;", argName, val);
+					gml.addFormat("%-} else %s = %s;", argName, arg.value);
+					arg.gmlUnpackedPerVersion[gmlVersion] = argName;
+				} else {
+					arg.gmlUnpackedPerVersion[gmlVersion] = val;
+				}
+				if (!wantSelf) {
 					if (!gmlCallArgsUseStruct && tp.usesStructs(arg.type))  gmlCallArgsUseStruct = true;
 					if (!gmlCallArgsUseGmkSpec && tp.usesGmkSpec(arg.type)) gmlCallArgsUseGmkSpec = true;
 				}

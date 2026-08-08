@@ -57,6 +57,11 @@
             1,
             2,
           ],"documentation":"","externalName":"iq_get_buffer_sum_raw","help":"","hidden":true,"kind":11,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_buffer_rest_raw","argCount":3,"args":[
+            1,
+            2,
+            2,
+          ],"documentation":"","externalName":"iq_get_buffer_rest_raw","help":"","hidden":true,"kind":11,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_id_create_raw","argCount":2,"args":[
             1,
             2,
@@ -256,6 +261,7 @@
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_buffer_sum","argCount":1,"args":[
             2,
           ],"documentation":"","externalName":"iq_get_buffer_sum","help":"iq_get_buffer_sum(buf:buffer)->int","hidden":false,"kind":2,"returnType":2,},
+        {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_get_buffer_rest","argCount":-1,"args":[],"documentation":"","externalName":"iq_get_buffer_rest","help":"iq_get_buffer_rest(buf:buffer, start:int = -1)->int","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_id_create","argCount":0,"args":[],"documentation":"","externalName":"iq_id_create","help":"iq_id_create()->","hidden":false,"kind":2,"returnType":2,},
         {"resourceType":"GMExtensionFunction","resourceVersion":"1.0","name":"iq_id_value","argCount":1,"args":[
             2,

@@ -171,6 +171,19 @@
           </args>
         </function>
         <function>
+          <name>iq_get_buffer_rest_raw</name>
+          <externalName>iq_get_buffer_rest_raw</externalName>
+          <kind>11</kind>
+          <help></help>
+          <returnType>2</returnType>
+          <argCount>3</argCount>
+          <args>
+            <arg>1</arg>
+            <arg>2</arg>
+            <arg>2</arg>
+          </args>
+        </function>
+        <function>
           <name>iq_id_create_raw</name>
           <externalName>iq_id_create_raw</externalName>
           <kind>11</kind>
@@ -755,6 +768,15 @@
           <args>
             <arg>2</arg>
           </args>
+        </function>
+        <function>
+          <name>iq_get_buffer_rest</name>
+          <externalName>iq_get_buffer_rest</externalName>
+          <kind>2</kind>
+          <help>iq_get_buffer_rest(buf:buffer, start:int = -1)-&gt;int</help>
+          <returnType>2</returnType>
+          <argCount>-1</argCount>
+          <args/>
         </function>
         <function>
           <name>iq_id_create</name>

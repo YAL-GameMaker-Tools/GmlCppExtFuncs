@@ -213,6 +213,23 @@
                     "returnType": 2
                 },
                 {
+                    "id": "2d3d2066-f7f9-2c2f-9fb5-bc083cdbdd00",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": 3,
+                    "args": [
+                        1,
+                        2,
+                        2
+                    ],
+                    "externalName": "iq_get_buffer_rest_raw",
+                    "help": "",
+                    "hidden": true,
+                    "kind": 11,
+                    "name": "iq_get_buffer_rest_raw",
+                    "returnType": 2
+                },
+                {
                     "id": "d2c2df99-a2ac-79d0-bd97-3480bd60bb6f",
                     "modelName": "GMExtensionFunction",
                     "mvc": "1.0",
@@ -1040,6 +1057,21 @@
                     "hidden": false,
                     "kind": 2,
                     "name": "iq_get_buffer_sum",
+                    "returnType": 2
+                },
+                {
+                    "id": "6a610235-9974-7032-7e01-05616a04d72c",
+                    "modelName": "GMExtensionFunction",
+                    "mvc": "1.0",
+                    "argCount": -1,
+                    "args": [
+                        
+                    ],
+                    "externalName": "iq_get_buffer_rest",
+                    "help": "iq_get_buffer_rest(buf:buffer, start:int = -1)->int",
+                    "hidden": false,
+                    "kind": 2,
+                    "name": "iq_get_buffer_rest",
                     "returnType": 2
                 },
                 {
